@@ -1,0 +1,125 @@
+﻿@using Microsoft.AspNetCore.Components
+@using ClickPay.Shared.CryptoAssets
+@using ClickPay.Shared.Services
+@inject LocalizationService Loc
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">ClickPay</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3 5 6v4.8c0 4.1 2.7 8.2 7 9.6 4.3-1.4 7-5.5 7-9.6V6l-7-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                    <path d="m9.6 12.2 1.9 1.9 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Disclaimer
+            </NavLink>
+        </div>
+
+        @foreach (var asset in WalletAssetHelper.GetVisibleAssets())
+        {
+            var definition = WalletAssetHelper.GetDefinition(asset);
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@GetWalletRoute(asset)">
+                    @RenderAssetIcon(definition)
+                    <span class="nav-link-text">@GetMenuLabel(asset, definition)</span>
+                </NavLink>
+            </div>
+        }
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="pay">
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3.5" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                    <rect x="14" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                    <rect x="3.5" y="14" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                    <rect x="11.5" y="11.5" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+                    <rect x="17" y="17" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+                </svg>
+                Pay
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="setup">
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3.5" y="5" width="17" height="14" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.4" />
+                    <line x1="8" y1="8" x2="8" y2="16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <circle cx="8" cy="12" r="1.4" fill="currentColor" />
+                    <line x1="12" y1="8" x2="12" y2="16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <circle cx="12" cy="9.5" r="1.4" fill="currentColor" />
+                    <line x1="16" y1="8" x2="16" y2="16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                    <circle cx="16" cy="14.5" r="1.4" fill="currentColor" />
+                </svg>
+                Setup
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private string GetMenuLabel(WalletAsset asset, CryptoAsset definition)
+    {
+        var baseLabel = asset switch
+        {
+            WalletAsset.Xaut => Loc.T("GoldWalletMenuLabel"),
+            _ => definition.MenuLabel
+        };
+
+        return Loc.FormatWalletLabel(baseLabel);
+    }
+
+    private RenderFragment RenderAssetIcon(CryptoAsset definition) => builder =>
+    {
+        if (CryptoAssetIconResolver.TryGetIconDataUri(definition, out var source))
+        {
+            builder.OpenElement(0, "span");
+            builder.AddAttribute(1, "class", "nav-icon nav-icon-image");
+
+            builder.OpenElement(2, "img");
+            builder.AddAttribute(3, "class", "nav-icon-image-content");
+            builder.AddAttribute(4, "src", source);
+            builder.AddAttribute(5, "alt", definition.Code);
+            builder.AddAttribute(6, "width", "36");
+            builder.AddAttribute(7, "height", "36");
+            builder.AddAttribute(8, "loading", "lazy");
+            builder.CloseElement();
+
+            builder.CloseElement();
+            return;
+        }
+
+        builder.OpenElement(5, "span");
+        builder.AddAttribute(6, "class", GetGlyphCssClass(definition));
+        builder.AddContent(7, ResolveIconContent(definition));
+        builder.CloseElement();
+    };
+
+    private static string ResolveIconContent(CryptoAsset definition)
+    {
+        if (!string.IsNullOrWhiteSpace(definition.Symbol))
+        {
+            return definition.Symbol;
+        }
+
+        return string.IsNullOrWhiteSpace(definition.Code) ? "#" : definition.Code;
+    }
+
+    private static string GetGlyphCssClass(CryptoAsset definition)
+    {
+        if (!string.IsNullOrWhiteSpace(definition.Symbol))
+        {
+            return "nav-icon nav-icon-glyph nav-icon-symbol";
+        }
+
+        return "nav-icon nav-icon-glyph nav-icon-code";
+    }
+
+    private static string GetWalletRoute(WalletAsset asset) => $"/wallet/{WalletAssetHelper.GetRouteSegment(asset)}";
+}
+

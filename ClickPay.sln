@@ -1,0 +1,36 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36310.24 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickPay", "ClickPay\ClickPay.csproj", "{AF38E475-0867-4151-B48A-D788E55504AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickPay.Shared", "ClickPay.Shared\ClickPay.Shared.csproj", "{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickPay.Web", "ClickPay.Web\ClickPay.Web.csproj", "{B7BDBCA4-8ECC-49AA-9A88-B7063C07EFE4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF38E475-0867-4151-B48A-D788E55504AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF38E475-0867-4151-B48A-D788E55504AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF38E475-0867-4151-B48A-D788E55504AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF38E475-0867-4151-B48A-D788E55504AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7BDBCA4-8ECC-49AA-9A88-B7063C07EFE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7BDBCA4-8ECC-49AA-9A88-B7063C07EFE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7BDBCA4-8ECC-49AA-9A88-B7063C07EFE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7BDBCA4-8ECC-49AA-9A88-B7063C07EFE4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CEEFDD0-EDA4-45DA-95CC-D159C97C9839}
+	EndGlobalSection
+EndGlobal

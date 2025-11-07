@@ -1,0 +1,4 @@
+wwwroot\app.css
+wwwroot\index.html
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\wwwroot\app.css
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\wwwroot\index.html

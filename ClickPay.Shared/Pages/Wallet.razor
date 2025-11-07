@@ -1,0 +1,315 @@
+@page "/wallet/{type}"
+@using ClickPay.Shared.Services
+@using ClickPay.Shared.CryptoAssets
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@inject LocalizationService Loc
+@inject MultiChainWalletService Wallets
+@inject WalletKeyService Vaults
+
+<PageTitle>Wallet</PageTitle>
+
+<div class="container wallet-page py-4 pb-5 pb-md-6">
+    @if (loading)
+    {
+        <div class="row">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger" role="alert">
+            @error
+        </div>
+    }
+    else if (overview is not null)
+    {
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card text-center shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title">
+                            @if (assetDefinition is not null)
+                            {
+                                @GetWalletHeading(assetDefinition)
+                            }
+                            else
+                            {
+                                @(overview != null ? Loc.FormatWalletLabel(overview.Symbol) : Loc.T("WalletWelcomeTitle"))
+                            }
+                        </h2>
+                        <div class="display-4 my-3 text-primary">
+                            @(overview != null ? $"{overview.Balance:N4} {overview.Symbol}" : "")
+                        </div>
+                        <div class="text-muted">@Loc.T("WalletBalancePlaceholder")</div>
+                        <div class="mt-2">
+                            <span class="fs-5 text-secondary">≈ @((eurValue ?? 0).ToString("N2")) EUR</span>
+                        </div>
+                        <div class="mt-3">
+                            <small class="text-muted">@(overview != null ? overview.PrimaryAddress : "")</small>
+                        </div>
+                        @if (asset == WalletAsset.Eurc || asset == WalletAsset.Xaut)
+                        {
+                            if (solBalance < minSolFee)
+                            {
+                                <div class="alert alert-warning mt-3">
+                                    <strong>Attenzione:</strong>
+                                    @if (asset == WalletAsset.Eurc)
+                                    {
+                                        <span>Per inviare EURC su Solana è necessario avere SOL per pagare le fee di rete.</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Per inviare XAUT₀ (Oro) su Solana è necessario avere SOL per pagare le fee di rete.</span>
+                                    }
+                                    <br />Il tuo saldo SOL è insufficiente.<br />
+                                    <button class="btn btn-outline-primary mt-2" @onclick="GoToSolWallet">Vai al SOL wallet</button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info mt-3">
+                                    @if (asset == WalletAsset.Eurc)
+                                    {
+                                        <span>Per le transazioni EURC su Solana è necessario avere SOL per pagare le fee.</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Per le transazioni XAUT₀ su Solana è necessario avere SOL per pagare le fee.</span>
+                                    }
+                                    <br />Assicurati di mantenere sempre un piccolo saldo SOL.</div>
+                            }
+                        }
+                        else if (asset == WalletAsset.Sol)
+                        {
+                            <div class="alert alert-info mt-3">
+                                Le transazioni SOL consumano una piccola quantità del saldo come fee di rete. Mantieni sempre un margine disponibile.
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <h4>@Loc.T("RecentTransactionsTitle")</h4>
+                @if (transactions.Count == 0)
+                {
+                    <div class="alert alert-secondary">@Loc.T("NoTransactionsMessage")</div>
+                }
+                else
+                {
+                    <ul class="list-group">
+                        @foreach (var tx in transactions)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-semibold">@tx.TransactionId</div>
+                                    <small class="text-muted">@tx.Timestamp.LocalDateTime.ToString("g")</small>
+                                </div>
+                                <span class="badge bg-@(tx.IsIncoming ? "success" : "danger")">
+                                    @(tx.IsIncoming ? "+" : "-")@tx.Amount.ToString("N4") @(overview != null ? overview.Symbol : "")
+                                </span>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        </div>
+    }
+
+    @if (overview is not null && string.IsNullOrEmpty(error))
+    {
+        <div class="wallet-action-bar fixed-bottom">
+            <div class="container py-3">
+                <div class="row g-3 justify-content-center">
+                    <div class="col-6 col-md-3 d-grid">
+                        <button class="btn btn-success btn-lg" @onclick="ReceivePayment">@Loc.T("ReceivePaymentTitle")</button>
+                    </div>
+                    <div class="col-6 col-md-3 d-grid">
+                        <button class="btn btn-primary btn-lg" @onclick="SendPayment">@Loc.T("SendPaymentButton")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter] public string? type { get; set; }
+    private WalletAsset asset;
+    private WalletOverview? overview;
+    private CryptoAsset? assetDefinition;
+    private List<WalletTransaction> transactions = new();
+    private bool loading = true;
+    private string? error;
+    private decimal? eurValue;
+    private DateTime eurValueLastUpdate = DateTime.MinValue;
+    private bool awaitingInteractive;
+    private decimal solBalance = 0;
+    private decimal minSolFee = 0.001m;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!WalletAssetHelper.TryParse(type, out asset))
+        {
+            error = "Asset non supportato.";
+            loading = false;
+            return;
+        }
+
+        try
+        {
+            assetDefinition = WalletAssetHelper.GetDefinition(asset);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            loading = false;
+            return;
+        }
+
+        if (awaitingInteractive)
+        {
+            return;
+        }
+
+        await LoadWalletAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!awaitingInteractive || firstRender)
+        {
+            return;
+        }
+
+        awaitingInteractive = false;
+        await LoadWalletAsync();
+
+        if (!awaitingInteractive)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task UpdateEurValueAsync()
+    {
+        if (overview is null)
+        {
+            return;
+        }
+
+        if (eurValue == null || (DateTime.UtcNow - eurValueLastUpdate).TotalMinutes > 60)
+        {
+            decimal rate = await GetConversionRateAsync(overview.Symbol);
+            eurValue = overview.Balance * rate;
+            eurValueLastUpdate = DateTime.UtcNow;
+        }
+    }
+
+    private async Task<decimal> GetConversionRateAsync(string symbol)
+    {
+        if (string.IsNullOrWhiteSpace(symbol))
+        {
+            return 0m;
+        }
+
+        if (symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase))
+        {
+            return await GetCoinGeckoRateAsync("bitcoin");
+        }
+
+        if (symbol.Equals("SOL", StringComparison.OrdinalIgnoreCase))
+        {
+            return await GetCoinGeckoRateAsync("solana");
+        }
+
+        if (symbol.Equals("XAUT₀", StringComparison.OrdinalIgnoreCase))
+        {
+            return await GetCoinGeckoRateAsync("tether-gold");
+        }
+
+        if (symbol.Equals("EURC", StringComparison.OrdinalIgnoreCase))
+        {
+            return 1.00m;
+        }
+
+        return 0m;
+    }
+
+    private async Task<decimal> GetCoinGeckoRateAsync(string assetId)
+    {
+        try
+        {
+            var url = $"https://api.coingecko.com/api/v3/simple/price?ids={assetId}&vs_currencies=eur";
+            var result = await Http.GetFromJsonAsync<Dictionary<string, Dictionary<string, decimal>>>(url);
+            if (result != null && result.TryGetValue(assetId, out var values) && values.TryGetValue("eur", out var eur))
+            {
+                return eur;
+            }
+        }
+        catch
+        {
+            // ignore and fall back to zero
+        }
+
+        return 0m;
+    }
+
+    private async Task LoadWalletAsync()
+    {
+        loading = true;
+        error = null;
+
+        try
+        {
+            if (!await Vaults.HasVaultAsync())
+            {
+                Navigation.NavigateTo("/onboarding", true);
+                return;
+            }
+
+            overview = await Wallets.GetOverviewAsync(asset);
+            transactions = new List<WalletTransaction>(overview.Transactions);
+            await UpdateEurValueAsync();
+                if (asset == WalletAsset.Eurc || asset == WalletAsset.Xaut)
+                {
+                    solBalance = await Wallets.GetSolBalanceAsync();
+                }
+        }
+        catch (BrowserStorageUnavailableException)
+        {
+            awaitingInteractive = true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+        finally
+        {
+            if (!awaitingInteractive)
+            {
+                loading = false;
+            }
+        }
+    }
+
+    private void ReceivePayment() => Navigation.NavigateTo($"/wallet/{type}/receive");
+    private void SendPayment() => Navigation.NavigateTo($"/wallet/{type}/send");
+        private void GoToSolWallet() => Navigation.NavigateTo("/wallet/sol");
+
+    private string GetWalletHeading(CryptoAsset definition)
+    {
+        var baseLabel = asset == WalletAsset.Xaut
+            ? Loc.T("GoldWalletMenuLabel")
+            : definition.MenuLabel;
+
+        return Loc.FormatWalletLabel(baseLabel);
+    }
+}

@@ -1,0 +1,415 @@
+@page "/wallet/{type}/send"
+@using System.Globalization
+@using ClickPay.Shared.Services
+@using ClickPay.Shared.CryptoAssets
+@inject NavigationManager Navigation
+@inject LocalizationService Loc
+@inject MultiChainWalletService Wallets
+@inject WalletKeyService Vaults
+@inject IQrScannerService QrScanner
+@inject PaymentRequestParser PaymentParser
+
+<PageTitle>@(overview is null ? Loc.T("SendPaymentButton") : string.Format(CultureInfo.CurrentCulture, Loc.T("SendPageTitle"), overview.Symbol))</PageTitle>
+
+<div class="container py-4">
+    @if (loading)
+    {
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-6 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    }
+    else if (!string.IsNullOrEmpty(error))
+    {
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="alert alert-danger" role="alert">@error</div>
+            </div>
+        </div>
+    }
+    else if (overview is not null)
+    {
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8 col-xl-6">
+                @if (!string.IsNullOrEmpty(successMessage))
+                {
+                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <span>@successMessage</span>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(formError))
+                {
+                    <div class="alert alert-warning d-flex align-items-center" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span>@formError</span>
+                    </div>
+                }
+
+                <div class="card shadow-lg border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="card-title mb-0">@string.Format(CultureInfo.CurrentCulture, Loc.T("SendPageTitle"), overview.Symbol)</h2>
+                            <span class="badge bg-primary fs-6">@overview.Symbol</span>
+                        </div>
+                        <p class="text-muted mb-4">@string.Format(CultureInfo.CurrentCulture, Loc.T("SendBalanceLabel"), overview.Balance.ToString("N4", CultureInfo.CurrentCulture), overview.Symbol)</p>
+
+                        @if (RequiresSolFees)
+                        {
+                            <div class="alert alert-info" role="alert">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                @string.Format(CultureInfo.CurrentCulture, Loc.T("SendFeeNoticeSolana"), overview.Symbol)
+                            </div>
+
+                            if (HasLowSolBalance)
+                            {
+                                <div class="alert alert-warning" role="alert">
+                                    <i class="bi bi-exclamation-octagon-fill me-2"></i>
+                                    @string.Format(CultureInfo.CurrentCulture, Loc.T("SendFeeWarningLowSol"), solBalance.ToString("N4", CultureInfo.CurrentCulture), MinSolFee.ToString("N4", CultureInfo.CurrentCulture))
+                                </div>
+                            }
+                        }
+                        else if (asset == WalletAsset.Sol)
+                        {
+                            <div class="alert alert-info" role="alert">
+                                <i class="bi bi-info-circle-fill me-2"></i>
+                                @Loc.T("SendFeeNoticeNativeSol")
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label" for="destinationInput">@Loc.T("SendDestinationLabel")</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-wallet2"></i></span>
+                                <input id="destinationInput" class="form-control" @bind="form.Destination" @bind:event="oninput" placeholder="@Loc.T("Address")" autocomplete="off" spellcheck="false" disabled="@(sending || scanning)" />
+                                <button type="button" class="btn btn-outline-secondary" disabled="@(sending || scanning)" @onclick="ScanQrAsync">
+                                    <i class="bi bi-qr-code-scan me-1"></i>@Loc.T("SendScanButton")
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="amountInput">@Loc.T("Amount") (@overview.Symbol)</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
+                                <input id="amountInput" class="form-control" type="number" min="0" step="0.00000001" @bind-value="form.Amount" @bind-value:event="oninput" placeholder="0.00" disabled="@sending" />
+                                <button type="button" class="btn btn-outline-secondary" disabled="@sending" @onclick="SetMaxAmount">
+                                    @Loc.T("SendMaxButton")
+                                </button>
+                            </div>
+                            <div class="form-text">@string.Format(CultureInfo.CurrentCulture, Loc.T("SendBalanceLabel"), overview.Balance.ToString("N4", CultureInfo.CurrentCulture), overview.Symbol)</div>
+                        </div>
+
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary btn-lg px-4" @onclick="SendAsync" disabled="@(sending || scanning)">
+                                @if (sending)
+                                {
+                                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                }
+                                @Loc.T("SendPaymentButton")
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private const decimal MinSolFee = 0.001m;
+    private readonly SendForm form = new();
+
+    [Parameter] public string? type { get; set; }
+    [SupplyParameterFromQuery(Name = "payload")] public string? payload { get; set; }
+
+    private WalletAsset asset;
+    private CryptoAsset? assetDefinition;
+    private WalletOverview? overview;
+    private bool loading = true;
+    private bool awaitingInteractive;
+    private bool sending;
+    private bool scanning;
+    private string? error;
+    private string? formError;
+    private string? successMessage;
+    private decimal solBalance;
+    private bool payloadApplied;
+    private string? currentType;
+
+    private bool RequiresSolFees => assetDefinition is not null && assetDefinition.Network == BlockchainNetwork.Solana && asset != WalletAsset.Sol;
+    private bool HasLowSolBalance => RequiresSolFees && solBalance < MinSolFee;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (!string.Equals(currentType, type, StringComparison.OrdinalIgnoreCase))
+        {
+            currentType = type;
+            payloadApplied = false;
+        }
+
+        if (!WalletAssetHelper.TryParse(type, out asset))
+        {
+            error = Loc.T("ErrorUnsupportedAsset");
+            loading = false;
+            return;
+        }
+
+        try
+        {
+            assetDefinition = WalletAssetHelper.GetDefinition(asset);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            loading = false;
+            return;
+        }
+
+        if (awaitingInteractive)
+        {
+            return;
+        }
+
+        await InitializeAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!awaitingInteractive || firstRender)
+        {
+            return;
+        }
+
+        awaitingInteractive = false;
+        await InitializeAsync();
+
+        if (!awaitingInteractive)
+        {
+            StateHasChanged();
+        }
+    }
+
+    private async Task InitializeAsync()
+    {
+        loading = true;
+        formError = null;
+        successMessage = null;
+
+        try
+        {
+            if (!await Vaults.HasVaultAsync())
+            {
+                Navigation.NavigateTo("/onboarding", true);
+                return;
+            }
+
+            var overviewTask = Wallets.GetOverviewAsync(asset);
+            Task<decimal>? solTask = RequiresSolFees ? Wallets.GetSolBalanceAsync() : null;
+
+            overview = await overviewTask;
+
+            if (RequiresSolFees && solTask is not null)
+            {
+                solBalance = await solTask;
+            }
+            else if (asset == WalletAsset.Sol && overview is not null)
+            {
+                solBalance = overview.Balance;
+            }
+
+            loading = false;
+            ApplyPayloadIfNeeded();
+        }
+        catch (BrowserStorageUnavailableException)
+        {
+            awaitingInteractive = true;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+            loading = false;
+        }
+    }
+
+    private void ApplyPayloadIfNeeded()
+    {
+        if (payloadApplied || string.IsNullOrWhiteSpace(payload))
+        {
+            return;
+        }
+
+        ParseAndApplyPayload(payload, true);
+    }
+
+    private async Task SendAsync()
+    {
+        if (sending)
+        {
+            return;
+        }
+
+        formError = null;
+        successMessage = null;
+
+        if (string.IsNullOrWhiteSpace(form.Destination))
+        {
+            formError = Loc.T("ErrorDestinationRequired");
+            return;
+        }
+
+        if (form.Amount <= 0m)
+        {
+            formError = Loc.T("ErrorInvalidAmount");
+            return;
+        }
+
+        if (overview is null)
+        {
+            formError = Loc.T("ErrorUnsupportedAsset");
+            return;
+        }
+
+        if (form.Amount > overview.Balance)
+        {
+            formError = Loc.T("SendErrorInsufficientFunds");
+            return;
+        }
+
+        sending = true;
+
+        try
+        {
+            var result = await Wallets.SendAsync(asset, form.Destination.Trim(), form.Amount);
+            successMessage = string.Format(CultureInfo.CurrentCulture, Loc.T("TransactionSentFormat"), result.TransactionId);
+            form.Amount = 0m;
+
+            overview = await Wallets.GetOverviewAsync(asset);
+            if (RequiresSolFees)
+            {
+                solBalance = await Wallets.GetSolBalanceAsync();
+            }
+            else if (asset == WalletAsset.Sol && overview is not null)
+            {
+                solBalance = overview.Balance;
+            }
+        }
+        catch (Exception ex)
+        {
+            formError = ex.Message;
+        }
+        finally
+        {
+            sending = false;
+        }
+    }
+
+    private void SetMaxAmount()
+    {
+        if (overview is null)
+        {
+            return;
+        }
+
+        form.Amount = overview.Balance;
+    }
+
+    private async Task ScanQrAsync()
+    {
+        if (scanning)
+        {
+            return;
+        }
+
+        formError = null;
+        scanning = true;
+
+        try
+        {
+            var result = await QrScanner.ScanAsync(new QrScanRequest(
+                asset,
+                overview?.Symbol,
+                Loc.T("QrScan_Prompt_Title"),
+                Loc.T("QrScan_Prompt_Message"),
+                Loc.T("QrScan_Prompt_Cancel")));
+
+            if (result.Cancelled)
+            {
+                return;
+            }
+
+            if (!result.Success)
+            {
+                formError = Loc.T(result.ErrorCode ?? "QrScan_Error_Generic");
+                return;
+            }
+
+            var payloadValue = result.Payload;
+            if (string.IsNullOrWhiteSpace(payloadValue))
+            {
+                formError = Loc.T("QrScan_Error_NoData");
+                return;
+            }
+
+            ParseAndApplyPayload(payloadValue, false);
+        }
+        catch (Exception ex)
+        {
+            formError = ex.Message;
+        }
+        finally
+        {
+            scanning = false;
+        }
+    }
+
+    private void ParseAndApplyPayload(string rawPayload, bool fromQuery)
+    {
+        try
+        {
+            var parsed = PaymentParser.Parse(asset, rawPayload);
+            if (!parsed.Success)
+            {
+                formError = Loc.T(parsed.ErrorCode ?? "QrScan_Error_Generic");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(parsed.Address))
+            {
+                form.Destination = parsed.Address;
+            }
+
+            if (parsed.Amount.HasValue)
+            {
+                form.Amount = parsed.Amount.Value;
+            }
+
+            formError = null;
+
+            if (fromQuery)
+            {
+                payload = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            formError = ex.Message;
+        }
+        finally
+        {
+            if (fromQuery)
+            {
+                payloadApplied = true;
+            }
+        }
+    }
+
+    private sealed class SendForm
+    {
+        public string? Destination { get; set; }
+        public decimal Amount { get; set; }
+    }
+}

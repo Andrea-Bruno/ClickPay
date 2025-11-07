@@ -1,0 +1,37 @@
+{
+  "Files": [
+    {
+      "Id": "c:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\obj\\Debug\\net9.0-ios\\iossimulator-x64\\scopedcss\\bundle\\ClickPay.styles.css",
+      "PackagePath": "staticwebassets\\ClickPay.styles.css"
+    },
+    {
+      "Id": "c:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "c:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-ios\\iossimulator-x64\\staticwebassets\\msbuild.ClickPay.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-ios\\iossimulator-x64\\staticwebassets\\msbuild.ClickPay.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-ios\\iossimulator-x64\\staticwebassets\\msbuild.build.ClickPay.props",
+      "PackagePath": "build\\ClickPay.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-ios\\iossimulator-x64\\staticwebassets\\msbuild.buildMultiTargeting.ClickPay.props",
+      "PackagePath": "buildMultiTargeting\\ClickPay.props"
+    },
+    {
+      "Id": "obj\\Debug\\net9.0-ios\\iossimulator-x64\\staticwebassets\\msbuild.buildTransitive.ClickPay.props",
+      "PackagePath": "buildTransitive\\ClickPay.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

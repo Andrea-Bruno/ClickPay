@@ -1,0 +1,149 @@
+@page "/setup"
+@using System.Collections.Generic
+@using System.Linq
+@using System.Threading.Tasks
+@using ClickPay.Shared.Services
+@using ClickPay.Shared.CryptoAssets
+@inject LocalizationService Loc
+
+<PageTitle>Setup</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="card-title mb-3">@Loc.T("SetupTitle")</h2>
+                    <label class="form-label">@Loc.T("SelectLanguage")</label>
+                    <select class="form-select form-select-lg mb-3" @bind="selectedLang">
+                        <option value="en">English</option>
+                        <option value="it">Italiano</option>
+                        <option value="fr">Français</option>
+                        <option value="es">Español</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Preferenze asset</h3>
+                    <p class="text-muted small">Scegli quali asset mostrare nel menu principale.</p>
+                    @if (assetVisibility.Count == 0)
+                    {
+                        <div class="alert alert-info" role="alert">
+                            Nessun asset configurato.
+                        </div>
+                    }
+                    else
+                    {
+                        foreach (var asset in assetVisibility)
+                        {
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="hide-@asset.Code" checked="@asset.Hidden" disabled="@asset.IsSaving" @onchange="(args) => OnAssetHiddenChangedAsync(asset, args)" />
+                                <label class="form-check-label" for="hide-@asset.Code">Nascondi @asset.Code</label>
+                                @if (asset.IsSaving)
+                                {
+                                    <div class="form-text">Salvataggio in corso…</div>
+                                }
+                                else if (!string.IsNullOrWhiteSpace(asset.ErrorMessage))
+                                {
+                                    <div class="form-text text-danger">@asset.ErrorMessage</div>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row fixed-bottom mb-4">
+        <div class="col-12 d-grid">
+            <button class="btn btn-success btn-lg" @onclick="SetLanguage">@Loc.T("Save")</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string? selectedLang;
+    private List<AssetVisibilityModel> assetVisibility = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        selectedLang = Loc.CurrentLanguage;
+        assetVisibility = WalletAssetHelper.GetRegisteredAssets()
+            .Select(entry => new AssetVisibilityModel
+            {
+                Asset = entry.Asset,
+                Code = entry.Definition.Code,
+                Hidden = entry.Definition.Hidden
+            })
+            .ToList();
+
+        return Task.CompletedTask;
+    }
+
+    private void SetLanguage()
+    {
+        if (!string.IsNullOrEmpty(selectedLang))
+        {
+            Loc.CurrentLanguage = selectedLang;
+        }
+    }
+
+    private async Task OnAssetHiddenChangedAsync(AssetVisibilityModel model, ChangeEventArgs args)
+    {
+        if (model.IsSaving)
+        {
+            return;
+        }
+
+        var newHidden = args.Value switch
+        {
+            bool b => b,
+            string s when bool.TryParse(s, out var parsed) => parsed,
+            _ => false
+        };
+
+        if (newHidden == model.Hidden && WalletAssetHelper.TryGetDefinition(model.Asset, out var definition) && definition.Hidden == model.Hidden)
+        {
+            return;
+        }
+
+        model.IsSaving = true;
+        var previous = model.Hidden;
+        model.Hidden = newHidden;
+        model.ErrorMessage = null;
+
+        try
+        {
+            await WalletAssetHelper.SetHiddenAsync(model.Asset, newHidden);
+            if (WalletAssetHelper.TryGetDefinition(model.Asset, out var refreshed))
+            {
+                model.Hidden = refreshed.Hidden;
+            }
+        }
+        catch (Exception ex)
+        {
+            model.Hidden = previous;
+            model.ErrorMessage = ex.Message;
+        }
+        finally
+        {
+            model.IsSaving = false;
+            StateHasChanged();
+        }
+    }
+
+    private sealed class AssetVisibilityModel
+    {
+        public required WalletAsset Asset { get; init; }
+        public required string Code { get; init; }
+        public bool Hidden { get; set; }
+        public bool IsSaving { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
+}

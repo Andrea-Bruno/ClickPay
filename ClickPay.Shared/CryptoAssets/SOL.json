@@ -1,0 +1,9 @@
+{
+  "name": "Solana",
+  "code": "SOL",
+  "blockchain": "solana",
+  "decimals": 9,
+  "chainId": 101,
+  "symbol": "◎",
+  "hidden": false
+}

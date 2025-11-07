@@ -1,0 +1,73 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows,browser
+build_property.RootNamespace = ClickPay.Shared
+build_property.RootNamespace = ClickPay.Shared
+build_property.ProjectDir = C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9tZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Pay.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Setup.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2V0dXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/WalletOnboarding.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2FsbGV0T25ib2FyZGluZy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/WalletReceive.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2FsbGV0UmVjZWl2ZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/WalletSend.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2FsbGV0U2VuZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2VhdGhlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Um91dGVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-fkul4avu0x
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = TGF5b3V0XE5hdk1lbnUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-o52dsv4ki5
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Wallet.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2FsbGV0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-rxft0yfe7b

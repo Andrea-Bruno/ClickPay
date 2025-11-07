@@ -1,0 +1,152 @@
+
+@page "/pay"
+@using ClickPay.Shared.Services
+@inject LocalizationService Loc
+@inject IQrScannerService QrScanner
+@inject PaymentRequestParser PaymentParser
+@inject NavigationManager Navigation
+
+<PageTitle>@Loc.T("PayTitle")</PageTitle>
+
+<div class="container py-4">
+	<div class="row justify-content-center mb-4">
+		<div class="col-12 col-md-8">
+			<div class="card text-center shadow-lg" style="cursor:@(scanning || navigating ? "default" : "pointer")" @onclick="HandleCardClick">
+				<div class="card-body">
+					<span class="display-1 text-primary mb-3"><i class="bi bi-qr-code"></i></span>
+					<h2 class="card-title mb-3">@Loc.T("ScanQRTitle")</h2>
+
+					@if (scanning)
+					{
+						<div class="d-flex flex-column align-items-center gap-3">
+							<div class="spinner-border text-primary" role="status">
+								<span class="visually-hidden">Loading...</span>
+							</div>
+							<p class="text-muted mb-0">@Loc.T("Pay_ScanningInProgress")</p>
+						</div>
+					}
+					else
+					{
+						<p class="text-muted">@Loc.T("ScanQRDescription")</p>
+						<small class="text-muted">@Loc.T("Pay_TapToRetry")</small>
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	@if (!string.IsNullOrEmpty(feedbackMessage))
+	{
+		<div class="row justify-content-center">
+			<div class="col-12 col-md-8">
+				<div class="alert alert-warning text-center" role="alert">@feedbackMessage</div>
+			</div>
+		</div>
+	}
+</div>
+
+@code {
+	private bool scanning;
+	private bool navigating;
+	private string? feedbackMessage;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			await StartScanAsync();
+		}
+	}
+
+	private async Task HandleCardClick()
+	{
+		if (scanning || navigating)
+		{
+			return;
+		}
+
+		await StartScanAsync();
+	}
+
+	private async Task StartScanAsync()
+	{
+		if (scanning || navigating)
+		{
+			return;
+		}
+
+		scanning = true;
+		feedbackMessage = null;
+		StateHasChanged();
+
+		try
+		{
+			var result = await QrScanner.ScanAsync(new QrScanRequest(
+				WalletAsset.Bitcoin,
+				null,
+				Loc.T("QrScan_Prompt_Title"),
+				Loc.T("QrScan_Prompt_Message"),
+				Loc.T("QrScan_Prompt_Cancel")));
+
+			scanning = false;
+
+			if (result.Cancelled)
+			{
+				feedbackMessage = Loc.T("Pay_ScanCancelled");
+				StateHasChanged();
+				return;
+			}
+
+			if (!result.Success)
+			{
+				feedbackMessage = Loc.T(result.ErrorCode ?? "QrScan_Error_Generic");
+				StateHasChanged();
+				return;
+			}
+
+			var parsed = PaymentParser.Parse(result.Payload);
+			if (!parsed.Success)
+			{
+				feedbackMessage = Loc.T(parsed.ErrorCode ?? "QrScan_Error_Generic");
+				StateHasChanged();
+				return;
+			}
+
+			if (parsed.Asset is null || (parsed.Asset != WalletAsset.Bitcoin && parsed.Asset != WalletAsset.Eurc && parsed.Asset != WalletAsset.Sol && parsed.Asset != WalletAsset.Xaut))
+			{
+				feedbackMessage = Loc.T("ErrorUnsupportedAsset");
+				StateHasChanged();
+				return;
+			}
+
+			NavigateToSend(parsed);
+		}
+		catch
+		{
+			scanning = false;
+			feedbackMessage = Loc.T("QrScan_Error_Generic");
+			StateHasChanged();
+		}
+	}
+
+	private void NavigateToSend(PaymentRequestParseResult parsed)
+	{
+		navigating = true;
+		if (parsed.Asset is not WalletAsset asset)
+		{
+			navigating = false;
+			feedbackMessage = Loc.T("ErrorUnsupportedAsset");
+			StateHasChanged();
+			return;
+		}
+
+		var segment = WalletAssetHelper.GetRouteSegment(asset);
+
+		var payload = parsed.RawPayload ?? parsed.Address ?? string.Empty;
+		var target = string.IsNullOrWhiteSpace(payload)
+			? $"/wallet/{segment}/send"
+			: $"/wallet/{segment}/send?payload={Uri.EscapeDataString(payload)}";
+
+		Navigation.NavigateTo(target, true);
+	}
+}

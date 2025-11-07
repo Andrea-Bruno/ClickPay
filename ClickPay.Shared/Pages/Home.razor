@@ -1,0 +1,12 @@
+﻿@page "/"
+@using ClickPay.Shared.Services
+@inject IFormFactor FormFactor
+@inject LocalizationService Loc
+
+<PageTitle>Home</PageTitle>
+
+<div class="disclaimer">
+    <h1>@Loc.T("DisclaimerTitle")</h1>
+    <p>@Loc.T("DisclaimerText1")</p>
+    <p>@Loc.T("DisclaimerText2")</p>
+</div>

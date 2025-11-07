@@ -1,0 +1,10 @@
+{
+  "name": "Euro Coin",
+  "code": "EURC",
+  "blockchain": "solana",
+  "contractAddress": "8XSigVnK9VwYq9FmkYdNvKcJsteVEh9UpAJZKkdYwGKu",
+  "decimals": 6,
+  "chainId": 101,
+  "symbol": "€",
+  "hidden": false
+}

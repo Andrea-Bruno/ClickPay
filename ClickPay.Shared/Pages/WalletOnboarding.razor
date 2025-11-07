@@ -1,0 +1,228 @@
+
+@page "/onboarding"
+@using System.Collections.Generic
+@using ClickPay.Shared.Services
+@using Microsoft.AspNetCore.Components
+@using NBitcoin
+@inject LocalizationService Loc
+@inject BitcoinWalletService WalletService
+@inject WalletKeyService WalletKeys
+@inject SolanaWalletService SolanaWallet
+@inject MultiChainWalletService MultiChainWallet
+
+<PageTitle>@Loc.T("WalletOnboardingTitle")</PageTitle>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-body text-center">
+                    <h2 class="mb-4">@Loc.T("WalletWelcomeTitle")</h2>
+                    <p class="mb-4">@Loc.T("WalletWelcomeDescription")</p>
+                    <div class="d-grid gap-3">
+                        <button class="btn btn-success btn-lg" @onclick="ShowCreateWallet">@Loc.T("CreateWalletButton")</button>
+                        <button class="btn btn-primary btn-lg" @onclick="ShowRestoreWallet">@Loc.T("RestoreWalletButton")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (showCreateWallet)
+    {
+        <div class="row justify-content-center mt-5">
+            <div class="col-12 col-md-8">
+                <div class="card border-success">
+                    <div class="card-body">
+                        <h4 class="card-title text-success">@Loc.T("CreateWalletTitle")</h4>
+                        <p>@Loc.T("CreateWalletInstructions")</p>
+                        <div class="alert alert-warning">
+                            <strong>@Loc.T("PassphraseWarning")</strong>
+                        </div>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="3" readonly>@generatedPassphrase</textarea>
+                        </div>
+                        <button class="btn btn-success" @onclick="ConfirmCreateWallet">@Loc.T("ConfirmCreateWalletButton")</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (showRestoreWallet)
+    {
+        <div class="row justify-content-center mt-5">
+            <div class="col-12 col-md-8">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary">@Loc.T("RestoreWalletTitle")</h4>
+                        <p>@Loc.T("RestoreWalletInstructions")</p>
+                        <div class="mb-3">
+                            <textarea class="form-control" rows="3" @bind="restorePassphrase"></textarea>
+                        </div>
+                        <button class="btn btn-primary" @onclick="ConfirmRestoreWallet">@Loc.T("ConfirmRestoreWalletButton")</button>
+                        @if (restoreError != null)
+                        {
+                            <div class="alert alert-danger mt-3">@restoreError</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (activeAccount is not null)
+    {
+        <div class="row justify-content-center mt-5">
+            <div class="col-12 col-md-8">
+                <div class="card border-info">
+                    <div class="card-body">
+                        @if (!string.IsNullOrEmpty(successMessage))
+                        {
+                            <div class="alert alert-success">@successMessage</div>
+                        }
+
+                        <dl class="row text-start mb-0">
+                            <dt class="col-sm-4">@Loc.T("WalletPrimaryAddressLabel")</dt>
+                            <dd class="col-sm-8">@primaryReceiveAddress</dd>
+                            <dt class="col-sm-4">@Loc.T("WalletXpubLabel")</dt>
+                            <dd class="col-sm-8 text-break">@activeAccount.AccountXpub</dd>
+                            <dt class="col-sm-4">@Loc.T("WalletBalancePlaceholder")</dt>
+                            <dd class="col-sm-8">@calculatedBalance.ToDecimal(MoneyUnit.BTC) BTC</dd>
+                            <dt class="col-sm-4">@Loc.T("WalletSolanaAddressLabel")</dt>
+                            <dd class="col-sm-8 text-break">@primarySolanaAddress</dd>
+                            <dt class="col-sm-4">@Loc.T("WalletEurcBalanceLabel")</dt>
+                            <dd class="col-sm-8">@eurcBalance.ToString("N2") EURC</dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private bool showCreateWallet = false;
+    private bool showRestoreWallet = false;
+    private string? generatedPassphrase;
+    private string? restorePassphrase;
+    private string? restoreError;
+    private string? successMessage;
+    private WalletAccount? activeAccount;
+    private SolanaWalletAccount? activeSolanaAccount;
+    private BitcoinAddress? primaryReceiveAddress;
+    private string? primarySolanaAddress;
+    private Money calculatedBalance = Money.Zero;
+    private decimal eurcBalance;
+
+    private void ShowCreateWallet()
+    {
+        showCreateWallet = true;
+        showRestoreWallet = false;
+        generatedPassphrase = GeneratePassphrase();
+        successMessage = null;
+        restoreError = null;
+    }
+    private void ShowRestoreWallet()
+    {
+        showRestoreWallet = true;
+        showCreateWallet = false;
+        restoreError = null;
+        successMessage = null;
+    }
+    private async Task ConfirmCreateWallet()
+    {
+        if (string.IsNullOrWhiteSpace(generatedPassphrase))
+        {
+            return;
+        }
+
+        activeAccount = WalletService.DeriveAccount(generatedPassphrase);
+        activeSolanaAccount = SolanaWallet.DeriveAccount(generatedPassphrase);
+        primaryReceiveAddress = activeAccount.ExternalAddresses.GetAddress(0);
+        primarySolanaAddress = activeSolanaAccount.PublicKey;
+
+        var vault = BuildVault(generatedPassphrase, passphrase: string.Empty);
+        await WalletKeys.SaveVaultAsync(vault);
+
+        await RefreshBalancesAsync();
+
+        successMessage = Loc.T("WalletCreatedSuccess");
+        restoreError = null;
+    }
+    private async Task ConfirmRestoreWallet()
+    {
+        if (IsValidPassphrase(restorePassphrase))
+        {
+            activeAccount = WalletService.DeriveAccount(restorePassphrase!);
+            activeSolanaAccount = SolanaWallet.DeriveAccount(restorePassphrase!);
+            primaryReceiveAddress = activeAccount.ExternalAddresses.GetAddress(0);
+            primarySolanaAddress = activeSolanaAccount.PublicKey;
+
+            var vault = BuildVault(restorePassphrase!, passphrase: string.Empty);
+            await WalletKeys.SaveVaultAsync(vault);
+
+            await RefreshBalancesAsync();
+
+            successMessage = Loc.T("WalletRestoredSuccess");
+            restoreError = null;
+        }
+        else
+        {
+            restoreError = Loc.T("RestoreWalletError");
+            successMessage = null;
+        }
+    }
+    private string GeneratePassphrase()
+    {
+        return WalletService.GenerateMnemonic();
+    }
+    private bool IsValidPassphrase(string? passphrase)
+    {
+        return WalletService.ValidateMnemonic(passphrase);
+    }
+
+    private WalletVault BuildVault(string mnemonic, string passphrase)
+    {
+        var wordCount = mnemonic.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+
+        var chains = new Dictionary<string, WalletVaultChainState>(StringComparer.OrdinalIgnoreCase)
+        {
+            [WalletChains.Bitcoin] = WalletVaultChainState.Default,
+            [WalletChains.Solana] = WalletVaultChainState.Default
+        };
+
+        return new WalletVault
+        {
+            Mnemonic = mnemonic.Trim(),
+            Passphrase = passphrase,
+            WordCount = wordCount,
+            AccountIndex = 0,
+            CreatedAtUtc = DateTime.UtcNow,
+            Chains = chains
+        };
+    }
+
+    private async Task RefreshBalancesAsync()
+    {
+        try
+        {
+            var btcOverview = await MultiChainWallet.GetOverviewAsync(WalletAsset.Bitcoin);
+            calculatedBalance = Money.Coins(btcOverview.Balance);
+        }
+        catch
+        {
+            calculatedBalance = Money.Zero;
+        }
+
+        try
+        {
+            var eurcOverview = await MultiChainWallet.GetOverviewAsync(WalletAsset.Eurc);
+            eurcBalance = eurcOverview.Balance;
+        }
+        catch
+        {
+            eurcBalance = 0m;
+        }
+    }
+}

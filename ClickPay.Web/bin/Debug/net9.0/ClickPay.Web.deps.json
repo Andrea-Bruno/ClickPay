@@ -1,0 +1,763 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v9.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v9.0": {
+      "ClickPay.Web/1.0.0": {
+        "dependencies": {
+          "ClickPay.Shared": "1.0.0"
+        },
+        "runtime": {
+          "ClickPay.Web.dll": {}
+        }
+      },
+      "Chaos.NaCl.Standard/1.0.0": {
+        "runtime": {
+          "lib/netstandard2.0/Chaos.NaCl.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authorization/9.0.8": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Metadata": "9.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Options": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Authorization.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components/9.0.8": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Authorization": "9.0.8",
+          "Microsoft.AspNetCore.Components.Analyzers": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Components.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.Analyzers/9.0.8": {},
+      "Microsoft.AspNetCore.Components.Forms/9.0.8": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Components.Forms.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.ProtectedBrowserStorage/5.0.0-rc.1.20451.17": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "9.0.8",
+          "Microsoft.AspNetCore.DataProtection": "5.0.0-rc.1.20451.17",
+          "Microsoft.JSInterop": "9.0.8"
+        },
+        "runtime": {
+          "lib/net5.0/Microsoft.AspNetCore.Components.ProtectedBrowserStorage.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45117"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Components.Web/9.0.8": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components": "9.0.8",
+          "Microsoft.AspNetCore.Components.Forms": "9.0.8",
+          "Microsoft.Extensions.DependencyInjection": "9.0.8",
+          "Microsoft.Extensions.Primitives": "9.0.8",
+          "Microsoft.JSInterop": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Components.Web.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Cryptography.Internal/5.0.0-rc.1.20451.17": {},
+      "Microsoft.AspNetCore.DataProtection/5.0.0-rc.1.20451.17": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Cryptography.Internal": "5.0.0-rc.1.20451.17",
+          "Microsoft.AspNetCore.DataProtection.Abstractions": "5.0.0-rc.1.20451.17",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Hosting.Abstractions": "5.0.0-rc.1.20451.14",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Options": "9.0.8",
+          "Microsoft.Win32.Registry": "5.0.0-rc.1.20451.14",
+          "System.Security.Cryptography.Xml": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "Microsoft.AspNetCore.DataProtection.Abstractions/5.0.0-rc.1.20451.17": {},
+      "Microsoft.AspNetCore.Metadata/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Metadata.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.Extensions.Configuration/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Primitives": "9.0.8"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Abstractions/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.8"
+        }
+      },
+      "Microsoft.Extensions.Configuration.Binder/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection/9.0.8": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.DependencyInjection.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "Microsoft.Extensions.FileProviders.Abstractions/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "Microsoft.Extensions.Primitives": "9.0.8"
+        }
+      },
+      "Microsoft.Extensions.Hosting.Abstractions/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.FileProviders.Abstractions": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "Microsoft.Extensions.Logging/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "9.0.8",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Options": "9.0.8"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/9.0.8": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "Microsoft.Extensions.Logging.Configuration/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration": "5.0.0",
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "5.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Options": "9.0.8",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Console/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Logging.Configuration": "5.0.0",
+          "Microsoft.Extensions.Options": "9.0.8",
+          "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0"
+        }
+      },
+      "Microsoft.Extensions.Options/9.0.8": {
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Primitives": "9.0.8"
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options.ConfigurationExtensions/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
+          "Microsoft.Extensions.Configuration.Binder": "5.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.8",
+          "Microsoft.Extensions.Options": "9.0.8",
+          "Microsoft.Extensions.Primitives": "9.0.8"
+        }
+      },
+      "Microsoft.Extensions.Primitives/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36511"
+          }
+        }
+      },
+      "Microsoft.JSInterop/9.0.8": {
+        "runtime": {
+          "lib/net9.0/Microsoft.JSInterop.dll": {
+            "assemblyVersion": "9.0.0.0",
+            "fileVersion": "9.0.825.36808"
+          }
+        }
+      },
+      "Microsoft.NETCore.Platforms/5.0.0-rc.1.20451.14": {},
+      "Microsoft.Win32.Registry/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0-rc.1.20451.14",
+          "System.Security.Principal.Windows": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "Microsoft.Win32.SystemEvents/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "5.0.0-rc.1.20451.14"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        }
+      },
+      "NBitcoin/9.0.3": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.8",
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "runtime": {
+          "lib/net6.0/NBitcoin.dll": {
+            "assemblyVersion": "9.0.3.0",
+            "fileVersion": "9.0.3.0"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.1.25517"
+          }
+        }
+      },
+      "Portable.BouncyCastle/1.8.2": {
+        "runtime": {
+          "lib/netstandard2.0/BouncyCastle.Crypto.dll": {
+            "assemblyVersion": "1.8.2.0",
+            "fileVersion": "1.8.2.223"
+          }
+        }
+      },
+      "QRCoder/1.6.0": {
+        "runtime": {
+          "lib/net6.0/QRCoder.dll": {
+            "assemblyVersion": "1.6.0.0",
+            "fileVersion": "1.6.0.0"
+          }
+        }
+      },
+      "Solnet.Programs/5.0.0": {
+        "dependencies": {
+          "Solnet.Rpc": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/Solnet.Programs.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "Solnet.Rpc/5.0.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Microsoft.Extensions.Logging.Console": "5.0.0",
+          "Solnet.Wallet": "5.0.0"
+        },
+        "runtime": {
+          "lib/net5.0/Solnet.Rpc.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "Solnet.Wallet/5.0.0": {
+        "dependencies": {
+          "Chaos.NaCl.Standard": "1.0.0",
+          "Portable.BouncyCastle": "1.8.2"
+        },
+        "runtime": {
+          "lib/net5.0/Solnet.Wallet.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.0.0"
+          }
+        }
+      },
+      "System.Drawing.Common/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "5.0.0-rc.1.20451.14"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll": {
+            "rid": "unix",
+            "assetType": "runtime",
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          },
+          "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        }
+      },
+      "System.Formats.Asn1/5.0.0-rc.1.20451.14": {},
+      "System.Security.AccessControl/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "5.0.0-rc.1.20451.14",
+          "System.Security.Principal.Windows": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "System.Security.Cryptography.Cng/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "System.Formats.Asn1": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "System.Security.Cryptography.Pkcs/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "System.Formats.Asn1": "5.0.0-rc.1.20451.14",
+          "System.Security.Cryptography.Cng": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "System.Security.Cryptography.Xml/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "System.Security.Cryptography.Pkcs": "5.0.0-rc.1.20451.14",
+          "System.Security.Permissions": "5.0.0-rc.1.20451.14"
+        }
+      },
+      "System.Security.Permissions/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0-rc.1.20451.14",
+          "System.Windows.Extensions": "5.0.0-rc.1.20451.14"
+        },
+        "runtime": {
+          "lib/net5.0/System.Security.Permissions.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        }
+      },
+      "System.Security.Principal.Windows/5.0.0-rc.1.20451.14": {},
+      "System.Windows.Extensions/5.0.0-rc.1.20451.14": {
+        "dependencies": {
+          "System.Drawing.Common": "5.0.0-rc.1.20451.14"
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Windows.Extensions.dll": {
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "5.0.0.0",
+            "fileVersion": "5.0.20.45114"
+          }
+        }
+      },
+      "ClickPay.Shared/1.0.0": {
+        "dependencies": {
+          "Microsoft.AspNetCore.Components.ProtectedBrowserStorage": "5.0.0-rc.1.20451.17",
+          "Microsoft.AspNetCore.Components.Web": "9.0.8",
+          "NBitcoin": "9.0.3",
+          "QRCoder": "1.6.0",
+          "Solnet.Programs": "5.0.0",
+          "Solnet.Rpc": "5.0.0",
+          "Solnet.Wallet": "5.0.0"
+        },
+        "runtime": {
+          "ClickPay.Shared.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ClickPay.Web/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Chaos.NaCl.Standard/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8ajPyzu49LSIdPgeg56eDdKu1j8FZJngKgTn9rXHV3GNVly49XFvPAwoWuUT8xPze3OjVUOWQZaO82HWrYFFEw==",
+      "path": "chaos.nacl.standard/1.0.0",
+      "hashPath": "chaos.nacl.standard.1.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authorization/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1M8ncVJtsRBEfbDc9QCa2zuwMjh/YWLu/WnRXWHG5q+KE5FDvPEsV3cJag3qy6NWL2b0H+pdushFsN9d3geemA==",
+      "path": "microsoft.aspnetcore.authorization/9.0.8",
+      "hashPath": "microsoft.aspnetcore.authorization.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+s+r/l2iBoU1mnG8ft9HS/xzqjd0cGbqnsVC9PgjNa5VGm/pVbPEMUJDea58iOaVETi7VGQCDoHLG83ObmlK2A==",
+      "path": "microsoft.aspnetcore.components/9.0.8",
+      "hashPath": "microsoft.aspnetcore.components.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Analyzers/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-uRx+7E0/nKIbQ0yG2/TYr6RYqeVanWwAVdwzzffGvTyI/jZBE3YT9aJ9c0DGrhgvkDZPzH1Z4ryp6LdMmBJFAQ==",
+      "path": "microsoft.aspnetcore.components.analyzers/9.0.8",
+      "hashPath": "microsoft.aspnetcore.components.analyzers.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Forms/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OgbzTUq4/y0jbUspgBFBQ3TJZepx05uFYLgXyB04uwTIM2JtHFcFcQvoO2lWRwXl8I2B5PtMTcTFVFt+/b5onQ==",
+      "path": "microsoft.aspnetcore.components.forms/9.0.8",
+      "hashPath": "microsoft.aspnetcore.components.forms.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.ProtectedBrowserStorage/5.0.0-rc.1.20451.17": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XIag4Paevequ4tAgH0WDGMJWgPwUMNfdPpdgAHcVHPkNybjbQQvfXjMyUE95a5GRbt/zj6yjVSkHrSeCRK4mcw==",
+      "path": "microsoft.aspnetcore.components.protectedbrowserstorage/5.0.0-rc.1.20451.17",
+      "hashPath": "microsoft.aspnetcore.components.protectedbrowserstorage.5.0.0-rc.1.20451.17.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Components.Web/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-YKdFoDJ36VNRDoZfoc6bf/RWEg4mR/f6Fa9CToDEiqwZId70Qc9JUamM4rgfDaKLIGY7QEeh3oS3j1cQb5AUUA==",
+      "path": "microsoft.aspnetcore.components.web/9.0.8",
+      "hashPath": "microsoft.aspnetcore.components.web.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Cryptography.Internal/5.0.0-rc.1.20451.17": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GFNQkmb3ANWkPXsyRtKDynX5HEjJGrsZJzg1n8koSBY7a/BDUMne3/IdZbiwv4mXgtPxLXiDCQykhDjjPipXPw==",
+      "path": "microsoft.aspnetcore.cryptography.internal/5.0.0-rc.1.20451.17",
+      "hashPath": "microsoft.aspnetcore.cryptography.internal.5.0.0-rc.1.20451.17.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.DataProtection/5.0.0-rc.1.20451.17": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Q3tDKB+52RBwong/33mSQ92RYLLJDGtsrn63z4xSauaddYJXfSV/E7+0z0TEA8ArkuNLPCSoLJ4BQXBdUtihvQ==",
+      "path": "microsoft.aspnetcore.dataprotection/5.0.0-rc.1.20451.17",
+      "hashPath": "microsoft.aspnetcore.dataprotection.5.0.0-rc.1.20451.17.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.DataProtection.Abstractions/5.0.0-rc.1.20451.17": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-V9LmkLrRhpbOA/hxjNS/QXw4APro5ORC+37aNLufrC82EC4L7u5q+04zO4iDT8k0hAhxGKngXvv7GTd2waSilw==",
+      "path": "microsoft.aspnetcore.dataprotection.abstractions/5.0.0-rc.1.20451.17",
+      "hashPath": "microsoft.aspnetcore.dataprotection.abstractions.5.0.0-rc.1.20451.17.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Metadata/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-sju8zleT9mRQWeEe4hu4Vh4uep6WppxULZEkirEgU/pRl6uIQQsd526EBa8u52j+LuA3J8gS8twRmTpsr3xGtA==",
+      "path": "microsoft.aspnetcore.metadata/9.0.8",
+      "hashPath": "microsoft.aspnetcore.metadata.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LN322qEKHjuVEhhXueTUe7RNePooZmS8aGid5aK2woX3NPjSnONFyKUc6+JknOS6ce6h2tCLfKPTBXE3mN/6Ag==",
+      "path": "microsoft.extensions.configuration/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Abstractions/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ETjSBHMp3OAZ4HxGQYpwyGsD8Sw5FegQXphi0rpoGMT74S4+I2mm7XJEswwn59XAaKOzC15oDSOWEE8SzDCd6Q==",
+      "path": "microsoft.extensions.configuration.abstractions/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.abstractions.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Configuration.Binder/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Of1Irt1+NzWO+yEYkuDh5TpT4On7LKl98Q9iLqCdOZps6XXEWDj3AKtmyvzJPVXZe4apmkJJIiDL7rR1yC+hjQ==",
+      "path": "microsoft.extensions.configuration.binder/5.0.0",
+      "hashPath": "microsoft.extensions.configuration.binder.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JJjI2Fa+QtZcUyuNjbKn04OjIUX5IgFGFu/Xc+qvzh1rXdZHLcnqqVXhR4093bGirTwacRlHiVg1XYI9xum6QQ==",
+      "path": "microsoft.extensions.dependencyinjection/9.0.8",
+      "hashPath": "microsoft.extensions.dependencyinjection.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.DependencyInjection.Abstractions/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xY3lTjj4+ZYmiKIkyWitddrp1uL5uYiweQjqo4BKBw01ZC4HhcfgLghDpPZcUlppgWAFqFy9SgkiYWOMx365pw==",
+      "path": "microsoft.extensions.dependencyinjection.abstractions/9.0.8",
+      "hashPath": "microsoft.extensions.dependencyinjection.abstractions.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.FileProviders.Abstractions/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WuGoEZ771yRsb0X8Iv0m5Aurf3NhcvbqYML1Ws6rx3nYMW9f9VBkZB+U7N9H/APZ5GluHIdwE3pUOmtRxKNvpg==",
+      "path": "microsoft.extensions.fileproviders.abstractions/5.0.0-rc.1.20451.14",
+      "hashPath": "microsoft.extensions.fileproviders.abstractions.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Hosting.Abstractions/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ASW+W7UBkmoCgztp5NKSEJbviwZE6i2jjQ2ZZI5oaUaQk0jG243sUKcM3AL7fAU3AO6VQkz4b1k8IS/b9nwANQ==",
+      "path": "microsoft.extensions.hosting.abstractions/5.0.0-rc.1.20451.14",
+      "hashPath": "microsoft.extensions.hosting.abstractions.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MgOwK6tPzB6YNH21wssJcw/2MKwee8b2gI7SllYfn6rvTpIrVvVS5HAjSU2vqSku1fwqRvWP0MdIi14qjd93Aw==",
+      "path": "microsoft.extensions.logging/5.0.0",
+      "hashPath": "microsoft.extensions.logging.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pYnAffJL7ARD/HCnnPvnFKSIHnTSmWz84WIlT9tPeQ4lHNiu0Az7N/8itihWvcF8sT+VVD5lq8V+ckMzu4SbOw==",
+      "path": "microsoft.extensions.logging.abstractions/9.0.8",
+      "hashPath": "microsoft.extensions.logging.abstractions.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Configuration/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-N3/d0HeMRnBekadbZlmbp+In8EvNNkQHSdbtRzjrGVckdZWpYs5GNrAfaYqVplDFW0WUedSaFJ3khB50BWYGsw==",
+      "path": "microsoft.extensions.logging.configuration/5.0.0",
+      "hashPath": "microsoft.extensions.logging.configuration.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Console/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jH0wbWhfvXjOVmCkbra4vbiovDtTUIWLQjCeJ7Xun3h4AHvwfzm7V7wlsXKs3tNnPrsCxZ9oaV0vUAgGY1JxOA==",
+      "path": "microsoft.extensions.logging.console/5.0.0",
+      "hashPath": "microsoft.extensions.logging.console.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-OmTaQ0v4gxGQkehpwWIqPoEiwsPuG/u4HUsbOFoWGx4DKET2AXzopnFe/fE608FIhzc/kcg2p8JdyMRCCUzitQ==",
+      "path": "microsoft.extensions.options/9.0.8",
+      "hashPath": "microsoft.extensions.options.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Options.ConfigurationExtensions/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-280RxNJqOeQqq47aJLy5D9LN61CAWeuRA83gPToQ8B9jl9SNdQ5EXjlfvF66zQI5AXMl+C/3hGnbtIEN+X3mqA==",
+      "path": "microsoft.extensions.options.configurationextensions/5.0.0",
+      "hashPath": "microsoft.extensions.options.configurationextensions.5.0.0.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Primitives/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tizSIOEsIgSNSSh+hKeUVPK7xmTIjR8s+mJWOu1KXV3htvNQiPMFRMO17OdI1y/4ZApdBVk49u/08QGC9yvLug==",
+      "path": "microsoft.extensions.primitives/9.0.8",
+      "hashPath": "microsoft.extensions.primitives.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.JSInterop/9.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-arGqasYOND4vG0s1RywqHAKq1NIyFrco/srpM9QDlVGnFrYdtkWZUEuiVcD5GZswfmYOGVD5CLIHVVb8S86ylQ==",
+      "path": "microsoft.jsinterop/9.0.8",
+      "hashPath": "microsoft.jsinterop.9.0.8.nupkg.sha512"
+    },
+    "Microsoft.NETCore.Platforms/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Jc+RnnjaMdpJ2sdm9v0ATyGVd3MBNDlAuu/yFz51gYpZhK3fHQiGHqgUinvtoD8dK5FSjSyn9lSYPPdwRg4D+w==",
+      "path": "microsoft.netcore.platforms/5.0.0-rc.1.20451.14",
+      "hashPath": "microsoft.netcore.platforms.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "Microsoft.Win32.Registry/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-cl9F5BNOoALFkzeXbPgO4EKNl7Jfo15/Nm34qJxofyoHMyDNdYo98Wanvd+qPNXXd1z+9KCX3faOSOr2Bf6DkA==",
+      "path": "microsoft.win32.registry/5.0.0-rc.1.20451.14",
+      "hashPath": "microsoft.win32.registry.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "Microsoft.Win32.SystemEvents/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ozN3V5qqn8JnPpBVKZE/iuU6aCPC69m0ZLxGYjiAPnP2DGW4srHeF6lz3Myb1Jpy1qVBYRAsveureHntIwA52A==",
+      "path": "microsoft.win32.systemevents/5.0.0-rc.1.20451.14",
+      "hashPath": "microsoft.win32.systemevents.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "NBitcoin/9.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1mbuasAkRoCftaXr1MfJ/MHY1QiDGS/MfruYMUZPCol7ZhxGAvnmfQUDsnW6j+WpKGcQ9Jt07sbosICJFQ2XXQ==",
+      "path": "nbitcoin/9.0.3",
+      "hashPath": "nbitcoin.9.0.3.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "path": "newtonsoft.json/13.0.1",
+      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+    },
+    "Portable.BouncyCastle/1.8.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XpJVIhjPiO0o+DU36eeIzqnRilDmE8Z7Kfhm9V9o1yNqM3ikgleD94Z5W/LeEu3t63LaZl2CNJexaix+I6AUMg==",
+      "path": "portable.bouncycastle/1.8.2",
+      "hashPath": "portable.bouncycastle.1.8.2.nupkg.sha512"
+    },
+    "QRCoder/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XmPA81eo+oRxBuyVdswsSkTGTE1d3thfF11Z1PdD7oB56A6HU4G4AAOdySmGRMb/cljwlFTMWUtosGEnwpS6GA==",
+      "path": "qrcoder/1.6.0",
+      "hashPath": "qrcoder.1.6.0.nupkg.sha512"
+    },
+    "Solnet.Programs/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oLF09l+DVjc/6dqD2+8T+MX7qO19mYUY/UF0BebNRk5kOTxXBQcmOZ1im2dIC5r37B8bxB8r93d7EzikbfhFwA==",
+      "path": "solnet.programs/5.0.0",
+      "hashPath": "solnet.programs.5.0.0.nupkg.sha512"
+    },
+    "Solnet.Rpc/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MxXOrUOisrt4JZ/j8rQGtJACR8PiYJCmGVb8+Zg3S5K/XuDb95WOebYGDQORBOebQMzztWXqXk5FbhL9Fho96A==",
+      "path": "solnet.rpc/5.0.0",
+      "hashPath": "solnet.rpc.5.0.0.nupkg.sha512"
+    },
+    "Solnet.Wallet/5.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-y6WBOlKbhGSyz5cPyCsWDfKqA0UW30DZ0XhODho22fzm1EOROypUBAs32tflXQGwUvgrqWd3wuhAAsiReJX5Eg==",
+      "path": "solnet.wallet/5.0.0",
+      "hashPath": "solnet.wallet.5.0.0.nupkg.sha512"
+    },
+    "System.Drawing.Common/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Qnc+QLskNSwqEo/WnOaC3lZV6FE3CDYLMzrKZ9gUQxzDXG/LL7gXYT6f7dB+Su5MAMpZub4aasetFNFs3ZpODw==",
+      "path": "system.drawing.common/5.0.0-rc.1.20451.14",
+      "hashPath": "system.drawing.common.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Formats.Asn1/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9aKo91LCOWqc4GPaetM5s2J5t42CgFQB0QAivGrRSzblIr2VkaK2nZN3YS1IxgCageltOnkiD3+5jz0uzLITOw==",
+      "path": "system.formats.asn1/5.0.0-rc.1.20451.14",
+      "hashPath": "system.formats.asn1.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Security.AccessControl/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KASnTPCSj0ERn3R0jM6aOAI2a5KdpqEoQm0cwwTFyeyGvfBjFMl2MEJn5qMduXCmTeKeBBojjV0PAw5aRlw9vg==",
+      "path": "system.security.accesscontrol/5.0.0-rc.1.20451.14",
+      "hashPath": "system.security.accesscontrol.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Security.Cryptography.Cng/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-w/kNqxKmP+G7OHOmgGqRFITOwlwgq3TjM4lP9fljKDzens0d3o4qe0BTDF24U5SQt961MGMJZkp9HDUtv6R5qw==",
+      "path": "system.security.cryptography.cng/5.0.0-rc.1.20451.14",
+      "hashPath": "system.security.cryptography.cng.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Security.Cryptography.Pkcs/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WXPydYJ4HE0rP0FArVJ8SQPg+Lx3JDG7jaw1/8YlTxlp8ZgbklX1H90GarDrP0dSme2LSEeH4r950NlqKaaDOg==",
+      "path": "system.security.cryptography.pkcs/5.0.0-rc.1.20451.14",
+      "hashPath": "system.security.cryptography.pkcs.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Security.Cryptography.Xml/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9Y19X4J6OHQ0nB+gtMR6HiH646cI6Ft1alqYJmEE/LVhL+dZN0ukpQM2RPQ1p8AHXfowEhs8YYO2ag1k/9t08g==",
+      "path": "system.security.cryptography.xml/5.0.0-rc.1.20451.14",
+      "hashPath": "system.security.cryptography.xml.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Security.Permissions/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Mqaj2cSJ8B47ACdsnHCB8lNHi1+3sP64YZIJtC1DiEHLTmryyVfUMHUkEECZmCKvky6CHp8vSoTmPIW8BAoBrw==",
+      "path": "system.security.permissions/5.0.0-rc.1.20451.14",
+      "hashPath": "system.security.permissions.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Security.Principal.Windows/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-LFSK8Powxb2CuNRCZETvcPKOys/oedQhxocqN26/B7sJODv/pMH5JfFC1Txq5+mMSGvUfXvp+U5/loO5NIy10w==",
+      "path": "system.security.principal.windows/5.0.0-rc.1.20451.14",
+      "hashPath": "system.security.principal.windows.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "System.Windows.Extensions/5.0.0-rc.1.20451.14": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-96Wa7VzWWmiic6KwXVlKvLY678N9Nooa4OMQgfO7D4rfPCdP+Rr5hcHNhAWUhY/4RQbWAXiG2xDwU4OC3nqMxg==",
+      "path": "system.windows.extensions/5.0.0-rc.1.20451.14",
+      "hashPath": "system.windows.extensions.5.0.0-rc.1.20451.14.nupkg.sha512"
+    },
+    "ClickPay.Shared/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

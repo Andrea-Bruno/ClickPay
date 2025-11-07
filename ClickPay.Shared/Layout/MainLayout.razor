@@ -1,0 +1,59 @@
+﻿
+@inherits LayoutComponentBase
+@using System
+@using ClickPay.Shared.Services
+@inject NavigationManager Navigation
+@inject WalletKeyService WalletKeyService
+
+@code {
+    private bool _hasCheckedKey;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_hasCheckedKey)
+        {
+            return;
+        }
+
+        if (firstRender)
+        {
+            return;
+        }
+
+        try
+        {
+            var hasVault = await WalletKeyService.HasVaultAsync();
+            _hasCheckedKey = true;
+            if (!hasVault && !Navigation.Uri.Contains("/onboarding", StringComparison.OrdinalIgnoreCase))
+            {
+                Navigation.NavigateTo("/onboarding", true);
+            }
+        }
+        catch (BrowserStorageUnavailableException)
+        {
+            // JS interop not ready yet; wait for next render
+        }
+    }
+}
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui" data-nosnippet>
+    An unhandled error has occurred.
+    <a href="." class="reload">Reload</a>
+    <span class="dismiss">🗙</span>
+</div>

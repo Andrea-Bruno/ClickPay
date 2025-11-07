@@ -1,0 +1,6 @@
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json

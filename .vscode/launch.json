@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "ClickPay Web",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-clickpay-web",
+            "program": "${workspaceFolder}/ClickPay.Web/bin/Debug/net9.0/ClickPay.Web.dll",
+            "cwd": "${workspaceFolder}/ClickPay.Web",
+            "console": "internalConsole",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            }
+        },
+        {
+            "name": "ClickPay Android (MAUI)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-android",
+            "program": "${workspaceFolder}/ClickPay/bin/Debug/net9.0-android/ClickPay.dll",
+            "cwd": "${workspaceFolder}/ClickPay",
+            "console": "internalConsole"
+        }
+    ]
+}
