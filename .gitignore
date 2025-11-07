@@ -1,0 +1,86 @@
+# Visual Studio / .NET general
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# MAUI specific
+**/AppPackages/
+*.msix
+*.msixupload
+*.msixbundle
+*.appx
+*.appxbundle
+*.appxsym
+*.appxupload
+*.apks
+*.aab
+*.apk
+*.xcarchive
+**/platforms/android/**/*.keystore
+
+# Packaging / publish
+publish/
+artifacts/
+
+# IDE settings
+.vs/
+.vscode/
+.idea/
+*.code-workspace
+
+# Resizetizer generated assets
+**/Resources/**/icon.svg
+**/Resources/**/splash.svg
+
+# User secrets / local config
+*.local.settings.json
+appsettings*.Development.json
+appsettings*.Local.json
+launchSettings.json
+
+# Logs
+*.log
+
+# Temporary files
+[Tt]emporaryGeneratedFile_*
+~$*
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+Thumbs.db
+
+# NuGet / tooling
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+project.fragment.lock.json
+*.nuget.g.props
+*.nuget.g.targets
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Azure Functions local settings
+local.settings.json
+
+# Generated code coverage
+coverage/
