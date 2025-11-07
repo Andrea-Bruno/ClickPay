@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using NBitcoin;
 using System.Net.Http;
 using ZXing.Net.Maui.Controls;
+using Microsoft.AspNetCore.DataProtection;
+using System.IO;
 
 namespace ClickPay
 {
@@ -22,7 +24,13 @@ namespace ClickPay
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
 
-            // Add device-specific services used by the ClickPay.Shared project
+            // Data Protection per ProtectedLocalStorage
+            builder.Services
+                .AddDataProtection()
+                .SetApplicationName("ClickPay")
+                .PersistKeysToFileSystem(new DirectoryInfo(FileSystem.AppDataDirectory));
+
+            // Servizi condivisi
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
             builder.Services.AddSingleton<LocalizationService>();
             builder.Services.Configure<BitcoinWalletOptions>(options =>
@@ -47,7 +55,6 @@ namespace ClickPay
                 options.Commitment = SolanaWalletOptions.ProductionCommitment;
                 options.EurcMintAddress = SolanaWalletOptions.MainnetEurcMint;
 #endif
-
                 if (int.TryParse(builder.Configuration["Solana:TransactionHistoryLimit"], out var historyLimit) && historyLimit > 0)
                 {
                     options.TransactionHistoryLimit = historyLimit;
@@ -57,6 +64,7 @@ namespace ClickPay
             builder.Services.AddSingleton<HttpClient>();
             builder.Services.AddScoped<ProtectedLocalStorage>();
             builder.Services.AddScoped<WalletKeyService>();
+            builder.Services.AddScoped<ILocalSecureStore, LocalSecureStore>();
 #if ANDROID || IOS || MACCATALYST
             builder.Services.AddSingleton<IQrScannerService, MauiQrScannerService>();
 #else

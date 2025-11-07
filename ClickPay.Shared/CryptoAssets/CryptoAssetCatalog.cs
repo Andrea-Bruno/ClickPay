@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -97,8 +98,12 @@ public sealed class CryptoAssetCatalog
         return asset;
     }
 
-    public static CryptoAssetCatalog LoadDefault(JsonSerializerOptions? options = null) =>
-        LoadFromDirectory(GetDefaultDirectoryPath(), options);
+    public static CryptoAssetCatalog LoadDefault(JsonSerializerOptions? options = null)
+    {
+        var directory = GetDefaultDirectoryPath();
+        EnsureDefaultAssetsAvailable(directory);
+        return LoadFromDirectory(directory, options);
+    }
 
     public static CryptoAssetCatalog LoadFromDirectory(string directoryPath, JsonSerializerOptions? options = null)
     {
@@ -113,8 +118,8 @@ public sealed class CryptoAssetCatalog
         }
 
         var serializerOptions = options ?? CreateDefaultJsonOptions();
-    var assets = new Dictionary<string, CryptoAsset>(StringComparer.OrdinalIgnoreCase);
-    var assetFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var assets = new Dictionary<string, CryptoAsset>(StringComparer.OrdinalIgnoreCase);
+        var assetFiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var file in Directory.EnumerateFiles(directoryPath, "*.json", SearchOption.TopDirectoryOnly))
         {
@@ -182,5 +187,85 @@ public sealed class CryptoAssetCatalog
 
         options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase, allowIntegerValues: false));
         return options;
+    }
+
+    private static readonly object InitializationLock = new();
+
+    private static void EnsureDefaultAssetsAvailable(string directoryPath)
+    {
+        lock (InitializationLock)
+        {
+            if (Directory.Exists(directoryPath))
+            {
+                var hasAssets = Directory.EnumerateFiles(directoryPath, "*.json", SearchOption.TopDirectoryOnly).Any();
+                if (hasAssets)
+                {
+                    return;
+                }
+            }
+
+            Directory.CreateDirectory(directoryPath);
+
+            var assembly = typeof(CryptoAssetCatalog).GetTypeInfo().Assembly;
+
+            foreach (var resourceName in assembly.GetManifestResourceNames())
+            {
+                var relativePath = TryGetEmbeddedAssetRelativePath(resourceName);
+                if (string.IsNullOrWhiteSpace(relativePath))
+                {
+                    continue;
+                }
+
+                using var resourceStream = assembly.GetManifestResourceStream(resourceName);
+                if (resourceStream is null)
+                {
+                    continue;
+                }
+
+                var normalizedPath = relativePath
+                    .Replace('/', Path.DirectorySeparatorChar)
+                    .Replace('\\', Path.DirectorySeparatorChar);
+
+                if (string.IsNullOrWhiteSpace(normalizedPath))
+                {
+                    continue;
+                }
+
+                var destinationPath = Path.Combine(directoryPath, normalizedPath);
+                var destinationDirectory = Path.GetDirectoryName(destinationPath);
+                if (!string.IsNullOrWhiteSpace(destinationDirectory))
+                {
+                    Directory.CreateDirectory(destinationDirectory);
+                }
+
+                using var fileStream = File.Create(destinationPath);
+                resourceStream.CopyTo(fileStream);
+            }
+        }
+    }
+
+    private static string? TryGetEmbeddedAssetRelativePath(string resourceName)
+    {
+        if (string.IsNullOrWhiteSpace(resourceName))
+        {
+            return null;
+        }
+
+        const string dotMarker = ".CryptoAssets.";
+        const string slashMarker = "CryptoAssets/";
+
+        var dotIndex = resourceName.IndexOf(dotMarker, StringComparison.Ordinal);
+        if (dotIndex >= 0)
+        {
+            return resourceName[(dotIndex + dotMarker.Length)..];
+        }
+
+        var slashIndex = resourceName.IndexOf(slashMarker, StringComparison.Ordinal);
+        if (slashIndex >= 0)
+        {
+            return resourceName[(slashIndex + slashMarker.Length)..];
+        }
+
+        return null;
     }
 }

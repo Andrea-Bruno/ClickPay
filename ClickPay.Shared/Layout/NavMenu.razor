@@ -1,7 +1,12 @@
-﻿@using Microsoft.AspNetCore.Components
+﻿@using System
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Components
 @using ClickPay.Shared.CryptoAssets
 @using ClickPay.Shared.Services
 @inject LocalizationService Loc
+@inject NavigationManager Navigation
+@inject WalletKeyService WalletKeys
+@implements IDisposable
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">ClickPay</a>
@@ -59,10 +64,27 @@
                 Setup
             </NavLink>
         </div>
+#if DEBUG
+        <div class="nav-item px-3">
+            <a href="#" class="nav-link text-danger @(_resetting ? "disabled" : string.Empty)" @onclick="ResetWalletAsync" @onclick:preventDefault="true">
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 5a7 7 0 1 1-7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <polyline points="12 1 12 5 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                @(_resetting ? "Resetting wallet…" : "Reset wallet (debug)")
+            </a>
+        </div>
+#endif
     </nav>
 </div>
 
 @code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Loc.LanguageChanged += OnLanguageChanged;
+    }
+
     private string GetMenuLabel(WalletAsset asset, CryptoAsset definition)
     {
         var baseLabel = asset switch
@@ -72,6 +94,11 @@
         };
 
         return Loc.FormatWalletLabel(baseLabel);
+    }
+
+    private void OnLanguageChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
     }
 
     private RenderFragment RenderAssetIcon(CryptoAsset definition) => builder =>
@@ -121,5 +148,39 @@
     }
 
     private static string GetWalletRoute(WalletAsset asset) => $"/wallet/{WalletAssetHelper.GetRouteSegment(asset)}";
+
+    public void Dispose()
+    {
+        Loc.LanguageChanged -= OnLanguageChanged;
+    }
+
+#if DEBUG
+    private bool _resetting;
+
+    private async Task ResetWalletAsync()
+    {
+        if (_resetting)
+        {
+            return;
+        }
+
+        _resetting = true;
+
+        try
+        {
+            await WalletKeys.RemoveVaultAsync();
+            Navigation.NavigateTo("/onboarding", forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[DEBUG] Wallet reset failed: {ex.Message}");
+        }
+        finally
+        {
+            _resetting = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+#endif
 }
 

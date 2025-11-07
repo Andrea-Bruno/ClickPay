@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -5,7 +6,7 @@ namespace ClickPay.Shared.Services
 {
     public class LocalizationService
     {
-        private readonly Dictionary<string, Dictionary<string, string>> _translations = new()
+    private readonly Dictionary<string, Dictionary<string, string>> _translations = new()
         {
             ["it"] = new()
             {
@@ -395,7 +396,37 @@ namespace ClickPay.Shared.Services
             },
         };
 
-        public string CurrentLanguage { get; set; } = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+        private string _currentLanguage;
+
+        public event Action? LanguageChanged;
+
+        public LocalizationService()
+        {
+            _currentLanguage = NormalizeLanguageCode(CultureInfo.CurrentUICulture.Name);
+        }
+
+        public string CurrentLanguage
+        {
+            get => _currentLanguage;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return;
+                }
+
+                var normalized = NormalizeLanguageCode(value);
+
+                if (_currentLanguage == normalized)
+                {
+                    LanguageChanged?.Invoke();
+                    return;
+                }
+
+                _currentLanguage = normalized;
+                LanguageChanged?.Invoke();
+            }
+        }
 
         public string T(string key)
         {
@@ -410,6 +441,23 @@ namespace ClickPay.Shared.Services
         {
             var format = T("WalletLabelFormat");
             return string.Format(CultureInfo.CurrentCulture, format, assetLabel);
+        }
+
+        private string NormalizeLanguageCode(string language)
+        {
+            if (string.IsNullOrWhiteSpace(language))
+            {
+                return "en";
+            }
+
+            var normalized = language.Trim().ToLowerInvariant();
+            var dashIndex = normalized.IndexOf('-');
+            if (dashIndex >= 0)
+            {
+                normalized = normalized[..dashIndex];
+            }
+
+            return _translations.ContainsKey(normalized) ? normalized : "en";
         }
     }
 }

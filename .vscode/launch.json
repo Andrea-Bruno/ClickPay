@@ -2,7 +2,26 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "ClickPay Web",
+            "name": "C#: ClickPay.Web [Default Configuration]",
+            "type": "coreclr",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "program": "dotnet",
+            "args": [
+                "run",
+                "--project",
+                "ClickPay.Web"
+            ],
+            "console": "integratedTerminal",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "presentation": {
+                "hidden": true
+            }
+        },
+        {
+            "name": "ClickPay Web (Browser)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build-clickpay-web",

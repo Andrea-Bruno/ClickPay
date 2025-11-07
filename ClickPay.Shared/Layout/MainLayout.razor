@@ -1,12 +1,17 @@
 ﻿
 @inherits LayoutComponentBase
 @using System
+@using System.Linq
 @using ClickPay.Shared.Services
+@using Microsoft.Extensions.Logging
 @inject NavigationManager Navigation
 @inject WalletKeyService WalletKeyService
+@inject MultiChainWalletService WalletService
+@inject ILogger<MainLayout> Logger
 
 @code {
     private bool _hasCheckedKey;
+    private Task? _warmupTask;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -22,16 +27,70 @@
 
         try
         {
-            var hasVault = await WalletKeyService.HasVaultAsync();
+            var vault = await WalletKeyService.GetVaultAsync();
             _hasCheckedKey = true;
-            if (!hasVault && !Navigation.Uri.Contains("/onboarding", StringComparison.OrdinalIgnoreCase))
+
+            if (vault is null)
             {
-                Navigation.NavigateTo("/onboarding", true);
+                if (!Navigation.Uri.Contains("/onboarding", StringComparison.OrdinalIgnoreCase))
+                {
+                    Navigation.NavigateTo("/onboarding", true);
+                }
+
+                return;
             }
+
+            StartWarmup();
         }
         catch (BrowserStorageUnavailableException)
         {
             // JS interop not ready yet; wait for next render
+        }
+    }
+
+    private void StartWarmup()
+    {
+        if (_warmupTask is not null)
+        {
+            return;
+        }
+
+        _warmupTask = WarmupAsync();
+    }
+
+    private async Task WarmupAsync()
+    {
+        try
+        {
+            var assets = WalletAssetHelper.GetVisibleAssets().ToArray();
+            if (assets.Length == 0)
+            {
+                return;
+            }
+
+            var operations = assets.Select(WarmupAssetAsync).ToArray();
+            await Task.WhenAll(operations).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogDebug(ex, "Warmup del wallet non completato.");
+        }
+    }
+
+    private async Task WarmupAssetAsync(WalletAsset asset)
+    {
+        try
+        {
+            await WalletService.GetOverviewAsync(asset).ConfigureAwait(false);
+            await WalletService.GetTransactionsAsync(asset).ConfigureAwait(false);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("Nessun wallet", StringComparison.OrdinalIgnoreCase))
+        {
+            Logger?.LogDebug("Warmup interrotto: {Message}", ex.Message);
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogDebug(ex, "Warmup per l'asset {Asset} ignorato.", asset);
         }
     }
 }

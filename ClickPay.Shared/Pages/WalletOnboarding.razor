@@ -7,8 +7,6 @@
 @inject LocalizationService Loc
 @inject BitcoinWalletService WalletService
 @inject WalletKeyService WalletKeys
-@inject SolanaWalletService SolanaWallet
-@inject MultiChainWalletService MultiChainWallet
 
 <PageTitle>@Loc.T("WalletOnboardingTitle")</PageTitle>
 
@@ -71,29 +69,13 @@
         </div>
     }
 
-    @if (activeAccount is not null)
+    @if (!string.IsNullOrEmpty(successMessage))
     {
         <div class="row justify-content-center mt-5">
             <div class="col-12 col-md-8">
                 <div class="card border-info">
                     <div class="card-body">
-                        @if (!string.IsNullOrEmpty(successMessage))
-                        {
-                            <div class="alert alert-success">@successMessage</div>
-                        }
-
-                        <dl class="row text-start mb-0">
-                            <dt class="col-sm-4">@Loc.T("WalletPrimaryAddressLabel")</dt>
-                            <dd class="col-sm-8">@primaryReceiveAddress</dd>
-                            <dt class="col-sm-4">@Loc.T("WalletXpubLabel")</dt>
-                            <dd class="col-sm-8 text-break">@activeAccount.AccountXpub</dd>
-                            <dt class="col-sm-4">@Loc.T("WalletBalancePlaceholder")</dt>
-                            <dd class="col-sm-8">@calculatedBalance.ToDecimal(MoneyUnit.BTC) BTC</dd>
-                            <dt class="col-sm-4">@Loc.T("WalletSolanaAddressLabel")</dt>
-                            <dd class="col-sm-8 text-break">@primarySolanaAddress</dd>
-                            <dt class="col-sm-4">@Loc.T("WalletEurcBalanceLabel")</dt>
-                            <dd class="col-sm-8">@eurcBalance.ToString("N2") EURC</dd>
-                        </dl>
+                        <div class="alert alert-success">@successMessage</div>
                     </div>
                 </div>
             </div>
@@ -109,11 +91,6 @@
     private string? restoreError;
     private string? successMessage;
     private WalletAccount? activeAccount;
-    private SolanaWalletAccount? activeSolanaAccount;
-    private BitcoinAddress? primaryReceiveAddress;
-    private string? primarySolanaAddress;
-    private Money calculatedBalance = Money.Zero;
-    private decimal eurcBalance;
 
     private void ShowCreateWallet()
     {
@@ -138,14 +115,9 @@
         }
 
         activeAccount = WalletService.DeriveAccount(generatedPassphrase);
-        activeSolanaAccount = SolanaWallet.DeriveAccount(generatedPassphrase);
-        primaryReceiveAddress = activeAccount.ExternalAddresses.GetAddress(0);
-        primarySolanaAddress = activeSolanaAccount.PublicKey;
 
         var vault = BuildVault(generatedPassphrase, passphrase: string.Empty);
         await WalletKeys.SaveVaultAsync(vault);
-
-        await RefreshBalancesAsync();
 
         successMessage = Loc.T("WalletCreatedSuccess");
         restoreError = null;
@@ -155,14 +127,9 @@
         if (IsValidPassphrase(restorePassphrase))
         {
             activeAccount = WalletService.DeriveAccount(restorePassphrase!);
-            activeSolanaAccount = SolanaWallet.DeriveAccount(restorePassphrase!);
-            primaryReceiveAddress = activeAccount.ExternalAddresses.GetAddress(0);
-            primarySolanaAddress = activeSolanaAccount.PublicKey;
 
             var vault = BuildVault(restorePassphrase!, passphrase: string.Empty);
             await WalletKeys.SaveVaultAsync(vault);
-
-            await RefreshBalancesAsync();
 
             successMessage = Loc.T("WalletRestoredSuccess");
             restoreError = null;
@@ -201,28 +168,5 @@
             CreatedAtUtc = DateTime.UtcNow,
             Chains = chains
         };
-    }
-
-    private async Task RefreshBalancesAsync()
-    {
-        try
-        {
-            var btcOverview = await MultiChainWallet.GetOverviewAsync(WalletAsset.Bitcoin);
-            calculatedBalance = Money.Coins(btcOverview.Balance);
-        }
-        catch
-        {
-            calculatedBalance = Money.Zero;
-        }
-
-        try
-        {
-            var eurcOverview = await MultiChainWallet.GetOverviewAsync(WalletAsset.Eurc);
-            eurcBalance = eurcOverview.Balance;
-        }
-        catch
-        {
-            eurcBalance = 0m;
-        }
     }
 }

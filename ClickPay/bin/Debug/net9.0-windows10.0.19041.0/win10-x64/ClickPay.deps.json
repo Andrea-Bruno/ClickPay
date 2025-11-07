@@ -13,6 +13,12 @@
           "Microsoft.AspNetCore.Components.WebView.Maui": "9.0.111",
           "Microsoft.Extensions.Logging.Debug": "9.0.8",
           "Microsoft.Maui.Controls": "9.0.111",
+          "ZXing.Net.Maui": "0.5.0",
+          "ZXing.Net.Maui.Controls": "0.5.0",
+          "Microsoft.Maui.Controls.HotReload.Forms": "17.0.0.0",
+          "Microsoft.VisualStudio.DesignTools.MobileTapContracts": "17.0.0.0",
+          "Microsoft.VisualStudio.DesignTools.TapContract": "17.0.0.0",
+          "Microsoft.VisualStudio.DesignTools.XamlTapContract": "17.0.0.0",
           "Microsoft.Web.WebView2.Core.Projection": "1.0.3179.45",
           "runtimepack.Microsoft.Windows.SDK.NET.Ref": "10.0.19041.57"
         },
@@ -683,14 +689,11 @@
           "System.Security.Principal.Windows": "5.0.0-rc.1.20451.14"
         }
       },
-      "Microsoft.Win32.SystemEvents/5.0.0-rc.1.20451.14": {
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "5.0.0-rc.1.20451.14"
-        },
+      "Microsoft.Win32.SystemEvents/6.0.0": {
         "runtime": {
-          "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll": {
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.45114"
+          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
           }
         }
       },
@@ -839,6 +842,17 @@
           }
         }
       },
+      "QRCoder/1.6.0": {
+        "dependencies": {
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtime": {
+          "lib/net6.0-windows7.0/QRCoder.dll": {
+            "assemblyVersion": "1.6.0.0",
+            "fileVersion": "1.6.0.0"
+          }
+        }
+      },
       "Solnet.Programs/5.0.0": {
         "dependencies": {
           "Solnet.Rpc": "5.0.0"
@@ -875,14 +889,14 @@
           }
         }
       },
-      "System.Drawing.Common/5.0.0-rc.1.20451.14": {
+      "System.Drawing.Common/6.0.0": {
         "dependencies": {
-          "Microsoft.Win32.SystemEvents": "5.0.0-rc.1.20451.14"
+          "Microsoft.Win32.SystemEvents": "6.0.0"
         },
         "runtime": {
-          "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll": {
-            "assemblyVersion": "5.0.0.0",
-            "fileVersion": "5.0.20.45114"
+          "runtimes/win/lib/net6.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
           }
         }
       },
@@ -937,7 +951,7 @@
       "System.Security.Principal.Windows/5.0.0-rc.1.20451.14": {},
       "System.Windows.Extensions/5.0.0-rc.1.20451.14": {
         "dependencies": {
-          "System.Drawing.Common": "5.0.0-rc.1.20451.14"
+          "System.Drawing.Common": "6.0.0"
         },
         "runtime": {
           "runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll": {
@@ -946,11 +960,45 @@
           }
         }
       },
+      "ZXing.Net/0.16.10": {
+        "runtime": {
+          "lib/net9.0/zxing.dll": {
+            "assemblyVersion": "0.16.10.0",
+            "fileVersion": "0.16.10.0"
+          }
+        }
+      },
+      "ZXing.Net.Maui/0.5.0": {
+        "dependencies": {
+          "Microsoft.Maui.Controls": "9.0.111",
+          "ZXing.Net": "0.16.10"
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/ZXing.Net.MAUI.dll": {
+            "assemblyVersion": "0.5.0.0",
+            "fileVersion": "0.5.0.0"
+          }
+        }
+      },
+      "ZXing.Net.Maui.Controls/0.5.0": {
+        "dependencies": {
+          "Microsoft.Maui.Controls": "9.0.111",
+          "ZXing.Net": "0.16.10",
+          "ZXing.Net.Maui": "0.5.0"
+        },
+        "runtime": {
+          "lib/net9.0-windows10.0.19041/ZXing.Net.MAUI.Controls.dll": {
+            "assemblyVersion": "0.5.0.0",
+            "fileVersion": "0.5.0.0"
+          }
+        }
+      },
       "ClickPay.Shared/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Components.ProtectedBrowserStorage": "5.0.0-rc.1.20451.17",
           "Microsoft.AspNetCore.Components.Web": "9.0.8",
           "NBitcoin": "9.0.3",
+          "QRCoder": "1.6.0",
           "Solnet.Programs": "5.0.0",
           "Solnet.Rpc": "5.0.0",
           "Solnet.Wallet": "5.0.0"
@@ -959,6 +1007,38 @@
           "ClickPay.Shared.dll": {
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Maui.Controls.HotReload.Forms/17.0.0.0": {
+        "runtime": {
+          "Microsoft.Maui.Controls.HotReload.Forms.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.14.40460.7212"
+          }
+        }
+      },
+      "Microsoft.VisualStudio.DesignTools.MobileTapContracts/17.0.0.0": {
+        "runtime": {
+          "Microsoft.VisualStudio.DesignTools.MobileTapContracts.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.14.40460.7212"
+          }
+        }
+      },
+      "Microsoft.VisualStudio.DesignTools.TapContract/17.0.0.0": {
+        "runtime": {
+          "Microsoft.VisualStudio.DesignTools.TapContract.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.14.40460.7212"
+          }
+        }
+      },
+      "Microsoft.VisualStudio.DesignTools.XamlTapContract/17.0.0.0": {
+        "runtime": {
+          "Microsoft.VisualStudio.DesignTools.XamlTapContract.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.14.40460.7212"
           }
         }
       },
@@ -1326,12 +1406,12 @@
       "path": "microsoft.win32.registry/5.0.0-rc.1.20451.14",
       "hashPath": "microsoft.win32.registry.5.0.0-rc.1.20451.14.nupkg.sha512"
     },
-    "Microsoft.Win32.SystemEvents/5.0.0-rc.1.20451.14": {
+    "Microsoft.Win32.SystemEvents/6.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-ozN3V5qqn8JnPpBVKZE/iuU6aCPC69m0ZLxGYjiAPnP2DGW4srHeF6lz3Myb1Jpy1qVBYRAsveureHntIwA52A==",
-      "path": "microsoft.win32.systemevents/5.0.0-rc.1.20451.14",
-      "hashPath": "microsoft.win32.systemevents.5.0.0-rc.1.20451.14.nupkg.sha512"
+      "sha512": "sha512-hqTM5628jSsQiv+HGpiq3WKBl2c8v1KZfby2J6Pr7pEPlK9waPdgEO6b8A/+/xn/yZ9ulv8HuqK71ONy2tg67A==",
+      "path": "microsoft.win32.systemevents/6.0.0",
+      "hashPath": "microsoft.win32.systemevents.6.0.0.nupkg.sha512"
     },
     "Microsoft.Windows.SDK.BuildTools/10.0.22621.756": {
       "type": "package",
@@ -1368,6 +1448,13 @@
       "path": "portable.bouncycastle/1.8.2",
       "hashPath": "portable.bouncycastle.1.8.2.nupkg.sha512"
     },
+    "QRCoder/1.6.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XmPA81eo+oRxBuyVdswsSkTGTE1d3thfF11Z1PdD7oB56A6HU4G4AAOdySmGRMb/cljwlFTMWUtosGEnwpS6GA==",
+      "path": "qrcoder/1.6.0",
+      "hashPath": "qrcoder.1.6.0.nupkg.sha512"
+    },
     "Solnet.Programs/5.0.0": {
       "type": "package",
       "serviceable": true,
@@ -1389,12 +1476,12 @@
       "path": "solnet.wallet/5.0.0",
       "hashPath": "solnet.wallet.5.0.0.nupkg.sha512"
     },
-    "System.Drawing.Common/5.0.0-rc.1.20451.14": {
+    "System.Drawing.Common/6.0.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Qnc+QLskNSwqEo/WnOaC3lZV6FE3CDYLMzrKZ9gUQxzDXG/LL7gXYT6f7dB+Su5MAMpZub4aasetFNFs3ZpODw==",
-      "path": "system.drawing.common/5.0.0-rc.1.20451.14",
-      "hashPath": "system.drawing.common.5.0.0-rc.1.20451.14.nupkg.sha512"
+      "sha512": "sha512-NfuoKUiP2nUWwKZN6twGqXioIe1zVD0RIj2t976A+czLHr2nY454RwwXs6JU9Htc6mwqL6Dn/nEL3dpVf2jOhg==",
+      "path": "system.drawing.common/6.0.0",
+      "hashPath": "system.drawing.common.6.0.0.nupkg.sha512"
     },
     "System.Formats.Asn1/5.0.0-rc.1.20451.14": {
       "type": "package",
@@ -1452,8 +1539,49 @@
       "path": "system.windows.extensions/5.0.0-rc.1.20451.14",
       "hashPath": "system.windows.extensions.5.0.0-rc.1.20451.14.nupkg.sha512"
     },
+    "ZXing.Net/0.16.10": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-9avtcn21T7Ndcl8PQ1LHR7/wEoCruX1QKKHvO6zBPTsDW9IdvR5vKOmd618AY+DtDWZz8NaFDTkpbZdgaF4l4w==",
+      "path": "zxing.net/0.16.10",
+      "hashPath": "zxing.net.0.16.10.nupkg.sha512"
+    },
+    "ZXing.Net.Maui/0.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KGZ+bRWSBkAN263CWNe9pIDlW9dtvNw0jicA7BfJBjpT/2xLwsd/p+u/G9KZ8k/11TQBtSDAZHcrHchK/2QxkA==",
+      "path": "zxing.net.maui/0.5.0",
+      "hashPath": "zxing.net.maui.0.5.0.nupkg.sha512"
+    },
+    "ZXing.Net.Maui.Controls/0.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-KNlQl2Jj6lXg8yxBA7twPS4PhFKwDmupVQ5k80XKDhlCZ+W8kpoT2XvxW03pZitdKUFDSggiUqzDZs0kv27Atg==",
+      "path": "zxing.net.maui.controls/0.5.0",
+      "hashPath": "zxing.net.maui.controls.0.5.0.nupkg.sha512"
+    },
     "ClickPay.Shared/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Maui.Controls.HotReload.Forms/17.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.VisualStudio.DesignTools.MobileTapContracts/17.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.VisualStudio.DesignTools.TapContract/17.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.VisualStudio.DesignTools.XamlTapContract/17.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     },

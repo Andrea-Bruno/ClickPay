@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "0ENtALpgMvg=",
+  "dgSpecHash": "drdi7lFmeug=",
   "success": true,
   "projectFilePath": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\ClickPay.csproj",
   "expectedPackageFiles": [
@@ -52,7 +52,7 @@
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.maui.graphics\\9.0.111\\microsoft.maui.graphics.9.0.111.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.maui.graphics.win2d.winui.desktop\\9.0.111\\microsoft.maui.graphics.win2d.winui.desktop.9.0.111.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.maui.resizetizer\\9.0.111\\microsoft.maui.resizetizer.9.0.111.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.7\\microsoft.net.illink.tasks.9.0.7.nupkg.sha512",
+    "C:\\Users\\andre\\.nuget\\packages\\microsoft.net.illink.tasks\\9.0.10\\microsoft.net.illink.tasks.9.0.10.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0-rc.1.20451.14\\microsoft.netcore.platforms.5.0.0-rc.1.20451.14.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.web.webview2\\1.0.3179.45\\microsoft.web.webview2.1.0.3179.45.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.win32.registry\\5.0.0-rc.1.20451.14\\microsoft.win32.registry.5.0.0-rc.1.20451.14.nupkg.sha512",
@@ -181,9 +181,6 @@
     "C:\\Users\\andre\\.nuget\\packages\\zxing.net\\0.16.10\\zxing.net.0.16.10.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\zxing.net.maui\\0.5.0\\zxing.net.maui.0.5.0.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\zxing.net.maui.controls\\0.5.0\\zxing.net.maui.controls.0.5.0.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.10\\microsoft.netcore.app.ref.9.0.10.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.10\\microsoft.netcore.app.ref.9.0.10.nupkg.sha512",
-    "C:\\Users\\andre\\.nuget\\packages\\microsoft.netcore.app.ref\\9.0.10\\microsoft.netcore.app.ref.9.0.10.nupkg.sha512",
     "C:\\Users\\andre\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.19041.57\\microsoft.windows.sdk.net.ref.10.0.19041.57.nupkg.sha512"
   ],
   "logs": []

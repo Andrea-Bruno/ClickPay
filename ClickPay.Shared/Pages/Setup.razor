@@ -88,10 +88,14 @@
 
     private void SetLanguage()
     {
-        if (!string.IsNullOrEmpty(selectedLang))
+        if (string.IsNullOrWhiteSpace(selectedLang))
         {
-            Loc.CurrentLanguage = selectedLang;
+            return;
         }
+
+        Loc.CurrentLanguage = selectedLang;
+        selectedLang = Loc.CurrentLanguage;
+        StateHasChanged();
     }
 
     private async Task OnAssetHiddenChangedAsync(AssetVisibilityModel model, ChangeEventArgs args)

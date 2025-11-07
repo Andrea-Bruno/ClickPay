@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ClickPay.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+96ddb89f13245e61135bbb7f67c6b868f289c147")]
 [assembly: System.Reflection.AssemblyProductAttribute("ClickPay.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ClickPay.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

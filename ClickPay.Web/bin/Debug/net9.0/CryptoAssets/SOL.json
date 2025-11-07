@@ -4,6 +4,6 @@
   "blockchain": "solana",
   "decimals": 9,
   "chainId": 101,
-  "symbol": "\u25CE",
-  "hidden": true
+  "symbol": "◎",
+  "hidden": false
 }

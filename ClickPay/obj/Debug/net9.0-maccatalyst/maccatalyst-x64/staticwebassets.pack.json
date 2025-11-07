@@ -1,15 +1,15 @@
 {
   "Files": [
     {
-      "Id": "c:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\obj\\Debug\\net9.0-maccatalyst\\maccatalyst-x64\\scopedcss\\bundle\\ClickPay.styles.css",
+      "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\obj\\Debug\\net9.0-maccatalyst\\maccatalyst-x64\\scopedcss\\bundle\\ClickPay.styles.css",
       "PackagePath": "staticwebassets\\ClickPay.styles.css"
     },
     {
-      "Id": "c:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\app.css",
+      "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\app.css",
       "PackagePath": "staticwebassets\\app.css"
     },
     {
-      "Id": "c:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\index.html",
+      "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
     },
     {

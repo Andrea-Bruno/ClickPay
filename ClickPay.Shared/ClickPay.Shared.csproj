@@ -21,6 +21,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="CryptoAssets\*.json" LogicalName="CryptoAssets/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="CryptoAssets\*.png" LogicalName="CryptoAssets/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="CryptoAssets\*.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

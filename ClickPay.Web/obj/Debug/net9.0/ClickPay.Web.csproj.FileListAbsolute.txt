@@ -67,3 +67,4 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Web\bin\Debug\net9.0\CryptoAs
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Web\bin\Debug\net9.0\CryptoAssets\sol.png
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Web\obj\Debug\net9.0\compressed\o1u6hnz52m-0p6v0nzdr9.gz
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Web\bin\Debug\net9.0\CryptoAssets\XAUT.png
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Web\obj\Debug\net9.0\ClickPay.Web.sourcelink.json

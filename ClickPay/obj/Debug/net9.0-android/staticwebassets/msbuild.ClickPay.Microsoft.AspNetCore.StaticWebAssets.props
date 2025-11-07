@@ -32,12 +32,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>bxb75wln2o</Fingerprint>
-      <Integrity>4RIgnULRv5a+N+znRdRq/DQbIcRRb9mhtVuORXkt1Jw=</Integrity>
+      <Fingerprint>0p6v0nzdr9</Fingerprint>
+      <Integrity>XKD9KQoolKezVLN02oJIeUH3bK5lwenzL/D9rKSV99w=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <FileLength>81</FileLength>
-      <LastWriteTime>Thu, 06 Nov 2025 02:21:31 GMT</LastWriteTime>
+      <LastWriteTime>Fri, 07 Nov 2025 13:06:50 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.styles.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))">
