@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using ClickPay.Shared.Services;
+using ClickPay.Wallet.Core.Services;
 using Microsoft.JSInterop;
 
 namespace ClickPay.Web.Services
@@ -26,7 +26,7 @@ namespace ClickPay.Web.Services
             var module = await _moduleTask.Value.ConfigureAwait(false);
             var dto = await module.InvokeAsync<QrScanResultDto>("scanQr", cancellationToken, new
             {
-                asset = request.Asset.ToString().ToLowerInvariant(),
+                asset = (request.AssetCode ?? string.Empty).ToLowerInvariant(),
                 symbol = request.ExpectedSymbol,
                 promptTitle = request.PromptTitle,
                 promptMessage = request.PromptMessage,

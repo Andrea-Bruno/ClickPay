@@ -2,7 +2,7 @@
   "Files": [
     {
       "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\ClickPay.Shared.bundle.scp.css",
-      "PackagePath": "staticwebassets\\ClickPay.Shared.niaph2a5t5.bundle.scp.css"
+      "PackagePath": "staticwebassets\\ClickPay.Shared.r100s2b9i0.bundle.scp.css"
     },
     {
       "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\wwwroot\\app.css",
@@ -19,6 +19,10 @@
     {
       "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\wwwroot\\favicon.png",
       "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\wwwroot\\js\\biometric-lock.js",
+      "PackagePath": "staticwebassets\\js\\biometric-lock.js"
     },
     {
       "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\wwwroot\\js\\qr-scanner.js",

@@ -11,27 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="QRCoder" Version="1.6.0" />
-    <PackageReference Include="Solnet.Rpc" Version="5.0.0" />
-  <PackageReference Include="Solnet.Programs" Version="5.0.0" />
-    <PackageReference Include="Solnet.Wallet" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.ProtectedBrowserStorage" Version="5.0.0-rc.1.20451.17" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.8" />
-    <PackageReference Include="NBitcoin" Version="9.0.3" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="CryptoAssets\*.json" LogicalName="CryptoAssets/%(Filename)%(Extension)" />
-    <EmbeddedResource Include="CryptoAssets\*.png" LogicalName="CryptoAssets/%(Filename)%(Extension)" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="CryptoAssets\*.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="CryptoAssets\*.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\ClickPay.Wallet.Core\ClickPay.Wallet.Core.csproj" />
   </ItemGroup>
 
 </Project>

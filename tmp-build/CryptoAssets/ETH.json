@@ -1,0 +1,14 @@
+{
+  "name": "Ethereum",
+  "code": "ETH",
+  "blockchain": "ethereum",
+  "decimals": 18,
+  "chainId": 1,
+  "coingeckoId": "ethereum",
+  "symbol": "Ξ",
+  "hidden": false,
+  "visibilityLocked": true,
+  "routeSegment": "eth",
+  "aliases": ["eth", "ethereum"],
+  "sortOrder": 15
+}

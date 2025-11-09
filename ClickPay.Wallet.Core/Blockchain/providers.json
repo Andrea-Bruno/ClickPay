@@ -1,0 +1,37 @@
+{
+  "providers": [
+    {
+      "library": "NBitcoin",
+      "package": "NBitcoin",
+      "handler": "ClickPay.Wallet.Core.Services.BitcoinWalletService",
+      "blockchains": [
+        "bitcoin"
+      ]
+    },
+    {
+      "library": "Solnet",
+      "package": "Solnet.Rpc",
+      "handler": "ClickPay.Wallet.Core.Services.SolanaWalletService",
+      "blockchains": [
+        "solana"
+      ]
+    },
+    {
+      "library": "Nethereum",
+      "package": "Nethereum.Web3",
+      "handler": "ClickPay.Wallet.Core.Services.EthereumWalletService",
+      "blockchains": [
+        "ethereum",
+        "binance-smart-chain",
+        "polygon",
+        "polygon-zkevm",
+        "avalanche",
+        "fantom",
+        "arbitrum",
+        "optimism",
+        "base",
+        "linea"
+      ]
+    }
+  ]
+}

@@ -6,6 +6,12 @@
   "decimals": 6,
   "chainId": 101,
   "menuCustomLabel": "Gold",
+  "coingeckoId": "tether-gold",
   "symbol": "🜚",
-  "hidden": false
+  "hidden": false,
+  "visibilityLocked": false,
+  "routeSegment": "xaut",
+  "aliases": ["xaut", "gold"],
+  "sortOrder": 40,
+  "networkFeeMinimumBalance": 0.001
 }

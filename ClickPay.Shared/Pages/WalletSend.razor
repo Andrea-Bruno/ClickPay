@@ -1,13 +1,22 @@
 @page "/wallet/{type}/send"
+@using System.Collections.Generic
 @using System.Globalization
-@using ClickPay.Shared.Services
-@using ClickPay.Shared.CryptoAssets
+@using System.Linq
+@using System.Threading
+@using Microsoft.AspNetCore.Components.Web
+@using ClickPay.Shared.Preferences
+@using ClickPay.Shared.Pages
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.CryptoAssets
+@implements IDisposable
 @inject NavigationManager Navigation
 @inject LocalizationService Loc
 @inject MultiChainWalletService Wallets
 @inject WalletKeyService Vaults
 @inject IQrScannerService QrScanner
 @inject PaymentRequestParser PaymentParser
+@inject FiatPreferenceStore FiatPreferences
+@inject IExchangeRateService ExchangeRates
 
 <PageTitle>@(overview is null ? Loc.T("SendPaymentButton") : string.Format(CultureInfo.CurrentCulture, Loc.T("SendPageTitle"), overview.Symbol))</PageTitle>
 
@@ -49,36 +58,41 @@
                     </div>
                 }
 
+                @if (ShowFeeNotice)
+                {
+                    <div class="alert alert-info" role="alert">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        @Loc.T("SendFeeNoticeNetwork")
+                    </div>
+
+                    if (ShouldWarnFeeReserve && RecommendedFeeReserve is { } reserve)
+                    {
+                        <div class="alert alert-warning" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            @string.Format(CultureInfo.CurrentCulture, Loc.T("SendFeeWarningLowFee"), FeeReserveBalance.ToString("N4", CultureInfo.CurrentCulture), reserve.ToString("N4", CultureInfo.CurrentCulture))
+                        </div>
+                    }
+                }
+
                 <div class="card shadow-lg border-0">
                     <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2 class="card-title mb-0">@string.Format(CultureInfo.CurrentCulture, Loc.T("SendPageTitle"), overview.Symbol)</h2>
-                            <span class="badge bg-primary fs-6">@overview.Symbol</span>
+                        <div class="mb-3">
+                            <h2 class="wallet-asset-heading mb-0">
+                                <span class="wallet-asset-title">
+                                    @if (!string.IsNullOrEmpty(assetIconDataUri))
+                                    {
+                                        <img src="@assetIconDataUri" alt="@overview.Symbol" class="wallet-asset-title-icon wallet-icon-invert" />
+                                    }
+                                    else
+                                    {
+                                        <span class="wallet-asset-title-symbol">@GetAssetTitleSymbol()</span>
+                                    }
+                                    <span>@GetSendHeadingLabel()</span>
+                                </span>
+                                <span class="wallet-asset-heading-code text-muted">(@GetAssetCodeDisplay())</span>
+                            </h2>
                         </div>
                         <p class="text-muted mb-4">@string.Format(CultureInfo.CurrentCulture, Loc.T("SendBalanceLabel"), overview.Balance.ToString("N4", CultureInfo.CurrentCulture), overview.Symbol)</p>
-
-                        @if (RequiresSolFees)
-                        {
-                            <div class="alert alert-info" role="alert">
-                                <i class="bi bi-info-circle-fill me-2"></i>
-                                @string.Format(CultureInfo.CurrentCulture, Loc.T("SendFeeNoticeSolana"), overview.Symbol)
-                            </div>
-
-                            if (HasLowSolBalance)
-                            {
-                                <div class="alert alert-warning" role="alert">
-                                    <i class="bi bi-exclamation-octagon-fill me-2"></i>
-                                    @string.Format(CultureInfo.CurrentCulture, Loc.T("SendFeeWarningLowSol"), solBalance.ToString("N4", CultureInfo.CurrentCulture), MinSolFee.ToString("N4", CultureInfo.CurrentCulture))
-                                </div>
-                            }
-                        }
-                        else if (asset == WalletAsset.Sol)
-                        {
-                            <div class="alert alert-info" role="alert">
-                                <i class="bi bi-info-circle-fill me-2"></i>
-                                @Loc.T("SendFeeNoticeNativeSol")
-                            </div>
-                        }
 
                         <div class="mb-3">
                             <label class="form-label" for="destinationInput">@Loc.T("SendDestinationLabel")</label>
@@ -95,13 +109,29 @@
                             <label class="form-label" for="amountInput">@Loc.T("Amount") (@overview.Symbol)</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
-                                <input id="amountInput" class="form-control" type="number" min="0" step="0.00000001" @bind-value="form.Amount" @bind-value:event="oninput" placeholder="0.00" disabled="@sending" />
+                                <input id="amountInput" class="form-control" type="text" value="@cryptoAmountText" @oninput="OnCryptoAmountInput" @onblur="OnCryptoAmountBlur" placeholder="@GetCryptoPlaceholder()" inputmode="decimal" autocomplete="off" disabled="@sending" />
                                 <button type="button" class="btn btn-outline-secondary" disabled="@sending" @onclick="SetMaxAmount">
                                     @Loc.T("SendMaxButton")
                                 </button>
                             </div>
                             <div class="form-text">@string.Format(CultureInfo.CurrentCulture, Loc.T("SendBalanceLabel"), overview.Balance.ToString("N4", CultureInfo.CurrentCulture), overview.Symbol)</div>
+                            @if (HasFiatRate)
+                            {
+                                <div class="form-text text-muted">@GetFiatRateDescription()</div>
+                            }
                         </div>
+
+                        @if (ShowFiatConversionField)
+                        {
+                            <div class="mb-3">
+                                <label class="form-label" for="fiatAmountInput">@GetFiatAmountLabel()</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+                                    <input id="fiatAmountInput" class="form-control" type="text" value="@fiatAmountText" @oninput="OnFiatAmountInput" @onblur="OnFiatAmountBlur" placeholder="@GetFiatPlaceholder()" inputmode="decimal" autocomplete="off" disabled="@(!CanEditFiatAmount || sending)" />
+                                </div>
+                                <div class="form-text">@GetFiatRateDescription()</div>
+                            </div>
+                        }
 
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-primary btn-lg px-4" @onclick="SendAsync" disabled="@(sending || scanning)">
@@ -120,14 +150,14 @@
 </div>
 
 @code {
-    private const decimal MinSolFee = 0.001m;
     private readonly SendForm form = new();
 
     [Parameter] public string? type { get; set; }
     [SupplyParameterFromQuery(Name = "payload")] public string? payload { get; set; }
 
-    private WalletAsset asset;
+    private string assetCode = string.Empty;
     private CryptoAsset? assetDefinition;
+    private string? assetIconDataUri;
     private WalletOverview? overview;
     private bool loading = true;
     private bool awaitingInteractive;
@@ -136,12 +166,278 @@
     private string? error;
     private string? formError;
     private string? successMessage;
-    private decimal solBalance;
     private bool payloadApplied;
     private string? currentType;
+    private IReadOnlyList<CryptoAsset> feeAssetDefinitions = Array.Empty<CryptoAsset>();
+    private readonly Dictionary<string, WalletOverview> feeAssetOverviews = new(StringComparer.OrdinalIgnoreCase);
+    private bool storageRetryQueued;
+    private FiatPreferenceStore.FiatCurrencyOption? fiatPreference;
+    private CachedExchangeRate? cachedFiatRate;
+    private string cryptoAmountText = string.Empty;
+    private string fiatAmountText = string.Empty;
+    private bool disposed;
+    private bool cryptoInputActive;
+    private bool fiatInputActive;
 
-    private bool RequiresSolFees => assetDefinition is not null && assetDefinition.Network == BlockchainNetwork.Solana && asset != WalletAsset.Sol;
-    private bool HasLowSolBalance => RequiresSolFees && solBalance < MinSolFee;
+    private CryptoAsset? PrimaryFeeAsset => feeAssetDefinitions.FirstOrDefault();
+    private decimal FeeReserveBalance
+    {
+        get
+        {
+            if (PrimaryFeeAsset is { } feeAsset && feeAssetOverviews.TryGetValue(feeAsset.Code, out var feeOverview))
+            {
+                return feeOverview.Balance;
+            }
+
+            return overview?.Balance ?? 0m;
+        }
+    }
+
+    private decimal? RecommendedFeeReserve => assetDefinition?.NetworkFeeMinimumBalance;
+    private bool ShowFeeNotice => feeAssetDefinitions.Count > 0 || RecommendedFeeReserve is { };
+    private bool ShouldWarnFeeReserve => RecommendedFeeReserve is { } minimum && FeeReserveBalance < minimum;
+    private bool SupportsFiatConversion => assetDefinition is { CoingeckoId.Length: > 0 };
+    private bool HasFiatRate => cachedFiatRate is { Value: > 0m };
+    private bool ShowFiatConversionField => SupportsFiatConversion && HasFiatRate;
+    private bool CanEditFiatAmount => ShowFiatConversionField;
+
+    private string GetCryptoPlaceholder() => WalletConversionHelpers.GetCryptoPlaceholder(assetDefinition?.Decimals ?? 4);
+
+    private string GetFiatPlaceholder() => WalletConversionHelpers.GetFiatPlaceholder();
+
+    private string GetFiatAmountLabel()
+    {
+        var unit = GetFiatDisplayUnit();
+        return string.Format(CultureInfo.CurrentCulture, "Valore in {0}", unit);
+    }
+
+    private string GetFiatDisplayUnit()
+    {
+        if (fiatPreference is { Symbol: { Length: > 0 } symbol })
+        {
+            return symbol;
+        }
+
+        return fiatPreference?.Code ?? FiatPreferenceStore.DefaultCurrencyCode;
+    }
+
+    private string GetFiatRateDescription()
+    {
+        if (!SupportsFiatConversion)
+        {
+            return "La conversione in fiat non è disponibile per questo asset.";
+        }
+
+        if (!HasFiatRate)
+        {
+            return "Tasso di cambio in caricamento...";
+        }
+
+        var assetLabel = assetDefinition?.Symbol ?? assetDefinition?.Code ?? assetCode;
+        var unit = GetFiatDisplayUnit();
+        var rate = cachedFiatRate!.Value;
+        return string.Format(CultureInfo.CurrentCulture, "~ 1 {0} ≈ {1} {2}", assetLabel, rate.ToString("N2", CultureInfo.CurrentCulture), unit);
+    }
+
+    private void OnCryptoAmountInput(ChangeEventArgs args)
+    {
+        cryptoInputActive = true;
+
+        var text = args.Value?.ToString() ?? string.Empty;
+        cryptoAmountText = text;
+
+    if (!WalletConversionHelpers.TryParseDecimal(text, out var parsed))
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                SetCryptoAmount(0m, updateFiat: true, formatDisplay: false);
+            }
+
+            cryptoInputActive = false;
+            return;
+        }
+
+        var normalized = NormalizeCryptoAmount(parsed);
+        SetCryptoAmount(normalized, updateFiat: true, formatDisplay: false);
+        cryptoInputActive = false;
+    }
+
+    private void OnFiatAmountInput(ChangeEventArgs args)
+    {
+        fiatInputActive = true;
+
+        var text = args.Value?.ToString() ?? string.Empty;
+        fiatAmountText = text;
+
+        if (!HasFiatRate || cachedFiatRate is not { Value: > 0m } rate)
+        {
+            fiatInputActive = false;
+            return;
+        }
+
+    if (!WalletConversionHelpers.TryParseDecimal(text, out var parsed))
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                SetCryptoAmount(0m, updateFiat: false, formatDisplay: false);
+            }
+
+            fiatInputActive = false;
+            return;
+        }
+
+        var crypto = NormalizeCryptoAmount(parsed / rate.Value);
+        SetCryptoAmount(crypto, updateFiat: false);
+        fiatInputActive = false;
+    }
+
+    private void OnCryptoAmountBlur(FocusEventArgs _)
+    {
+        cryptoInputActive = false;
+        if (disposed)
+        {
+            return;
+        }
+
+        SetCryptoAmount(form.Amount);
+    }
+
+    private void OnFiatAmountBlur(FocusEventArgs _)
+    {
+        fiatInputActive = false;
+        if (disposed)
+        {
+            return;
+        }
+
+        UpdateFiatAmountFromCrypto();
+    }
+
+    private async Task LoadFiatContextAsync()
+    {
+        fiatPreference = await FiatPreferences.GetPreferredOptionAsync();
+
+        if (!SupportsFiatConversion || assetDefinition is not { } asset)
+        {
+            cachedFiatRate = null;
+            fiatAmountText = string.Empty;
+            return;
+        }
+
+        try
+        {
+            var preferred = fiatPreference;
+            if (preferred is null)
+            {
+                cachedFiatRate = null;
+                return;
+            }
+
+            var rate = await ExchangeRates.GetRateAsync(asset, preferred.Code, ScheduleFiatRefresh);
+            cachedFiatRate = rate is { Value: > 0m } valid ? valid : null;
+        }
+        catch
+        {
+            cachedFiatRate = null;
+        }
+
+        UpdateFiatAmountFromCrypto();
+    }
+
+    private void ScheduleFiatRefresh()
+    {
+        if (disposed || !SupportsFiatConversion || assetDefinition is not { } asset || fiatPreference is not { } preference)
+        {
+            return;
+        }
+
+        var fiat = preference.Code;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var refreshed = await ExchangeRates.GetRateAsync(asset, fiat, null, CancellationToken.None).ConfigureAwait(false);
+                if (disposed)
+                {
+                    return;
+                }
+
+                await InvokeAsync(() =>
+                {
+                    cachedFiatRate = refreshed is { Value: > 0m } valid ? valid : null;
+                    UpdateFiatAmountFromCrypto();
+                    StateHasChanged();
+                });
+            }
+            catch
+            {
+                // Ignored: background refresh failures are non-fatal for the send form.
+            }
+        });
+    }
+
+    private void SetCryptoAmount(decimal amount, bool updateFiat = true, bool formatDisplay = true)
+    {
+        var normalized = NormalizeCryptoAmount(amount);
+        form.Amount = normalized;
+
+        if (formatDisplay && !cryptoInputActive)
+        {
+            cryptoAmountText = normalized > 0m
+                ? WalletConversionHelpers.FormatCrypto(normalized, assetDefinition?.Decimals ?? 8)
+                : string.Empty;
+        }
+
+        if (updateFiat && !fiatInputActive)
+        {
+            UpdateFiatAmountFromCrypto();
+        }
+    }
+
+    private void UpdateFiatAmountFromCrypto()
+    {
+        if (disposed || fiatInputActive)
+        {
+            return;
+        }
+
+        if (!HasFiatRate)
+        {
+            fiatAmountText = string.Empty;
+            return;
+        }
+
+        var fiatValue = form.Amount * cachedFiatRate!.Value;
+        fiatAmountText = fiatValue > 0m
+            ? WalletConversionHelpers.FormatFiat(fiatValue)
+            : string.Empty;
+    }
+
+    private decimal NormalizeCryptoAmount(decimal amount)
+    {
+        if (amount <= 0m)
+        {
+            return 0m;
+        }
+
+        var decimals = assetDefinition?.Decimals ?? 8;
+        var constrained = Math.Max(0m, amount);
+        return decimals >= 0
+            ? decimal.Round(constrained, decimals, MidpointRounding.ToZero)
+            : constrained;
+    }
+
+    private string GetCryptoFormatString()
+    {
+        var decimals = assetDefinition?.Decimals ?? 8;
+        if (decimals <= 0)
+        {
+            return "0";
+        }
+
+        return $"0.{new string('#', decimals)}";
+    }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -151,21 +447,28 @@
             payloadApplied = false;
         }
 
-        if (!WalletAssetHelper.TryParse(type, out asset))
+        if (!WalletAssetHelper.TryParse(type, out var resolvedAsset))
         {
             error = Loc.T("ErrorUnsupportedAsset");
             loading = false;
+            assetDefinition = null;
+            assetIconDataUri = null;
             return;
         }
 
         try
         {
-            assetDefinition = WalletAssetHelper.GetDefinition(asset);
+            assetDefinition = resolvedAsset;
+            assetCode = assetDefinition.Code;
+            feeAssetDefinitions = Array.Empty<CryptoAsset>();
+            feeAssetOverviews.Clear();
+            UpdateAssetIcon();
         }
         catch (Exception ex)
         {
             error = ex.Message;
             loading = false;
+            assetIconDataUri = null;
             return;
         }
 
@@ -198,6 +501,7 @@
         loading = true;
         formError = null;
         successMessage = null;
+        SetCryptoAmount(form.Amount);
 
         try
         {
@@ -207,31 +511,91 @@
                 return;
             }
 
-            var overviewTask = Wallets.GetOverviewAsync(asset);
-            Task<decimal>? solTask = RequiresSolFees ? Wallets.GetSolBalanceAsync() : null;
+            overview = await Wallets.GetOverviewAsync(assetCode);
 
-            overview = await overviewTask;
-
-            if (RequiresSolFees && solTask is not null)
-            {
-                solBalance = await solTask;
-            }
-            else if (asset == WalletAsset.Sol && overview is not null)
-            {
-                solBalance = overview.Balance;
-            }
+            await LoadFiatContextAsync();
+            await RefreshFeeAssetOverviewsAsync();
+            storageRetryQueued = false;
 
             loading = false;
             ApplyPayloadIfNeeded();
         }
-        catch (BrowserStorageUnavailableException)
+        catch (SecureStorageUnavailableException)
         {
-            awaitingInteractive = true;
+            if (!storageRetryQueued)
+            {
+                storageRetryQueued = true;
+                awaitingInteractive = true;
+            }
+            else
+            {
+                error = Loc.T("StorageUnavailableError");
+                awaitingInteractive = false;
+                loading = false;
+            }
         }
         catch (Exception ex)
         {
             error = ex.Message;
             loading = false;
+        }
+    }
+
+    private async Task RefreshFeeAssetOverviewsAsync()
+    {
+        if (assetDefinition is null)
+        {
+            feeAssetDefinitions = Array.Empty<CryptoAsset>();
+            feeAssetOverviews.Clear();
+            return;
+        }
+
+        var feeCodes = WalletAssetHelper.GetFeeAssetCodes(assetDefinition);
+        if (feeCodes.Count == 0)
+        {
+            feeAssetDefinitions = Array.Empty<CryptoAsset>();
+            feeAssetOverviews.Clear();
+            return;
+        }
+
+        var resolvedDefinitions = new List<CryptoAsset>(feeCodes.Count);
+        foreach (var feeCode in feeCodes)
+        {
+            if (WalletAssetHelper.TryGetDefinition(feeCode, out var definition))
+            {
+                resolvedDefinitions.Add(definition);
+            }
+        }
+
+        if (resolvedDefinitions.Count == 0)
+        {
+            feeAssetDefinitions = Array.Empty<CryptoAsset>();
+            feeAssetOverviews.Clear();
+            return;
+        }
+
+    feeAssetDefinitions = resolvedDefinitions.ToArray();
+
+        feeAssetOverviews.Clear();
+
+        var overviewTasks = feeAssetDefinitions
+            .Select(definition => Wallets.GetOverviewAsync(definition.Code))
+            .ToArray();
+
+        var results = await Task.WhenAll(overviewTasks);
+
+        for (var i = 0; i < feeAssetDefinitions.Count; i++)
+        {
+            var key = feeAssetDefinitions[i].Code;
+            var overviewResult = results[i];
+            if (overviewResult is null)
+            {
+                feeAssetOverviews.Remove(key);
+            }
+            else
+            {
+                feeAssetOverviews[key] = overviewResult;
+            }
         }
     }
 
@@ -273,29 +637,57 @@
             return;
         }
 
+        if (assetDefinition is null)
+        {
+            formError = Loc.T("ErrorUnsupportedAsset");
+            return;
+        }
+
         if (form.Amount > overview.Balance)
         {
             formError = Loc.T("SendErrorInsufficientFunds");
             return;
         }
 
+        if (RecommendedFeeReserve is { } reserve && reserve > 0m)
+        {
+            var usesSelfAssetForFees = PrimaryFeeAsset is null || string.Equals(PrimaryFeeAsset.Code, assetDefinition.Code, StringComparison.OrdinalIgnoreCase);
+
+            if (usesSelfAssetForFees)
+            {
+                var remaining = overview.Balance - form.Amount;
+                if (remaining < reserve)
+                {
+                    formError = string.Format(
+                        CultureInfo.CurrentCulture,
+                        Loc.T("SendErrorFeeReserveRequired"),
+                        reserve.ToString("N4", CultureInfo.CurrentCulture),
+                        assetDefinition.Symbol ?? assetDefinition.Code);
+                    return;
+                }
+            }
+            else if (FeeReserveBalance < reserve)
+            {
+                formError = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Loc.T("SendErrorFeeReserveRequired"),
+                    reserve.ToString("N4", CultureInfo.CurrentCulture),
+                    PrimaryFeeAsset?.Symbol ?? PrimaryFeeAsset?.Code ?? assetDefinition.Code);
+                return;
+            }
+        }
+
         sending = true;
 
         try
         {
-            var result = await Wallets.SendAsync(asset, form.Destination.Trim(), form.Amount);
+            var result = await Wallets.SendAsync(assetCode, form.Destination.Trim(), form.Amount);
             successMessage = string.Format(CultureInfo.CurrentCulture, Loc.T("TransactionSentFormat"), result.TransactionId);
-            form.Amount = 0m;
+            SetCryptoAmount(0m);
 
-            overview = await Wallets.GetOverviewAsync(asset);
-            if (RequiresSolFees)
-            {
-                solBalance = await Wallets.GetSolBalanceAsync();
-            }
-            else if (asset == WalletAsset.Sol && overview is not null)
-            {
-                solBalance = overview.Balance;
-            }
+            overview = await Wallets.GetOverviewAsync(assetCode);
+            await LoadFiatContextAsync();
+            await RefreshFeeAssetOverviewsAsync();
         }
         catch (Exception ex)
         {
@@ -309,12 +701,52 @@
 
     private void SetMaxAmount()
     {
-        if (overview is null)
+        if (overview is null || assetDefinition is null)
         {
             return;
         }
 
-        form.Amount = overview.Balance;
+        formError = null;
+        successMessage = null;
+
+        var balance = overview.Balance;
+        var amount = balance;
+
+        if (RecommendedFeeReserve is { } reserve && reserve > 0m)
+        {
+            var usesSelfAssetForFees = PrimaryFeeAsset is null || string.Equals(PrimaryFeeAsset.Code, assetDefinition.Code, StringComparison.OrdinalIgnoreCase);
+
+            if (usesSelfAssetForFees)
+            {
+                amount = Math.Max(0m, balance - reserve);
+
+                if (amount <= 0m)
+                {
+                    SetCryptoAmount(0m);
+                    formError = string.Format(
+                        CultureInfo.CurrentCulture,
+                        Loc.T("SendErrorFeeReserveRequired"),
+                        reserve.ToString("N4", CultureInfo.CurrentCulture),
+                        assetDefinition.Symbol ?? assetDefinition.Code);
+                    return;
+                }
+            }
+            else if (FeeReserveBalance < reserve)
+            {
+                SetCryptoAmount(0m);
+                formError = string.Format(
+                    CultureInfo.CurrentCulture,
+                    Loc.T("SendErrorFeeReserveRequired"),
+                    reserve.ToString("N4", CultureInfo.CurrentCulture),
+                    PrimaryFeeAsset?.Symbol ?? PrimaryFeeAsset?.Code ?? assetDefinition.Code);
+                return;
+            }
+        }
+
+        var decimals = assetDefinition.Decimals;
+        amount = decimal.Round(amount, decimals, MidpointRounding.ToZero);
+
+        SetCryptoAmount(amount);
     }
 
     private async Task ScanQrAsync()
@@ -330,7 +762,7 @@
         try
         {
             var result = await QrScanner.ScanAsync(new QrScanRequest(
-                asset,
+                assetCode,
                 overview?.Symbol,
                 Loc.T("QrScan_Prompt_Title"),
                 Loc.T("QrScan_Prompt_Message"),
@@ -370,7 +802,13 @@
     {
         try
         {
-            var parsed = PaymentParser.Parse(asset, rawPayload);
+            if (assetDefinition is null)
+            {
+                formError = Loc.T("ErrorUnsupportedAsset");
+                return;
+            }
+
+            var parsed = PaymentParser.Parse(assetDefinition, rawPayload);
             if (!parsed.Success)
             {
                 formError = Loc.T(parsed.ErrorCode ?? "QrScan_Error_Generic");
@@ -384,7 +822,7 @@
 
             if (parsed.Amount.HasValue)
             {
-                form.Amount = parsed.Amount.Value;
+                SetCryptoAmount(parsed.Amount.Value);
             }
 
             formError = null;
@@ -411,5 +849,56 @@
     {
         public string? Destination { get; set; }
         public decimal Amount { get; set; }
+    }
+
+    private string GetSendHeadingLabel()
+    {
+        var label = assetDefinition?.Name;
+        if (string.IsNullOrWhiteSpace(label))
+        {
+            label = assetDefinition?.MenuLabel ?? overview?.Symbol ?? assetCode;
+        }
+
+        return Loc.FormatWalletLabel(label);
+    }
+
+    private string GetAssetCodeDisplay()
+    {
+        if (!string.IsNullOrWhiteSpace(assetDefinition?.Code))
+        {
+            return assetDefinition!.Code;
+        }
+
+        if (!string.IsNullOrWhiteSpace(assetCode))
+        {
+            return assetCode;
+        }
+
+        return overview?.Symbol ?? assetCode;
+    }
+
+    private string GetAssetTitleSymbol() => assetDefinition?.Symbol ?? overview?.Symbol ?? assetDefinition?.Code ?? assetCode;
+
+    private void UpdateAssetIcon()
+    {
+        if (assetDefinition is not null && CryptoAssetIconResolver.TryGetIconDataUri(assetDefinition, out var iconUri) && IsPngDataUri(iconUri))
+        {
+            assetIconDataUri = iconUri;
+        }
+        else if (!string.IsNullOrWhiteSpace(assetCode) && CryptoAssetIconResolver.TryGetIconDataUri(assetCode, out var fallbackIcon) && IsPngDataUri(fallbackIcon))
+        {
+            assetIconDataUri = fallbackIcon;
+        }
+        else
+        {
+            assetIconDataUri = null;
+        }
+    }
+
+    private static bool IsPngDataUri(string? value) => !string.IsNullOrEmpty(value) && value.StartsWith("data:image/png", StringComparison.OrdinalIgnoreCase);
+
+    public void Dispose()
+    {
+        disposed = true;
     }
 }

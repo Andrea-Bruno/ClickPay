@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NBitcoin" Version="9.0.3" />
+    <PackageReference Include="Nethereum.Web3" Version="5.0.0" />
+    <PackageReference Include="Nethereum.HdWallet" Version="5.0.0" />
+    <PackageReference Include="Nethereum.StandardTokenEIP20" Version="5.0.0" />
+    <PackageReference Include="Solnet.Rpc" Version="5.0.0" />
+    <PackageReference Include="Solnet.Programs" Version="5.0.0" />
+    <PackageReference Include="Solnet.Wallet" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CryptoAssets\*.json" LogicalName="CryptoAssets/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="CryptoAssets\*.png" LogicalName="CryptoAssets/%(Filename)%(Extension)" />
+    <EmbeddedResource Include="Blockchain\*.json" LogicalName="Blockchain/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="CryptoAssets\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="CryptoAssets\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Blockchain\*.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

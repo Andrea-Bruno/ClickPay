@@ -95,3 +95,19 @@ main {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.biometric-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 1050;
+}
+
+.biometric-panel {
+    max-width: 360px;
+    width: 100%;
+}

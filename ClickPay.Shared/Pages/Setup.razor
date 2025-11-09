@@ -1,12 +1,17 @@
 @page "/setup"
 @using System.Collections.Generic
+@using System.Globalization
 @using System.Linq
 @using System.Threading.Tasks
+@using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Services
-@using ClickPay.Shared.CryptoAssets
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.CryptoAssets
 @inject LocalizationService Loc
+@inject FiatPreferenceStore FiatPreferences
+@inject IBiometricLockService BiometricLock
 
-<PageTitle>Setup</PageTitle>
+<PageTitle>@Loc.T("SetupTitle")</PageTitle>
 
 <div class="container py-4">
     <div class="row justify-content-center mb-4">
@@ -30,12 +35,12 @@
         <div class="col-12 col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h3 class="card-title mb-3">Preferenze asset</h3>
-                    <p class="text-muted small">Scegli quali asset mostrare nel menu principale.</p>
+                    <h3 class="card-title mb-3">@Loc.T("SetupAssetPreferencesTitle")</h3>
+                    <p class="text-muted small">@Loc.T("SetupAssetPreferencesDescription")</p>
                     @if (assetVisibility.Count == 0)
                     {
                         <div class="alert alert-info" role="alert">
-                            Nessun asset configurato.
+                            @Loc.T("SetupAssetNoneConfigured")
                         </div>
                     }
                     else
@@ -44,10 +49,10 @@
                         {
                             <div class="form-check form-switch mb-3">
                                 <input class="form-check-input" type="checkbox" id="hide-@asset.Code" checked="@asset.Hidden" disabled="@asset.IsSaving" @onchange="(args) => OnAssetHiddenChangedAsync(asset, args)" />
-                                <label class="form-check-label" for="hide-@asset.Code">Nascondi @asset.Code</label>
+                                <label class="form-check-label" for="hide-@asset.Code">@string.Format(CultureInfo.CurrentCulture, Loc.T("SetupAssetHideLabel"), asset.Code)</label>
                                 @if (asset.IsSaving)
                                 {
-                                    <div class="form-text">Salvataggio in corso…</div>
+                                    <div class="form-text">@Loc.T("CommonSavingInProgress")</div>
                                 }
                                 else if (!string.IsNullOrWhiteSpace(asset.ErrorMessage))
                                 {
@@ -60,6 +65,55 @@
             </div>
         </div>
     </div>
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">@Loc.T("FiatPreferenceTitle")</h3>
+                    <p class="text-muted small">@Loc.T("FiatPreferenceDescription")</p>
+                    <select class="form-select form-select-lg mb-2" disabled="@isUpdatingFiat" @onchange="OnFiatCurrencyChanged">
+                        @foreach (var option in fiatOptions)
+                        {
+                            <option value="@option.Code" selected="@string.Equals(option.Code, selectedFiatCurrency, StringComparison.OrdinalIgnoreCase)">@option.GetDisplayLabel(Loc)</option>
+                        }
+                    </select>
+                    @if (isUpdatingFiat)
+                    {
+                        <div class="form-text">@Loc.T("SetupFiatUpdating")</div>
+                    }
+                    else if (!string.IsNullOrWhiteSpace(fiatError))
+                    {
+                        <div class="form-text text-danger">@fiatError</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (isBiometricSupported)
+    {
+        <div class="row justify-content-center mb-4">
+            <div class="col-12 col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-3">@Loc.T("SetupBiometricTitle")</h3>
+                        <p class="text-muted small">@Loc.T("SetupBiometricDescription")</p>
+                        <div class="form-check form-switch mb-2">
+                            <input class="form-check-input" type="checkbox" id="biometric-lock" checked="@biometricEnabled" disabled="@isUpdatingBiometric" @onchange="OnBiometricToggleChanged" />
+                            <label class="form-check-label" for="biometric-lock">@Loc.T("SetupBiometricToggleLabel")</label>
+                        </div>
+                        @if (isUpdatingBiometric)
+                        {
+                            <div class="form-text">@Loc.T("SetupBiometricChecking")</div>
+                        }
+                        else if (!string.IsNullOrWhiteSpace(biometricError))
+                        {
+                            <div class="form-text text-danger">@biometricError</div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
     <div class="row fixed-bottom mb-4">
         <div class="col-12 d-grid">
             <button class="btn btn-success btn-lg" @onclick="SetLanguage">@Loc.T("Save")</button>
@@ -70,20 +124,70 @@
 @code {
     private string? selectedLang;
     private List<AssetVisibilityModel> assetVisibility = new();
+    private List<FiatPreferenceStore.FiatCurrencyOption> fiatOptions = new();
+    private bool isBiometricSupported;
+    private bool biometricEnabled;
+    private bool isUpdatingBiometric;
+    private string? biometricError;
+    private string? selectedFiatCurrency;
+    private bool isUpdatingFiat;
+    private string? fiatError;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         selectedLang = Loc.CurrentLanguage;
         assetVisibility = WalletAssetHelper.GetRegisteredAssets()
-            .Select(entry => new AssetVisibilityModel
+            .Where(asset => !asset.VisibilityLocked)
+            .Select(asset => new AssetVisibilityModel
             {
-                Asset = entry.Asset,
-                Code = entry.Definition.Code,
-                Hidden = entry.Definition.Hidden
+                Code = asset.Code,
+                Hidden = asset.Hidden
             })
             .ToList();
 
-        return Task.CompletedTask;
+        fiatOptions = FiatPreferences.GetSupportedCurrencies().ToList();
+
+        var preferredFiat = FiatPreferences.GetDefaultOption();
+        try
+        {
+            preferredFiat = await FiatPreferences.GetPreferredOptionAsync();
+        }
+        catch (SecureStorageUnavailableException)
+        {
+            fiatError = Loc.T("StorageUnavailableError");
+            biometricError ??= Loc.T("StorageUnavailableError");
+        }
+
+        selectedFiatCurrency = preferredFiat.Code;
+
+        try
+        {
+            if (await BiometricLock.IsSupportedAsync())
+            {
+                isBiometricSupported = true;
+
+                try
+                {
+                    biometricEnabled = await BiometricLock.IsEnabledAsync();
+                }
+                catch (SecureStorageUnavailableException)
+                {
+                    biometricEnabled = false;
+                    biometricError = Loc.T("StorageUnavailableError");
+                }
+            }
+        }
+        catch (SecureStorageUnavailableException)
+        {
+            isBiometricSupported = true;
+            biometricEnabled = false;
+            biometricError = Loc.T("StorageUnavailableError");
+        }
+        catch
+        {
+            isBiometricSupported = false;
+            biometricEnabled = false;
+        }
     }
 
     private void SetLanguage()
@@ -112,7 +216,7 @@
             _ => false
         };
 
-        if (newHidden == model.Hidden && WalletAssetHelper.TryGetDefinition(model.Asset, out var definition) && definition.Hidden == model.Hidden)
+        if (newHidden == model.Hidden && WalletAssetHelper.TryGetDefinition(model.Code, out var definition) && definition.Hidden == model.Hidden)
         {
             return;
         }
@@ -124,8 +228,8 @@
 
         try
         {
-            await WalletAssetHelper.SetHiddenAsync(model.Asset, newHidden);
-            if (WalletAssetHelper.TryGetDefinition(model.Asset, out var refreshed))
+            await WalletAssetHelper.SetHiddenAsync(model.Code, newHidden);
+            if (WalletAssetHelper.TryGetDefinition(model.Code, out var refreshed))
             {
                 model.Hidden = refreshed.Hidden;
             }
@@ -142,9 +246,95 @@
         }
     }
 
+    private async Task OnBiometricToggleChanged(ChangeEventArgs args)
+    {
+        if (isUpdatingBiometric)
+        {
+            return;
+        }
+
+        var requested = args.Value switch
+        {
+            bool b => b,
+            string s when bool.TryParse(s, out var parsed) => parsed,
+            _ => false
+        };
+
+        if (requested == biometricEnabled)
+        {
+            return;
+        }
+
+        isUpdatingBiometric = true;
+        biometricError = null;
+
+        try
+        {
+            var result = await BiometricLock.SetEnabledAsync(requested);
+            biometricEnabled = result.Enabled;
+            if (!result.Success && !string.IsNullOrWhiteSpace(result.ErrorMessage))
+            {
+                biometricError = result.ErrorMessage;
+            }
+        }
+        catch (SecureStorageUnavailableException)
+        {
+            biometricEnabled = false;
+            biometricError = Loc.T("StorageUnavailableError");
+        }
+        finally
+        {
+            isUpdatingBiometric = false;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnFiatCurrencyChanged(ChangeEventArgs args)
+    {
+        if (isUpdatingFiat)
+        {
+            return;
+        }
+
+        var requestedCode = args.Value switch
+        {
+            string s when !string.IsNullOrWhiteSpace(s) => s,
+            _ => null
+        };
+
+        if (string.IsNullOrWhiteSpace(requestedCode) || string.Equals(requestedCode, selectedFiatCurrency, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        isUpdatingFiat = true;
+        fiatError = null;
+
+        try
+        {
+            var result = await FiatPreferences.SetPreferredCurrencyAsync(requestedCode);
+            selectedFiatCurrency = result.Option.Code;
+
+            if (!result.Success && !string.IsNullOrWhiteSpace(result.ErrorMessage))
+            {
+                fiatError = result.ErrorMessage;
+            }
+        }
+        catch (SecureStorageUnavailableException)
+        {
+            fiatError = Loc.T("StorageUnavailableError");
+        }
+        finally
+        {
+            isUpdatingFiat = false;
+        }
+
+        await InvokeAsync(StateHasChanged);
+    }
+
     private sealed class AssetVisibilityModel
     {
-        public required WalletAsset Asset { get; init; }
         public required string Code { get; init; }
         public bool Hidden { get; set; }
         public bool IsSaving { get; set; }

@@ -1,4 +1,4 @@
-using ClickPay.Shared.Services;
+using ClickPay.Wallet.Core.Services;
 
 namespace ClickPay.Web.Services
 {

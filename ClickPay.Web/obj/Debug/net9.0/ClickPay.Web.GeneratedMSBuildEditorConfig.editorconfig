@@ -24,8 +24,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Web/Components/HeadOutletHost.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xIZWFkT3V0bGV0SG9zdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Web/Components/Pages/Error.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Web/Components/RootDocument.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb290RG9jdW1lbnQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Web/Components/_Imports.razor]

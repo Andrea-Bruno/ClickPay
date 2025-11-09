@@ -2,25 +2,41 @@
 @inherits LayoutComponentBase
 @using System
 @using System.Linq
-@using ClickPay.Shared.Services
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.CryptoAssets
 @using Microsoft.Extensions.Logging
 @inject NavigationManager Navigation
 @inject WalletKeyService WalletKeyService
 @inject MultiChainWalletService WalletService
+@inject IBiometricLockService BiometricLock
 @inject ILogger<MainLayout> Logger
+@inject LocalizationService Loc
 
 @code {
     private bool _hasCheckedKey;
     private Task? _warmupTask;
+    private bool _biometricChecked;
+    private bool _biometricUnlocked = true;
+    private bool _biometricChecking;
+    private string? _biometricError;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (_hasCheckedKey)
+        if (firstRender)
         {
             return;
         }
 
-        if (firstRender)
+        if (!_biometricChecked)
+        {
+            await EnsureBiometricGateAsync();
+            if (!_biometricUnlocked)
+            {
+                return;
+            }
+        }
+
+        if (_hasCheckedKey)
         {
             return;
         }
@@ -42,10 +58,93 @@
 
             StartWarmup();
         }
-        catch (BrowserStorageUnavailableException)
+        catch (SecureStorageUnavailableException ex)
         {
-            // JS interop not ready yet; wait for next render
+            Logger?.LogWarning(ex, "Secure storage unavailable while checking vault.");
+            _hasCheckedKey = true;
+            _biometricChecked = true;
+            _biometricUnlocked = false;
+            _biometricError = Loc.T("StorageUnavailableError");
+            await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private async Task EnsureBiometricGateAsync()
+    {
+        if (_biometricChecking)
+        {
+            return;
+        }
+
+        _biometricChecking = true;
+
+        try
+        {
+            if (BiometricLock is null)
+            {
+                _biometricUnlocked = true;
+                return;
+            }
+
+            var supported = await BiometricLock.IsSupportedAsync();
+            if (!supported)
+            {
+                _biometricUnlocked = true;
+                return;
+            }
+
+            var enabled = await BiometricLock.IsEnabledAsync();
+            if (!enabled)
+            {
+                _biometricUnlocked = true;
+                return;
+            }
+
+            _biometricUnlocked = false;
+            _biometricError = null;
+
+            var result = await BiometricLock.EnsureUnlockedAsync();
+            if (result.Success)
+            {
+                _biometricUnlocked = true;
+            }
+            else
+            {
+                _biometricUnlocked = false;
+                _biometricError = result.IsCanceled
+                    ? Loc.T("BiometricAuthCanceled")
+                    : result.ErrorMessage ?? Loc.T("BiometricAuthFailed");
+            }
+        }
+        catch (SecureStorageUnavailableException ex)
+        {
+            Logger?.LogWarning(ex, "Secure storage unavailable during biometric gate.");
+            _biometricUnlocked = false;
+            _biometricError = Loc.T("StorageUnavailableError");
+        }
+        catch (Exception ex)
+        {
+            _biometricUnlocked = false;
+            _biometricError = ex.Message;
+        }
+        finally
+        {
+            _biometricChecking = false;
+            _biometricChecked = true;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task RetryBiometricAsync()
+    {
+        if (_biometricChecking)
+        {
+            return;
+        }
+
+        _biometricChecked = false;
+        _biometricError = null;
+        await EnsureBiometricGateAsync();
     }
 
     private void StartWarmup()
@@ -69,7 +168,7 @@
             }
 
             var operations = assets.Select(WarmupAssetAsync).ToArray();
-            await Task.WhenAll(operations).ConfigureAwait(false);
+            await Task.WhenAll(operations);
         }
         catch (Exception ex)
         {
@@ -77,12 +176,12 @@
         }
     }
 
-    private async Task WarmupAssetAsync(WalletAsset asset)
+    private async Task WarmupAssetAsync(CryptoAsset asset)
     {
         try
         {
-            await WalletService.GetOverviewAsync(asset).ConfigureAwait(false);
-            await WalletService.GetTransactionsAsync(asset).ConfigureAwait(false);
+            await WalletService.GetOverviewAsync(asset.Code);
+            await WalletService.GetTransactionsAsync(asset.Code);
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Nessun wallet", StringComparison.OrdinalIgnoreCase))
         {
@@ -90,7 +189,7 @@
         }
         catch (Exception ex)
         {
-            Logger?.LogDebug(ex, "Warmup per l'asset {Asset} ignorato.", asset);
+            Logger?.LogDebug(ex, "Warmup per l'asset {Asset} ignorato.", asset.Code);
         }
     }
 }
@@ -111,8 +210,21 @@
     </main>
 </div>
 
+@if (_biometricChecked && !_biometricUnlocked)
+{
+    <div class="biometric-overlay">
+        <div class="card biometric-panel shadow-lg">
+            <div class="card-body">
+                <h4 class="card-title mb-3">@Loc.T("BiometricOverlayTitle")</h4>
+                <p class="mb-4">@(_biometricError ?? Loc.T("BiometricOverlayPrompt"))</p>
+                <button class="btn btn-primary w-100" @onclick="RetryBiometricAsync" disabled="@_biometricChecking">@Loc.T("BiometricRetryButton")</button>
+            </div>
+        </div>
+    </div>
+}
+
 <div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
+    @Loc.T("ErrorUnhandledMessage")
+    <a href="." class="reload">@Loc.T("ErrorReloadLink")</a>
     <span class="dismiss">🗙</span>
 </div>

@@ -6,6 +6,7 @@ Microsoft.Maui.Controls.Xaml.dll
 Microsoft.Maui.dll
 Microsoft.Maui.Essentials.dll
 Microsoft.Maui.Graphics.dll
+Plugin.Fingerprint.dll
 Xamarin.Android.Glide.Annotations.dll
 Xamarin.Android.Glide.DiskLruCache.dll
 Xamarin.Android.Glide.dll
@@ -19,6 +20,7 @@ Xamarin.AndroidX.AppCompat.AppCompatResources.dll
 Xamarin.AndroidX.AppCompat.dll
 Xamarin.AndroidX.Arch.Core.Common.dll
 Xamarin.AndroidX.Arch.Core.Runtime.dll
+Xamarin.AndroidX.Biometric.dll
 Xamarin.AndroidX.Browser.dll
 Xamarin.AndroidX.Camera.Camera2.dll
 Xamarin.AndroidX.Camera.Core.dll
@@ -169,6 +171,7 @@ androidx.camera.camera-lifecycle.aar
 androidx.camera.camera-view.aar
 androidx.camera.camera-camera2.aar
 androidx.browser.browser.aar
+androidx.biometric.biometric.aar
 GoogleGson.aar
 Jsr305Binding.aar
 Microsoft.Maui.Controls.aar

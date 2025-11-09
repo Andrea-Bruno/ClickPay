@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using ClickPay.Wallet.Core.Services;
 
 namespace ClickPay.Shared.Services
 {

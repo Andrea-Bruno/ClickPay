@@ -4,6 +4,12 @@
         <name>ClickPay</name>
     </assembly>
     <members>
+        <member name="T:ClickPay.Services.SecureStorageLocalSecureStore">
+            <summary>
+            Implementation of <see cref="T:ClickPay.Wallet.Core.Services.ILocalSecureStore"/> that uses <see cref="T:Microsoft.Maui.Storage.SecureStorage"/>
+            provided by .NET MAUI to persist encrypted secrets per device.
+            </summary>
+        </member>
         <member name="T:ClickPay.Resource">
             <summary>
             Android Resource Designer class.

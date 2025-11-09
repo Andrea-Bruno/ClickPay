@@ -4,6 +4,11 @@
   "blockchain": "bitcoin",
   "decimals": 8,
   "chainId": 0,
+  "coingeckoId": "bitcoin",
   "symbol": "₿",
-  "hidden": false
+  "hidden": false,
+  "visibilityLocked": true,
+  "routeSegment": "btc",
+  "aliases": ["btc", "bitcoin"],
+  "sortOrder": 10
 }

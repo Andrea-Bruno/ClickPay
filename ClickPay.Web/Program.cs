@@ -1,8 +1,19 @@
+using ClickPay.Shared.Preferences;
 using ClickPay.Shared.Services;
+using ClickPay.Wallet.Core.Services;
+using ClickPay.Wallet.Core.Blockchain;
+using ClickPay.Wallet.Core.Blockchain.Bitcoin;
+using ClickPay.Wallet.Core.Blockchain.Solana;
+using ClickPay.Wallet.Core.Blockchain.Ethereum;
+using ClickPay.Wallet.Core.DependencyInjection;
+using ClickPay.Wallet.Core.Wallet;
 using ClickPay.Web.Components;
 using ClickPay.Web.Services;
 using Microsoft.Extensions.Options;
 using NBitcoin;
+using LocalizationService = ClickPay.Shared.Services.LocalizationService;
+using System.IO;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +25,12 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 builder.Services.AddSingleton<LocalizationService>();
+builder.Services.AddScoped<FiatPreferenceStore>();
+builder.Services.Configure<MarketDataCacheOptions>(options =>
+{
+    options.CacheDirectory = Path.Combine(builder.Environment.ContentRootPath, "App_Data", "cache");
+    options.EntryLifetime = TimeSpan.FromMinutes(5);
+});
 builder.Services.Configure<BitcoinWalletOptions>(options =>
 {
 #if DEBUG
@@ -24,7 +41,6 @@ builder.Services.Configure<BitcoinWalletOptions>(options =>
     options.CoinType = 0;
 #endif
 });
-builder.Services.AddSingleton<BitcoinWalletService>();
 builder.Services.Configure<SolanaWalletOptions>(options =>
 {
 #if DEBUG
@@ -42,19 +58,38 @@ builder.Services.Configure<SolanaWalletOptions>(options =>
         options.TransactionHistoryLimit = historyLimit;
     }
 });
-builder.Services.AddScoped<SolanaWalletService>();
-builder.Services.AddScoped<HttpClient>(sp => new HttpClient());
-builder.Services.AddScoped<Microsoft.AspNetCore.Components.ProtectedBrowserStorage.ProtectedLocalStorage>();
-builder.Services.AddScoped<WalletKeyService>();
-builder.Services.AddScoped<BitcoinNetworkClient>(sp =>
+builder.Services.Configure<EthereumWalletOptions>(options =>
 {
-    var http = sp.GetRequiredService<HttpClient>();
-    var options = sp.GetRequiredService<IOptions<BitcoinWalletOptions>>();
-    var networkName = options.Value?.Network ?? NBitcoin.Network.Main.ToString();
-    var network = NBitcoin.Network.GetNetwork(networkName) ?? NBitcoin.Network.Main;
-    return new BitcoinNetworkClient(http, network);
+#if DEBUG
+    options.RpcEndpoint = builder.Configuration["Ethereum:Testnet:RpcEndpoint"] ?? "https://ethereum-sepolia.blockpi.network/v1/rpc/public";
+    options.ChainId = builder.Configuration.GetValue<long?>("Ethereum:Testnet:ChainId") ?? 11155111L;
+#else
+    options.RpcEndpoint = builder.Configuration["Ethereum:Mainnet:RpcEndpoint"] ?? "https://ethereum.publicnode.com";
+    options.ChainId = builder.Configuration.GetValue<long?>("Ethereum:Mainnet:ChainId") ?? 1L;
+#endif
+
+    if (int.TryParse(builder.Configuration["Ethereum:TransactionHistoryLimit"], out var historyLimit) && historyLimit > 0)
+    {
+        options.TransactionHistoryLimit = historyLimit;
+    }
+
+    if (int.TryParse(builder.Configuration["Ethereum:FallbackGasPriceGwei"], out var fallbackGwei) && fallbackGwei > 0)
+    {
+        options.FallbackGasPriceGwei = fallbackGwei;
+    }
 });
-builder.Services.AddScoped<MultiChainWalletService>();
+builder.Services.AddScoped<HttpClient>(sp => new HttpClient());
+builder.Services.AddScoped<IExchangeRateService, CoinGeckoExchangeRateService>();
+if (OperatingSystem.IsWindows())
+{
+    builder.Services.AddSingleton<ILocalSecureStore, DataProtectionLocalSecureStore>();
+}
+else
+{
+    builder.Services.AddSingleton<ILocalSecureStore, UnsupportedLocalSecureStore>();
+}
+builder.Services.AddScoped<IBiometricLockService, WebBiometricLockService>();
+builder.Services.AddWalletCore();
 builder.Services.AddScoped<IQrScannerService, WebQrScannerService>();
 builder.Services.AddSingleton<PaymentRequestParser>();
 
@@ -73,7 +108,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
+app.MapRazorComponents<RootDocument>()
     .AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(typeof(ClickPay.Shared._Imports).Assembly);
 

@@ -1,9 +1,0 @@
-{
-  "name": "Bitcoin",
-  "code": "BTC",
-  "blockchain": "bitcoin",
-  "decimals": 8,
-  "chainId": 0,
-  "symbol": "₿",
-  "hidden": false
-}

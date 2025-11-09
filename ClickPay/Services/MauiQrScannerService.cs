@@ -1,5 +1,5 @@
 #if ANDROID || IOS || MACCATALYST
-using ClickPay.Shared.Services;
+using ClickPay.Wallet.Core.Services;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;

@@ -49,3 +49,72 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+.wallet-balance-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.45em;
+    text-align: center;
+}
+
+.wallet-balance-display .wallet-balance-icon {
+    width: 1em;
+    height: 1em;
+    object-fit: contain;
+    filter: invert(1);
+}
+
+.wallet-balance-display .wallet-balance-symbol {
+    font-weight: 600;
+}
+
+.wallet-icon-invert {
+    filter: invert(1);
+}
+
+.wallet-asset-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+}
+
+.wallet-asset-chip-icon {
+    width: 1.4em;
+    height: 1.4em;
+    object-fit: contain;
+}
+
+.wallet-asset-chip-symbol {
+    font-weight: 600;
+    line-height: 1;
+}
+
+.wallet-asset-heading {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4em;
+}
+
+.wallet-asset-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55em;
+}
+
+.wallet-asset-title-icon {
+    width: 2.1rem;
+    height: 2.1rem;
+    object-fit: contain;
+}
+
+.wallet-asset-title-symbol {
+    font-weight: 600;
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+.wallet-asset-heading-code {
+    font-weight: 500;
+}

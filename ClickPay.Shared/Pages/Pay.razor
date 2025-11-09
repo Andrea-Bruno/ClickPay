@@ -1,6 +1,7 @@
 
 @page "/pay"
-@using ClickPay.Shared.Services
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.CryptoAssets
 @inject LocalizationService Loc
 @inject IQrScannerService QrScanner
 @inject PaymentRequestParser PaymentParser
@@ -82,7 +83,7 @@
 		try
 		{
 			var result = await QrScanner.ScanAsync(new QrScanRequest(
-				WalletAsset.Bitcoin,
+				WalletAssetHelper.NormalizeCode("BTC"),
 				null,
 				Loc.T("QrScan_Prompt_Title"),
 				Loc.T("QrScan_Prompt_Message"),
@@ -112,14 +113,14 @@
 				return;
 			}
 
-			if (parsed.Asset is null || (parsed.Asset != WalletAsset.Bitcoin && parsed.Asset != WalletAsset.Eurc && parsed.Asset != WalletAsset.Sol && parsed.Asset != WalletAsset.Xaut))
+			if (!TryResolveSupportedAsset(parsed, out var asset))
 			{
 				feedbackMessage = Loc.T("ErrorUnsupportedAsset");
 				StateHasChanged();
 				return;
 			}
 
-			NavigateToSend(parsed);
+			NavigateToSend(parsed, asset);
 		}
 		catch
 		{
@@ -129,17 +130,9 @@
 		}
 	}
 
-	private void NavigateToSend(PaymentRequestParseResult parsed)
+	private void NavigateToSend(PaymentRequestParseResult parsed, CryptoAsset asset)
 	{
 		navigating = true;
-		if (parsed.Asset is not WalletAsset asset)
-		{
-			navigating = false;
-			feedbackMessage = Loc.T("ErrorUnsupportedAsset");
-			StateHasChanged();
-			return;
-		}
-
 		var segment = WalletAssetHelper.GetRouteSegment(asset);
 
 		var payload = parsed.RawPayload ?? parsed.Address ?? string.Empty;
@@ -148,5 +141,40 @@
 			: $"/wallet/{segment}/send?payload={Uri.EscapeDataString(payload)}";
 
 		Navigation.NavigateTo(target, true);
+	}
+
+	private static bool TryResolveSupportedAsset(PaymentRequestParseResult parsed, out CryptoAsset asset)
+	{
+		if (parsed.Asset is not null)
+		{
+			asset = parsed.Asset;
+			return IsSupportedAsset(asset);
+		}
+
+		if (parsed.AssetCode is not null && WalletAssetHelper.TryGetDefinition(parsed.AssetCode, out var definition))
+		{
+			asset = definition;
+			return IsSupportedAsset(asset);
+		}
+
+		asset = default!;
+		return false;
+	}
+
+	private static bool IsSupportedAsset(CryptoAsset asset)
+	{
+		if (asset.Network == BlockchainNetwork.Bitcoin)
+		{
+			return string.Equals(asset.Code, "BTC", StringComparison.OrdinalIgnoreCase);
+		}
+
+		if (asset.Network == BlockchainNetwork.Solana)
+		{
+			return string.Equals(asset.Code, "SOL", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(asset.Code, "EURC", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(asset.Code, "XAUT", StringComparison.OrdinalIgnoreCase);
+		}
+
+		return false;
 	}
 }

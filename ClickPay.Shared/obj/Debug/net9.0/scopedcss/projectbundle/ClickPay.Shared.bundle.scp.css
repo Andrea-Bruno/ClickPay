@@ -96,6 +96,22 @@ main[b-fkul4avu0x] {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.biometric-overlay[b-fkul4avu0x] {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    z-index: 1050;
+}
+
+.biometric-panel[b-fkul4avu0x] {
+    max-width: 360px;
+    width: 100%;
+}
 /* _content/ClickPay.Shared/Layout/NavMenu.razor.rz.scp.css */
 .navbar-toggler[b-o52dsv4ki5] {
     appearance: none;

@@ -5,6 +5,12 @@
   "contractAddress": "8XSigVnK9VwYq9FmkYdNvKcJsteVEh9UpAJZKkdYwGKu",
   "decimals": 6,
   "chainId": 101,
+  "coingeckoId": "euro-coin",
   "symbol": "€",
-  "hidden": false
+  "hidden": false,
+  "visibilityLocked": false,
+  "routeSegment": "eurc",
+  "aliases": ["eurc", "euro"],
+  "sortOrder": 30,
+  "networkFeeMinimumBalance": 0.001
 }

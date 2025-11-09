@@ -1,8 +1,8 @@
 ﻿@using System
 @using System.Threading.Tasks
 @using Microsoft.AspNetCore.Components
-@using ClickPay.Shared.CryptoAssets
-@using ClickPay.Shared.Services
+@using ClickPay.Wallet.Core.CryptoAssets
+@using ClickPay.Wallet.Core.Services
 @inject LocalizationService Loc
 @inject NavigationManager Navigation
 @inject WalletKeyService WalletKeys
@@ -29,11 +29,10 @@
 
         @foreach (var asset in WalletAssetHelper.GetVisibleAssets())
         {
-            var definition = WalletAssetHelper.GetDefinition(asset);
             <div class="nav-item px-3">
                 <NavLink class="nav-link" href="@GetWalletRoute(asset)">
-                    @RenderAssetIcon(definition)
-                    <span class="nav-link-text">@GetMenuLabel(asset, definition)</span>
+                    @RenderAssetIcon(asset)
+                    <span class="nav-link-text">@GetMenuLabel(asset)</span>
                 </NavLink>
             </div>
         }
@@ -85,13 +84,11 @@
         Loc.LanguageChanged += OnLanguageChanged;
     }
 
-    private string GetMenuLabel(WalletAsset asset, CryptoAsset definition)
+    private string GetMenuLabel(CryptoAsset asset)
     {
-        var baseLabel = asset switch
-        {
-            WalletAsset.Xaut => Loc.T("GoldWalletMenuLabel"),
-            _ => definition.MenuLabel
-        };
+        var baseLabel = string.Equals(asset.Code, "XAUT", StringComparison.OrdinalIgnoreCase)
+            ? Loc.T("GoldWalletMenuLabel")
+            : asset.MenuLabel;
 
         return Loc.FormatWalletLabel(baseLabel);
     }
@@ -147,7 +144,7 @@
         return "nav-icon nav-icon-glyph nav-icon-code";
     }
 
-    private static string GetWalletRoute(WalletAsset asset) => $"/wallet/{WalletAssetHelper.GetRouteSegment(asset)}";
+    private static string GetWalletRoute(CryptoAsset asset) => $"/wallet/{WalletAssetHelper.GetRouteSegment(asset)}";
 
     public void Dispose()
     {

@@ -1,11 +1,24 @@
 @page "/wallet/{type}"
+@using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Services
-@using ClickPay.Shared.CryptoAssets
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.CryptoAssets
+@using System.Globalization
+@using System.Threading
+@using System.IO
+@using System.Text
+@using System.Linq
+@using Microsoft.Extensions.Logging
+@using Microsoft.JSInterop
+@implements IDisposable
 @inject NavigationManager Navigation
-@inject HttpClient Http
 @inject LocalizationService Loc
 @inject MultiChainWalletService Wallets
 @inject WalletKeyService Vaults
+@inject FiatPreferenceStore FiatPreferences
+@inject IJSRuntime JS
+@inject ILogger<Wallet> Logger
+@inject IExchangeRateService ExchangeRates
 
 <PageTitle>Wallet</PageTitle>
 
@@ -42,52 +55,68 @@
                                 @(overview != null ? Loc.FormatWalletLabel(overview.Symbol) : Loc.T("WalletWelcomeTitle"))
                             }
                         </h2>
-                        <div class="display-4 my-3 text-primary">
-                            @(overview != null ? $"{overview.Balance:N4} {overview.Symbol}" : "")
+                        <div class="display-4 my-3 text-primary wallet-balance-display">
+                            @if (overview is not null)
+                            {
+                                <span class="wallet-balance-amount">@overview.Balance.ToString("N4")</span>
+                                @if (!string.IsNullOrEmpty(assetIconDataUri))
+                                {
+                                    <img src="@assetIconDataUri" alt="@overview.Symbol" class="wallet-balance-icon" />
+                                }
+                                else
+                                {
+                                    <span class="wallet-balance-symbol">@overview.Symbol</span>
+                                }
+                            }
                         </div>
                         <div class="text-muted">@Loc.T("WalletBalancePlaceholder")</div>
                         <div class="mt-2">
-                            <span class="fs-5 text-secondary">≈ @((eurValue ?? 0).ToString("N2")) EUR</span>
+                            <span class="fs-5 text-secondary">≈ @((fiatValue ?? 0).ToString("N2")) @GetFiatDisplayUnit()</span>
                         </div>
-                        <div class="mt-3">
-                            <small class="text-muted">@(overview != null ? overview.PrimaryAddress : "")</small>
-                        </div>
-                        @if (asset == WalletAsset.Eurc || asset == WalletAsset.Xaut)
+                        @if (HasFeeAssets)
                         {
-                            if (solBalance < minSolFee)
+                            if (ShouldWarnFeeReserve)
                             {
                                 <div class="alert alert-warning mt-3">
-                                    <strong>Attenzione:</strong>
-                                    @if (asset == WalletAsset.Eurc)
+                                    <strong>@Loc.T("WalletFeeWarningTitle")</strong>
+                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
+                                    <br />
+                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningBalance"), FormatFeeAssetList(), FormatAmount(FeeReserveBalance))</span>
+                                    @if (RecommendedFeeReserve is { } reserve)
                                     {
-                                        <span>Per inviare EURC su Solana è necessario avere SOL per pagare le fee di rete.</span>
+                                        <br />
+                                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningReserveRecommendation"), FormatFeeAssetList(), FormatAmount(reserve))</span>
                                     }
-                                    else
+                                    @if (PrimaryFeeAsset is { } primaryFeeAsset)
                                     {
-                                        <span>Per inviare XAUT₀ (Oro) su Solana è necessario avere SOL per pagare le fee di rete.</span>
+                                        <br />
+                                        <button class="btn btn-outline-primary mt-2" @onclick="() => OpenFeeAssetWallet(primaryFeeAsset.Code)">@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeOpenFeeWallet"), GetAssetShortLabel(primaryFeeAsset))</button>
                                     }
-                                    <br />Il tuo saldo SOL è insufficiente.<br />
-                                    <button class="btn btn-outline-primary mt-2" @onclick="GoToSolWallet">Vai al SOL wallet</button>
                                 </div>
                             }
                             else
                             {
                                 <div class="alert alert-info mt-3">
-                                    @if (asset == WalletAsset.Eurc)
+                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
+                                    @if (RecommendedFeeReserve is { } reserve)
                                     {
-                                        <span>Per le transazioni EURC su Solana è necessario avere SOL per pagare le fee.</span>
+                                        <br />
+                                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRecommended"), FormatAmount(reserve), FormatFeeAssetList())</span>
                                     }
-                                    else
-                                    {
-                                        <span>Per le transazioni XAUT₀ su Solana è necessario avere SOL per pagare le fee.</span>
-                                    }
-                                    <br />Assicurati di mantenere sempre un piccolo saldo SOL.</div>
+                                </div>
                             }
                         }
-                        else if (asset == WalletAsset.Sol)
+                        else if (IsNativeAsset)
                         {
                             <div class="alert alert-info mt-3">
-                                Le transazioni SOL consumano una piccola quantità del saldo come fee di rete. Mantieni sempre un margine disponibile.
+                                @if (assetDefinition?.NetworkFeeMinimumBalance is { } nativeReserve && nativeReserve > 0m)
+                                {
+                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNative"), GetMainAssetLabel(), FormatAmount(nativeReserve))</span>
+                                }
+                                else
+                                {
+                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNativeGeneral"), GetMainAssetLabel())</span>
+                                }
                             </div>
                         }
                     </div>
@@ -142,35 +171,215 @@
 
 @code {
     [Parameter] public string? type { get; set; }
-    private WalletAsset asset;
+    private string assetCode = string.Empty;
     private WalletOverview? overview;
     private CryptoAsset? assetDefinition;
+    private string? assetIconDataUri;
     private List<WalletTransaction> transactions = new();
     private bool loading = true;
     private string? error;
-    private decimal? eurValue;
-    private DateTime eurValueLastUpdate = DateTime.MinValue;
+    private decimal? fiatValue;
+    private CachedExchangeRate? cachedFiatRate;
+    private FiatPreferenceStore.FiatCurrencyOption? fiatPreference;
     private bool awaitingInteractive;
-    private decimal solBalance = 0;
-    private decimal minSolFee = 0.001m;
+    private readonly Dictionary<string, WalletOverview> feeAssetOverviews = new(StringComparer.OrdinalIgnoreCase);
+    private readonly List<CryptoAsset> feeAssetDefinitions = new();
+    private bool storageRetryQueued;
+    private static readonly TimeSpan OperationTimeout = TimeSpan.FromSeconds(60);
+    private static readonly SemaphoreSlim LogFileLock = new(1, 1);
+    private static readonly string LogDirectory = Path.Combine(AppContext.BaseDirectory, "logs");
+    private static readonly string LogFilePath = Path.Combine(LogDirectory, "wallet-agent.log");
+    private bool logFileCleared;
+    private bool disposed;
+
+    private void ScheduleOverviewRefresh()
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        var asset = assetCode;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var updated = await Wallets.GetOverviewAsync(asset, null, CancellationToken.None).ConfigureAwait(false);
+                if (disposed || updated is null)
+                {
+                    return;
+                }
+
+                overview = updated;
+                transactions = new List<WalletTransaction>(updated.Transactions);
+
+                if (cachedFiatRate is not null)
+                {
+                    fiatValue = updated.Balance * cachedFiatRate.Value;
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogDebug(ex, "Unable to refresh overview for asset {Asset}.", asset);
+            }
+        });
+    }
+
+    private void ScheduleTransactionsRefresh()
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        var asset = assetCode;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var refreshed = await Wallets.GetTransactionsAsync(asset, null, CancellationToken.None).ConfigureAwait(false);
+                if (disposed)
+                {
+                    return;
+                }
+
+                transactions = new List<WalletTransaction>(refreshed ?? Array.Empty<WalletTransaction>());
+
+                if (overview is not null)
+                {
+                    overview = overview with { Transactions = transactions };
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogDebug(ex, "Unable to refresh transactions for asset {Asset}.", asset);
+            }
+        });
+    }
+
+    private void ScheduleFeeAssetRefresh(string feeAssetCode)
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var updated = await Wallets.GetOverviewAsync(feeAssetCode, null, CancellationToken.None).ConfigureAwait(false);
+                if (disposed)
+                {
+                    return;
+                }
+
+                if (updated is null)
+                {
+                    feeAssetOverviews.Remove(feeAssetCode);
+                }
+                else
+                {
+                    feeAssetOverviews[feeAssetCode] = updated;
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogDebug(ex, "Unable to refresh fee asset overview for {Asset}.", feeAssetCode);
+            }
+        });
+    }
+
+    private void ScheduleFiatRefresh()
+    {
+        if (disposed || assetDefinition is null || fiatPreference is null)
+        {
+            return;
+        }
+
+        var definition = assetDefinition;
+        var fiat = fiatPreference.Code;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var refreshed = await ExchangeRates.GetRateAsync(definition, fiat, null, CancellationToken.None).ConfigureAwait(false);
+                if (disposed || refreshed is null)
+                {
+                    return;
+                }
+
+                cachedFiatRate = refreshed;
+
+                if (overview is not null)
+                {
+                    fiatValue = overview.Balance * refreshed.Value;
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogDebug(ex, "Unable to refresh fiat rate for {Asset}->{Fiat}.", definition.Code, fiat);
+            }
+        });
+    }
 
     protected override async Task OnParametersSetAsync()
     {
-        if (!WalletAssetHelper.TryParse(type, out asset))
+        if (disposed)
         {
-            error = "Asset non supportato.";
+            return;
+        }
+
+        if (!WalletAssetHelper.TryParse(type, out var resolvedAsset))
+        {
+            error = Loc.T("ErrorUnsupportedAsset");
             loading = false;
+            assetDefinition = null;
+            assetIconDataUri = null;
+            feeAssetDefinitions.Clear();
+            feeAssetOverviews.Clear();
             return;
         }
 
         try
         {
-            assetDefinition = WalletAssetHelper.GetDefinition(asset);
+            assetDefinition = resolvedAsset;
+            assetCode = assetDefinition.Code;
+            UpdateAssetIcon();
+            UpdateFeeAssetDefinitions();
         }
         catch (Exception ex)
         {
             error = ex.Message;
             loading = false;
+            feeAssetDefinitions.Clear();
+            feeAssetOverviews.Clear();
+            return;
+        }
+
+        try
+        {
+            fiatPreference = await FiatPreferences.GetPreferredOptionAsync();
+        }
+        catch (SecureStorageUnavailableException ex)
+        {
+            Logger?.LogWarning(ex, "Secure storage unavailable while loading fiat preference.");
+            await AppendLogAsync("Secure storage unavailable while loading fiat preference.", ex);
+            error = Loc.T("StorageUnavailableError");
+            loading = false;
+            awaitingInteractive = false;
+            storageRetryQueued = false;
             return;
         }
 
@@ -184,111 +393,207 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (!awaitingInteractive || firstRender)
+        if (disposed)
         {
             return;
         }
-
-        awaitingInteractive = false;
-        await LoadWalletAsync();
 
         if (!awaitingInteractive)
         {
-            StateHasChanged();
+            return;
         }
-    }
 
-    private async Task UpdateEurValueAsync()
-    {
-        if (overview is null)
+        if (firstRender)
+        {
+            await AppendLogAsync("OnAfterRenderAsync: awaiting interactive; skipping because firstRender=true.");
+            return;
+        }
+
+    await AppendLogAsync("OnAfterRenderAsync: resuming wallet load after interactive connection established.");
+        awaitingInteractive = false;
+        await LoadWalletAsync();
+
+        if (disposed)
         {
             return;
         }
 
-        if (eurValue == null || (DateTime.UtcNow - eurValueLastUpdate).TotalMinutes > 60)
+        if (!awaitingInteractive)
         {
-            decimal rate = await GetConversionRateAsync(overview.Symbol);
-            eurValue = overview.Balance * rate;
-            eurValueLastUpdate = DateTime.UtcNow;
+            await AppendLogAsync("OnAfterRenderAsync: wallet load completed; requesting UI update.");
+            await InvokeAsync(StateHasChanged);
         }
     }
 
-    private async Task<decimal> GetConversionRateAsync(string symbol)
+    private void UpdateAssetIcon()
     {
-        if (string.IsNullOrWhiteSpace(symbol))
+        if (assetDefinition is not null && CryptoAssetIconResolver.TryGetIconDataUri(assetDefinition, out var iconUri) && IsPngDataUri(iconUri))
         {
-            return 0m;
+            assetIconDataUri = iconUri;
         }
-
-        if (symbol.Equals("BTC", StringComparison.OrdinalIgnoreCase))
+        else if (!string.IsNullOrWhiteSpace(assetCode) && CryptoAssetIconResolver.TryGetIconDataUri(assetCode, out var fallbackIcon) && IsPngDataUri(fallbackIcon))
         {
-            return await GetCoinGeckoRateAsync("bitcoin");
+            assetIconDataUri = fallbackIcon;
         }
-
-        if (symbol.Equals("SOL", StringComparison.OrdinalIgnoreCase))
+        else
         {
-            return await GetCoinGeckoRateAsync("solana");
+            assetIconDataUri = null;
         }
-
-        if (symbol.Equals("XAUT₀", StringComparison.OrdinalIgnoreCase))
-        {
-            return await GetCoinGeckoRateAsync("tether-gold");
-        }
-
-        if (symbol.Equals("EURC", StringComparison.OrdinalIgnoreCase))
-        {
-            return 1.00m;
-        }
-
-        return 0m;
     }
 
-    private async Task<decimal> GetCoinGeckoRateAsync(string assetId)
+    private static bool IsPngDataUri(string? value)
     {
-        try
+        return !string.IsNullOrEmpty(value) && value.StartsWith("data:image/png", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task<bool> UpdateFiatValueAsync(CancellationToken cancellationToken)
+    {
+        if (overview is null || assetDefinition is null)
         {
-            var url = $"https://api.coingecko.com/api/v3/simple/price?ids={assetId}&vs_currencies=eur";
-            var result = await Http.GetFromJsonAsync<Dictionary<string, Dictionary<string, decimal>>>(url);
-            if (result != null && result.TryGetValue(assetId, out var values) && values.TryGetValue("eur", out var eur))
-            {
-                return eur;
-            }
-        }
-        catch
-        {
-            // ignore and fall back to zero
+            return true;
         }
 
-        return 0m;
+        var preference = fiatPreference ?? await FiatPreferences.GetPreferredOptionAsync();
+        if (preference is null)
+        {
+            return true;
+        }
+
+        fiatPreference = preference;
+
+        if (string.IsNullOrWhiteSpace(assetDefinition.CoingeckoId))
+        {
+            fiatValue = null;
+            cachedFiatRate = null;
+            return true;
+        }
+
+    var rate = await ExchangeRates.GetRateAsync(assetDefinition, preference.Code, ScheduleFiatRefresh, cancellationToken);
+        cachedFiatRate = rate;
+
+        if (rate is not null)
+        {
+            fiatValue = overview.Balance * rate.Value;
+        }
+
+        return true;
     }
 
     private async Task LoadWalletAsync()
     {
+        if (disposed)
+        {
+            return;
+        }
+
+        // Debugger.Break();
+    await EnsureLogFileClearedAsync();
         loading = true;
         error = null;
 
         try
         {
-            if (!await Vaults.HasVaultAsync())
+            var vaultCheck = await RunWithTimeoutAsync(ct => Vaults.HasVaultAsync(ct), Loc.T("WalletTimeoutVault"));
+            if (disposed)
+            {
+                return;
+            }
+
+            if (!vaultCheck.Success)
+            {
+                return;
+            }
+
+            if (!vaultCheck.Result)
             {
                 Navigation.NavigateTo("/onboarding", true);
                 return;
             }
 
-            overview = await Wallets.GetOverviewAsync(asset);
-            transactions = new List<WalletTransaction>(overview.Transactions);
-            await UpdateEurValueAsync();
-                if (asset == WalletAsset.Eurc || asset == WalletAsset.Xaut)
-                {
-                    solBalance = await Wallets.GetSolBalanceAsync();
-                }
+            var overviewResult = await RunWithTimeoutAsync(ct => Wallets.GetOverviewAsync(assetCode, ScheduleOverviewRefresh, ct), Loc.T("WalletTimeoutOverview"));
+            if (disposed)
+            {
+                return;
+            }
+
+            if (!overviewResult.Success)
+            {
+                return;
+            }
+
+            overview = overviewResult.Result;
+            if (overview is null)
+            {
+                error = Loc.T("ErrorUnsupportedAsset");
+                loading = false;
+                return;
+            }
+
+            var transactionsResult = await RunWithTimeoutAsync(ct => Wallets.GetTransactionsAsync(assetCode, ScheduleTransactionsRefresh, ct), Loc.T("WalletTimeoutTransactions"));
+            if (disposed)
+            {
+                return;
+            }
+
+            if (transactionsResult.Success && transactionsResult.Result is not null)
+            {
+                transactions = new List<WalletTransaction>(transactionsResult.Result);
+            }
+            else
+            {
+                transactions = new List<WalletTransaction>(overview.Transactions);
+            }
+            fiatValue = null;
+            cachedFiatRate = null;
+
+            var fiatUpdate = await RunWithTimeoutAsync(ct => UpdateFiatValueAsync(ct), Loc.T("WalletTimeoutFiat"));
+            if (disposed)
+            {
+                return;
+            }
+
+            if (!fiatUpdate.Success)
+            {
+                return;
+            }
+
+            UpdateFeeAssetDefinitions();
+
+            var feeRefresh = await RefreshFeeAssetOverviewsAsync();
+            if (disposed)
+            {
+                return;
+            }
+
+            if (!feeRefresh)
+            {
+                return;
+            }
+
+            storageRetryQueued = false;
         }
-        catch (BrowserStorageUnavailableException)
+        catch (SecureStorageUnavailableException ex)
         {
-            awaitingInteractive = true;
+            Logger?.LogWarning(ex, "Secure storage unavailable while loading wallet {AssetCode}. awaitingInteractive={Awaiting}", assetCode, awaitingInteractive);
+            await AppendLogAsync($"Secure storage unavailable while loading wallet {assetCode}. awaitingInteractive={awaitingInteractive}", ex);
+            if (!storageRetryQueued)
+            {
+                storageRetryQueued = true;
+                awaitingInteractive = true;
+                loading = true;
+                error = null;
+            }
+            else
+            {
+                loading = false;
+                error = Loc.T("StorageUnavailableError");
+                awaitingInteractive = false;
+            }
         }
         catch (Exception ex)
         {
+            Logger?.LogError(ex, "Unhandled exception while loading wallet {AssetCode}", assetCode);
+            await AppendLogAsync($"Unhandled exception while loading wallet {assetCode}", ex);
             error = ex.Message;
         }
         finally
@@ -300,16 +605,272 @@
         }
     }
 
+    public void Dispose()
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        disposed = true;
+    }
+
     private void ReceivePayment() => Navigation.NavigateTo($"/wallet/{type}/receive");
     private void SendPayment() => Navigation.NavigateTo($"/wallet/{type}/send");
-        private void GoToSolWallet() => Navigation.NavigateTo("/wallet/sol");
+
+    private string GetFiatDisplayUnit()
+    {
+        if (fiatPreference is { Symbol: { Length: > 0 } symbol })
+        {
+            return symbol;
+        }
+
+    return fiatPreference?.Code ?? FiatPreferenceStore.DefaultCurrencyCode;
+    }
 
     private string GetWalletHeading(CryptoAsset definition)
     {
-        var baseLabel = asset == WalletAsset.Xaut
-            ? Loc.T("GoldWalletMenuLabel")
-            : definition.MenuLabel;
+        var baseLabel = definition.MenuLabel;
 
         return Loc.FormatWalletLabel(baseLabel);
+    }
+
+    private bool HasFeeAssets => feeAssetDefinitions.Count > 0;
+
+    private decimal FeeReserveBalance => feeAssetDefinitions.Sum(definition =>
+        feeAssetOverviews.TryGetValue(definition.Code, out var overview) ? overview.Balance : 0m);
+
+    private decimal? RecommendedFeeReserve => assetDefinition?.NetworkFeeMinimumBalance;
+
+    private bool ShouldWarnFeeReserve => HasFeeAssets && (FeeReserveBalance <= 0m || (RecommendedFeeReserve is { } minimum && FeeReserveBalance < minimum));
+
+    private CryptoAsset? PrimaryFeeAsset => feeAssetDefinitions.Count > 0 ? feeAssetDefinitions[0] : null;
+
+    private bool IsNativeAsset => assetDefinition is { } definition && string.IsNullOrWhiteSpace(definition.ContractAddress);
+
+    private void UpdateFeeAssetDefinitions()
+    {
+        feeAssetDefinitions.Clear();
+        feeAssetOverviews.Clear();
+
+        if (assetDefinition is null)
+        {
+            return;
+        }
+
+        var feeCodes = WalletAssetHelper.GetFeeAssetCodes(assetDefinition);
+        if (feeCodes.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var feeCode in feeCodes)
+        {
+            if (WalletAssetHelper.TryGetDefinition(feeCode, out var definition))
+            {
+                feeAssetDefinitions.Add(definition);
+            }
+        }
+    }
+
+    private async Task<bool> RefreshFeeAssetOverviewsAsync()
+    {
+        if (!HasFeeAssets)
+        {
+            feeAssetOverviews.Clear();
+            return true;
+        }
+
+        foreach (var definition in feeAssetDefinitions)
+        {
+            var feeCode = definition.Code;
+            var feeResult = await RunWithTimeoutAsync(ct => Wallets.GetOverviewAsync(feeCode, () => ScheduleFeeAssetRefresh(feeCode), ct), Loc.T("WalletTimeoutFeeBalance"));
+            if (disposed)
+            {
+                return false;
+            }
+
+            if (!feeResult.Success)
+            {
+                return false;
+            }
+
+            if (feeResult.Result is null)
+            {
+                feeAssetOverviews.Remove(definition.Code);
+                continue;
+            }
+
+            feeAssetOverviews[definition.Code] = feeResult.Result;
+        }
+
+        return true;
+    }
+
+    private void OpenFeeAssetWallet(string feeAssetCode)
+    {
+        if (string.IsNullOrWhiteSpace(feeAssetCode))
+        {
+            return;
+        }
+
+        if (WalletAssetHelper.TryGetDefinition(feeAssetCode, out var feeAsset))
+        {
+            var route = WalletAssetHelper.GetRouteSegment(feeAsset);
+            Navigation.NavigateTo($"/wallet/{route}");
+            return;
+        }
+
+        Navigation.NavigateTo($"/wallet/{feeAssetCode.ToLowerInvariant()}");
+    }
+
+    private string GetMainAssetLabel()
+        => assetDefinition is not null ? GetAssetLabel(assetDefinition) : overview?.Symbol ?? assetCode;
+
+    private static string GetAssetLabel(CryptoAsset asset)
+    {
+        var name = !string.IsNullOrWhiteSpace(asset.Name) ? asset.Name : asset.Code;
+        if (string.IsNullOrWhiteSpace(asset.Code) || string.Equals(name, asset.Code, StringComparison.OrdinalIgnoreCase))
+        {
+            return name;
+        }
+
+        return $"{name} ({asset.Code})";
+    }
+
+    private static string GetAssetShortLabel(CryptoAsset asset)
+    {
+        if (!string.IsNullOrWhiteSpace(asset.Code))
+        {
+            return asset.Code;
+        }
+
+        if (!string.IsNullOrWhiteSpace(asset.Name))
+        {
+            return asset.Name;
+        }
+
+        return "asset";
+    }
+
+    private string FormatFeeAssetList()
+    {
+        if (!HasFeeAssets)
+        {
+            return string.Empty;
+        }
+
+        return string.Join(", ", feeAssetDefinitions.Select(GetAssetShortLabel));
+    }
+
+    private static string FormatAmount(decimal value) => value.ToString("N4", CultureInfo.CurrentCulture);
+
+    private async Task<(bool Success, T? Result)> RunWithTimeoutAsync<T>(Func<CancellationToken, Task<T>> operation, string errorMessage)
+    {
+        using var cts = new CancellationTokenSource(OperationTimeout);
+
+        try
+        {
+            var result = await operation(cts.Token);
+            return (true, result);
+        }
+        catch (OperationCanceledException) when (cts.IsCancellationRequested)
+        {
+            Logger?.LogWarning("Operation timed out after {TimeoutSeconds}s while loading wallet {AssetCode}", OperationTimeout.TotalSeconds, assetCode);
+            await AppendLogAsync($"Operation timeout after {OperationTimeout.TotalSeconds}s while loading wallet {assetCode}");
+            await NotifyTimeoutAsync(errorMessage);
+        }
+        catch (TimeoutException)
+        {
+            Logger?.LogWarning("TimeoutException thrown after {TimeoutSeconds}s while loading wallet {AssetCode}", OperationTimeout.TotalSeconds, assetCode);
+            await AppendLogAsync($"TimeoutException thrown after {OperationTimeout.TotalSeconds}s while loading wallet {assetCode}");
+            await NotifyTimeoutAsync(errorMessage);
+        }
+
+        return (false, default);
+    }
+
+    private async Task NotifyTimeoutAsync(string message)
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        Logger?.LogWarning("Wallet timeout message surfaced to UI: {Message}", message);
+    await AppendLogAsync($"Wallet timeout surfaced to UI: {message}");
+        error = message;
+        loading = false;
+        awaitingInteractive = false;
+
+        try
+        {
+            await JS.InvokeVoidAsync("alert", message);
+        }
+        catch (JSException)
+        {
+            Logger?.LogWarning("Timeout alert suppressed because JS interop is not available yet.");
+            await AppendLogAsync("Timeout alert suppressed because JS interop is not available yet.");
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("JavaScript interop", StringComparison.OrdinalIgnoreCase))
+        {
+            Logger?.LogWarning(ex, "Timeout alert could not be shown because JS interop is unavailable.");
+            await AppendLogAsync("Timeout alert could not be shown because JS interop is unavailable.", ex);
+        }
+    }
+
+    private async Task EnsureLogFileClearedAsync()
+    {
+        if (logFileCleared)
+        {
+            return;
+        }
+
+    await LogFileLock.WaitAsync();
+        try
+        {
+            if (logFileCleared)
+            {
+                return;
+            }
+
+            if (!Directory.Exists(LogDirectory))
+            {
+                Directory.CreateDirectory(LogDirectory);
+            }
+
+            await File.WriteAllTextAsync(LogFilePath, string.Empty, Encoding.UTF8);
+            logFileCleared = true;
+        }
+        finally
+        {
+            LogFileLock.Release();
+        }
+    }
+
+    private async Task AppendLogAsync(string message, Exception? exception = null)
+    {
+    await EnsureLogFileClearedAsync();
+
+        var builder = new StringBuilder()
+            .Append('[')
+            .Append(DateTime.UtcNow.ToString("O"))
+            .Append("] ")
+            .AppendLine(message);
+
+        if (exception is not null)
+        {
+            builder.AppendLine(exception.ToString());
+        }
+
+    await LogFileLock.WaitAsync();
+        try
+        {
+            await File.AppendAllTextAsync(LogFilePath, builder.ToString(), Encoding.UTF8);
+        }
+        finally
+        {
+            LogFileLock.Release();
+        }
     }
 }

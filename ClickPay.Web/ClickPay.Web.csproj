@@ -8,6 +8,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ClickPay.Shared\ClickPay.Shared.csproj" />
+    <ProjectReference Include="..\ClickPay.Wallet.Core\ClickPay.Wallet.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

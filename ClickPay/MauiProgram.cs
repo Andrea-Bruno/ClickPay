@@ -1,13 +1,21 @@
 ﻿using ClickPay.Services;
+using ClickPay.Shared.Preferences;
 using ClickPay.Shared.Services;
-using Microsoft.AspNetCore.Components.ProtectedBrowserStorage;
+using ClickPay.Wallet.Core.Services;
+using ClickPay.Wallet.Core.Blockchain;
+using ClickPay.Wallet.Core.Blockchain.Bitcoin;
+using ClickPay.Wallet.Core.Blockchain.Solana;
+using ClickPay.Wallet.Core.Blockchain.Ethereum;
+using ClickPay.Wallet.Core.DependencyInjection;
+using ClickPay.Wallet.Core.Wallet;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Maui.Storage;
 using NBitcoin;
 using System.Net.Http;
-using ZXing.Net.Maui.Controls;
-using Microsoft.AspNetCore.DataProtection;
+using System;
 using System.IO;
+using ZXing.Net.Maui.Controls;
 
 namespace ClickPay
 {
@@ -24,15 +32,15 @@ namespace ClickPay
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });
 
-            // Data Protection per ProtectedLocalStorage
-            builder.Services
-                .AddDataProtection()
-                .SetApplicationName("ClickPay")
-                .PersistKeysToFileSystem(new DirectoryInfo(FileSystem.AppDataDirectory));
-
             // Servizi condivisi
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            builder.Services.AddSingleton<LocalizationService>();
+            builder.Services.AddSingleton<ClickPay.Shared.Services.LocalizationService>();
+            builder.Services.AddScoped<FiatPreferenceStore>();
+            builder.Services.Configure<MarketDataCacheOptions>(options =>
+            {
+                options.CacheDirectory = Path.Combine(FileSystem.AppDataDirectory, "cache");
+                options.EntryLifetime = TimeSpan.FromMinutes(5);
+            });
             builder.Services.Configure<BitcoinWalletOptions>(options =>
             {
 #if DEBUG
@@ -43,7 +51,6 @@ namespace ClickPay
                 options.CoinType = 0;
 #endif
             });
-            builder.Services.AddSingleton<BitcoinWalletService>();
             builder.Services.Configure<SolanaWalletOptions>(options =>
             {
 #if DEBUG
@@ -60,25 +67,38 @@ namespace ClickPay
                     options.TransactionHistoryLimit = historyLimit;
                 }
             });
-            builder.Services.AddSingleton<SolanaWalletService>();
+            builder.Services.Configure<EthereumWalletOptions>(options =>
+            {
+#if DEBUG
+                options.RpcEndpoint = "https://ethereum-sepolia.blockpi.network/v1/rpc/public";
+                options.ChainId = 11155111;
+#else
+                options.RpcEndpoint = "https://ethereum.publicnode.com";
+                options.ChainId = 1;
+#endif
+            });
             builder.Services.AddSingleton<HttpClient>();
-            builder.Services.AddScoped<ProtectedLocalStorage>();
-            builder.Services.AddScoped<WalletKeyService>();
-            builder.Services.AddScoped<ILocalSecureStore, LocalSecureStore>();
+            builder.Services.AddSingleton<IExchangeRateService>(sp =>
+            {
+                var http = sp.GetRequiredService<HttpClient>();
+                var opts = sp.GetRequiredService<IOptions<MarketDataCacheOptions>>();
+                var logger = sp.GetService<ILogger<CoinGeckoExchangeRateService>>();
+                return new CoinGeckoExchangeRateService(http, opts, logger);
+            });
+            builder.Services.AddScoped<ILocalSecureStore, SecureStorageLocalSecureStore>();
+#if ANDROID
+            builder.Services.AddScoped<IBiometricLockService, AndroidBiometricLockService>();
+#elif IOS
+            builder.Services.AddScoped<IBiometricLockService, IosBiometricLockService>();
+#else
+            builder.Services.AddScoped<IBiometricLockService, NoOpBiometricLockService>();
+#endif
 #if ANDROID || IOS || MACCATALYST
             builder.Services.AddSingleton<IQrScannerService, MauiQrScannerService>();
 #else
             builder.Services.AddSingleton<IQrScannerService, NoOpQrScannerService>();
 #endif
-            builder.Services.AddScoped<BitcoinNetworkClient>(sp =>
-            {
-                var http = sp.GetRequiredService<HttpClient>();
-                var options = sp.GetRequiredService<IOptions<BitcoinWalletOptions>>();
-                var networkName = options.Value?.Network ?? NBitcoin.Network.Main.ToString();
-                var network = NBitcoin.Network.GetNetwork(networkName) ?? NBitcoin.Network.Main;
-                return new BitcoinNetworkClient(http, network);
-            });
-            builder.Services.AddScoped<MultiChainWalletService>();
+            builder.Services.AddWalletCore();
             builder.Services.AddSingleton<PaymentRequestParser>();
 
             builder.Services.AddMauiBlazorWebView();

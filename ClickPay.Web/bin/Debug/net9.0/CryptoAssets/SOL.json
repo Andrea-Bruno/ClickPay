@@ -4,6 +4,12 @@
   "blockchain": "solana",
   "decimals": 9,
   "chainId": 101,
+  "coingeckoId": "solana",
   "symbol": "◎",
-  "hidden": false
+  "hidden": false,
+  "visibilityLocked": true,
+  "routeSegment": "sol",
+  "aliases": ["sol", "solana"],
+  "sortOrder": 20,
+  "networkFeeMinimumBalance": 0.001
 }

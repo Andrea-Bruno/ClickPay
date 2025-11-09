@@ -1,20 +1,11 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using ClickPay.Shared.Layout
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link rel="stylesheet" href="_content/ClickPay.Shared/bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="_content/ClickPay.Shared/app.css" />
-    <link rel="stylesheet" href="ClickPay.Web.styles.css" />
-    <link rel="icon" type="image/png" href="_content/ClickPay.Shared/favicon.png" />
-    <HeadOutlet @rendermode="InteractiveServer" />
-</head>
-
-<body>
-    <Routes @rendermode="InteractiveServer" />
-    <script src="_framework/blazor.web.js"></script>
-</body>
-
-</html>
+<Router AppAssembly="typeof(MainLayout).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData" DefaultLayout="typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+    </Found>
+</Router>

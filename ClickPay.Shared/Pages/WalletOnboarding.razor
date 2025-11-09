@@ -1,12 +1,18 @@
 
 @page "/onboarding"
 @using System.Collections.Generic
-@using ClickPay.Shared.Services
+@using System.Linq
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Blockchain
+@using ClickPay.Wallet.Core.Wallet
+@using Microsoft.Extensions.Logging
 @using Microsoft.AspNetCore.Components
-@using NBitcoin
 @inject LocalizationService Loc
-@inject BitcoinWalletService WalletService
+@inject WalletMnemonicService Mnemonics
 @inject WalletKeyService WalletKeys
+@inject WalletProviderRegistry ProviderRegistry
+@inject NavigationManager Navigation
+@inject ILogger<WalletOnboarding> Logger
 
 <PageTitle>@Loc.T("WalletOnboardingTitle")</PageTitle>
 
@@ -90,7 +96,6 @@
     private string? restorePassphrase;
     private string? restoreError;
     private string? successMessage;
-    private WalletAccount? activeAccount;
 
     private void ShowCreateWallet()
     {
@@ -114,25 +119,21 @@
             return;
         }
 
-        activeAccount = WalletService.DeriveAccount(generatedPassphrase);
+        if (!Mnemonics.ValidateMnemonic(generatedPassphrase))
+        {
+            Logger?.LogWarning("Generated mnemonic failed validation.");
+            restoreError = Loc.T("RestoreWalletError");
+            return;
+        }
 
-        var vault = BuildVault(generatedPassphrase, passphrase: string.Empty);
-        await WalletKeys.SaveVaultAsync(vault);
-
-        successMessage = Loc.T("WalletCreatedSuccess");
-        restoreError = null;
+        await PersistVaultAsync(generatedPassphrase.Trim(), string.Empty, Loc.T("WalletCreatedSuccess"));
     }
     private async Task ConfirmRestoreWallet()
     {
         if (IsValidPassphrase(restorePassphrase))
         {
-            activeAccount = WalletService.DeriveAccount(restorePassphrase!);
-
-            var vault = BuildVault(restorePassphrase!, passphrase: string.Empty);
-            await WalletKeys.SaveVaultAsync(vault);
-
-            successMessage = Loc.T("WalletRestoredSuccess");
-            restoreError = null;
+            var trimmed = restorePassphrase!.Trim();
+            await PersistVaultAsync(trimmed, string.Empty, Loc.T("WalletRestoredSuccess"));
         }
         else
         {
@@ -142,31 +143,97 @@
     }
     private string GeneratePassphrase()
     {
-        return WalletService.GenerateMnemonic();
+        return Mnemonics.GenerateMnemonic();
     }
     private bool IsValidPassphrase(string? passphrase)
     {
-        return WalletService.ValidateMnemonic(passphrase);
+        return Mnemonics.ValidateMnemonic(passphrase);
+    }
+
+    private async Task PersistVaultAsync(string mnemonic, string passphrase, string success)
+    {
+        var vault = BuildVault(mnemonic, passphrase);
+
+        await WalletKeys.SaveVaultAsync(vault);
+
+        successMessage = success;
+        restoreError = null;
+
+        NavigateToDashboard();
     }
 
     private WalletVault BuildVault(string mnemonic, string passphrase)
     {
-        var wordCount = mnemonic.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+        var trimmed = mnemonic.Trim();
+        var wordCount = trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
 
-        var chains = new Dictionary<string, WalletVaultChainState>(StringComparer.OrdinalIgnoreCase)
+        var chains = new Dictionary<string, WalletVaultChainState>(StringComparer.OrdinalIgnoreCase);
+
+        if (ProviderRegistry is not null)
         {
-            [WalletChains.Bitcoin] = WalletVaultChainState.Default,
-            [WalletChains.Solana] = WalletVaultChainState.Default
-        };
+            try
+            {
+                foreach (var network in ProviderRegistry.GetRegisteredNetworks())
+                {
+                    var chainKey = WalletChains.ResolveChainKey(network.ToString());
+                    if (!chains.ContainsKey(chainKey))
+                    {
+                        chains.Add(chainKey, WalletVaultChainState.Default);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogWarning(ex, "Unable to enumerate wallet providers while building vault. Falling back to defaults.");
+            }
+        }
+
+        if (!chains.ContainsKey(WalletChains.Bitcoin))
+        {
+            chains[WalletChains.Bitcoin] = WalletVaultChainState.Default;
+        }
+
+        if (!chains.ContainsKey(WalletChains.Solana))
+        {
+            chains[WalletChains.Solana] = WalletVaultChainState.Default;
+        }
+
+        if (!chains.ContainsKey(WalletChains.Ethereum))
+        {
+            chains[WalletChains.Ethereum] = WalletVaultChainState.Default;
+        }
 
         return new WalletVault
         {
-            Mnemonic = mnemonic.Trim(),
+            Mnemonic = trimmed,
             Passphrase = passphrase,
             WordCount = wordCount,
             AccountIndex = 0,
             CreatedAtUtc = DateTime.UtcNow,
             Chains = chains
         };
+    }
+
+    private void NavigateToDashboard()
+    {
+        try
+        {
+            var assets = WalletAssetHelper.GetVisibleAssets().ToList();
+            if (assets.Count > 0)
+            {
+                var primary = assets[0];
+                var route = $"/wallet/{WalletAssetHelper.GetRouteSegment(primary)}";
+                Navigation.NavigateTo(route, forceLoad: true);
+            }
+            else
+            {
+                Navigation.NavigateTo("/setup", forceLoad: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger?.LogWarning(ex, "Automatic post-onboarding navigation failed. Redirecting to setup.");
+            Navigation.NavigateTo("/setup", forceLoad: true);
+        }
     }
 }
