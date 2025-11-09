@@ -1,15 +1,15 @@
 # METADATA NOTICE
 
-Le icone delle criptovalute (inclusi ETH, SOL, BTC, ecc.) presenti in `ClickPay.Wallet.Core/CryptoAssets/` sono derivate dal progetto open source:
+The cryptocurrency icons (including ETH, SOL, BTC, etc.) present in `ClickPay.Wallet.Core/CryptoAssets/` are derived from the open-source project:
 
 https://github.com/spothq/cryptocurrency-icons/tree/master/128/white
 
-Questa sorgente è raccomandata per tutte le future aggiunte di icone crypto, per garantire coerenza grafica e licenza open.
+This source is recommended for all future crypto icon additions, to ensure visual consistency and open licensing.
 
 **Credits:**
 Cryptocurrency Icons by spothq (https://github.com/spothq/cryptocurrency-icons)
-Licenza: CC0 1.0 Universal (Public Domain)
+License: CC0 1.0 Universal (Public Domain)
 
 ---
 
-Per ogni nuova icona, scaricare la PNG corrispondente dalla repository sopra e inserirla in `CryptoAssets/`.
+For every new icon, download the corresponding PNG from the repository above and place it in `CryptoAssets/`.
