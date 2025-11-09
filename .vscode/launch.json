@@ -1,7 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
-    
+
         {
             "name": "C#: ClickPay.Web [Default Configuration]",
             "type": "coreclr",
@@ -41,15 +41,7 @@
             "name": "ClickPay Android (MAUI)",
             "type": "android",
             "request": "launch",
-            "project": "${workspaceFolder}/ClickPay/ClickPay.csproj",
-            "preLaunchTask": "build-android",
-            "debugType": "portable",
-            "justMyCode": true,
-            "launchEmulator": true,
-            "emulatorTarget": "pixel_5_api_34", // Cambia con il nome del tuo AVD preferito
-            "deviceId": "", // Lascia vuoto per usare il primo device disponibile (fisico o emulatore)
-            "console": "internalConsole",
-            "stopAtEntry": false
+            "preLaunchTask": "build-android"
         }
     ]
 }

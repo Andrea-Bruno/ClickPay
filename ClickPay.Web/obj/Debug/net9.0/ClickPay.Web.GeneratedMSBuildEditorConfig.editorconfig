@@ -39,3 +39,7 @@ build_metadata.AdditionalFiles.CssScope =
 [C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Web/Components/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Web/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

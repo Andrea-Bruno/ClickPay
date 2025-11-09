@@ -58,18 +58,35 @@ h1:focus {
     text-align: center;
 }
 
+
 .wallet-balance-display .wallet-balance-icon {
     width: 1em;
     height: 1em;
     object-fit: contain;
-    filter: invert(1);
 }
 
 .wallet-balance-display .wallet-balance-symbol {
     font-weight: 600;
 }
 
-.wallet-icon-invert {
+
+/* Icon inversion: invert only in light mode */
+body.theme-light .wallet-icon-invert,
+body.theme-light .wallet-balance-icon {
+    filter: invert(1);
+}
+body.theme-dark .wallet-icon-invert,
+body.theme-dark .wallet-balance-icon {
+    filter: none;
+}
+
+/* Support for [data-theme] attribute for dark mode */
+[data-theme="dark"] .wallet-icon-invert,
+[data-theme="dark"] .wallet-balance-icon {
+    filter: none;
+}
+[data-theme="light"] .wallet-icon-invert,
+[data-theme="light"] .wallet-balance-icon {
     filter: invert(1);
 }
 

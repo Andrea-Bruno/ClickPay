@@ -2,7 +2,11 @@
   "Files": [
     {
       "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\ClickPay.Shared.bundle.scp.css",
-      "PackagePath": "staticwebassets\\ClickPay.Shared.r100s2b9i0.bundle.scp.css"
+      "PackagePath": "staticwebassets\\ClickPay.Shared.z6r791m1ri.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\wwwroot\\ThemeManager.js",
+      "PackagePath": "staticwebassets\\ThemeManager.js"
     },
     {
       "Id": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\wwwroot\\app.css",

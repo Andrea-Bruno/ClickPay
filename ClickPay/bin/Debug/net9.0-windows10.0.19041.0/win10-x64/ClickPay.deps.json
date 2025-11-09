@@ -1171,6 +1171,20 @@
             "assemblyVersion": "1.0.0.0",
             "fileVersion": "1.0.0.0"
           }
+        },
+        "resources": {
+          "de/ClickPay.Shared.resources.dll": {
+            "locale": "de"
+          },
+          "es/ClickPay.Shared.resources.dll": {
+            "locale": "es"
+          },
+          "fr/ClickPay.Shared.resources.dll": {
+            "locale": "fr"
+          },
+          "it/ClickPay.Shared.resources.dll": {
+            "locale": "it"
+          }
         }
       },
       "ClickPay.Wallet.Core/1.0.0": {

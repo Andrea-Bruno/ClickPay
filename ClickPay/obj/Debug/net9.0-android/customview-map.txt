@@ -25,6 +25,7 @@ color;obj\Debug\net9.0-android\resizetizer\sp\values\maui_colors.xml
 com.google.android.material.appbar.AppBarLayout;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\176\jl\res\layout\flyoutcontent.xml
 com.google.android.material.appbar.AppBarLayout;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\176\jl\res\layout\shellcontent.xml
 com.google.android.material.appbar.AppBarLayout;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\178\jl\res\layout\navigationlayout.xml
+crc640ec207abc449b2ca.ShellFlyoutLayout;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\176\jl\res\layout\flyoutcontent.xml
 declare-styleable;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\178\jl\res\values\attr.xml
 external-cache-path;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\179\jl\res\xml\microsoft_maui_essentials_fileprovider_file_paths.xml
 external-path;C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-android\lp\179\jl\res\xml\microsoft_maui_essentials_fileprovider_file_paths.xml

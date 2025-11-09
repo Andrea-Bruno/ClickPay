@@ -12,12 +12,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>awc8hmxehk</Fingerprint>
-      <Integrity>trOyPiPeyAzTQWGyveU9JQJmcVyEpYKIr7U9LunhjJk=</Integrity>
+      <Fingerprint>0v0hvuhvcd</Fingerprint>
+      <Integrity>ZFrg1Xaw3K+bgSxVkaG0HL0Io8yl2rI3ivmjLKwKf+Y=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>3758</FileLength>
-      <LastWriteTime>Sat, 08 Nov 2025 14:50:54 GMT</LastWriteTime>
+      <FileLength>4225</FileLength>
+      <LastWriteTime>Sun, 09 Nov 2025 11:51:28 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\app.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\bootstrap\bootstrap.min.css'))">
@@ -60,25 +60,25 @@
       <LastWriteTime>Wed, 05 Nov 2025 03:58:53 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\bootstrap\bootstrap.min.css.map'))</OriginalItemSpec>
     </StaticWebAsset>
-    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.Shared.r100s2b9i0.bundle.scp.css'))">
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.Shared.z6r791m1ri.bundle.scp.css'))">
       <SourceType>Package</SourceType>
       <SourceId>ClickPay.Shared</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
       <BasePath>_content/ClickPay.Shared</BasePath>
-      <RelativePath>ClickPay.Shared.r100s2b9i0.bundle.scp.css</RelativePath>
+      <RelativePath>ClickPay.Shared.z6r791m1ri.bundle.scp.css</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>Reference</AssetMode>
       <AssetRole>Primary</AssetRole>
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ProjectBundle</AssetTraitValue>
-      <Fingerprint>r100s2b9i0</Fingerprint>
-      <Integrity>wSvFrUbm7ZeEmMPPAtvMKgO1WTyZeaD/Y+DBbSoA8NI=</Integrity>
+      <Fingerprint>z6r791m1ri</Fingerprint>
+      <Integrity>lY0cYTYizKrieXr+NEIebRbpyHQHeezbXXcGHB/V84c=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>6930</FileLength>
-      <LastWriteTime>Sat, 08 Nov 2025 13:48:52 GMT</LastWriteTime>
-      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.Shared.r100s2b9i0.bundle.scp.css'))</OriginalItemSpec>
+      <FileLength>7162</FileLength>
+      <LastWriteTime>Sun, 09 Nov 2025 13:40:26 GMT</LastWriteTime>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.Shared.z6r791m1ri.bundle.scp.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.png'))">
       <SourceType>Package</SourceType>
@@ -139,6 +139,26 @@
       <FileLength>10538</FileLength>
       <LastWriteTime>Thu, 06 Nov 2025 01:12:00 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\js\qr-scanner.js'))</OriginalItemSpec>
+    </StaticWebAsset>
+    <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ThemeManager.js'))">
+      <SourceType>Package</SourceType>
+      <SourceId>ClickPay.Shared</SourceId>
+      <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
+      <BasePath>_content/ClickPay.Shared</BasePath>
+      <RelativePath>ThemeManager.js</RelativePath>
+      <AssetKind>All</AssetKind>
+      <AssetMode>All</AssetMode>
+      <AssetRole>Primary</AssetRole>
+      <RelatedAsset></RelatedAsset>
+      <AssetTraitName></AssetTraitName>
+      <AssetTraitValue></AssetTraitValue>
+      <Fingerprint>19smwjp1mj</Fingerprint>
+      <Integrity>e6s4Umv6Obqfu5Jw3W9MFqN5dBflUqjO/NmFdVtwbZw=</Integrity>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <FileLength>1049</FileLength>
+      <LastWriteTime>Sun, 09 Nov 2025 11:51:28 GMT</LastWriteTime>
+      <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ThemeManager.js'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>
 </Project>

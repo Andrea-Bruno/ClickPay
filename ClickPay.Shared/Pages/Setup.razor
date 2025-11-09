@@ -10,9 +10,16 @@
 @inject LocalizationService Loc
 @inject FiatPreferenceStore FiatPreferences
 @inject IBiometricLockService BiometricLock
+@inject UserPreferenceService UserPreferences
 
 <PageTitle>@Loc.T("SetupTitle")</PageTitle>
 
+<!--
+    NOTA PER AGENTI AI:
+    L'architettura di ClickPay prevede che tutte le preferenze utente (tema, lingua, ecc.)
+    siano salvate tramite la libreria Core usando UserPreferenceService e ILocalSecureStore.
+    Per ogni futura implementazione di preferenze, utilizzare sempre questa modalità centralizzata.
+-->
 <div class="container py-4">
     <div class="row justify-content-center mb-4">
         <div class="col-12 col-md-8">
@@ -114,15 +121,31 @@
             </div>
         </div>
     }
-    <div class="row fixed-bottom mb-4">
-        <div class="col-12 d-grid">
-            <button class="btn btn-success btn-lg" @onclick="SetLanguage">@Loc.T("Save")</button>
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">@Loc.T("ThemePreferenceTitle")</h3>
+                    <p class="text-muted small">@Loc.T("ThemePreferenceDescription")</p>
+                    <select class="form-select form-select-lg mb-3" @bind="selectedTheme">
+                        <option value="system">@Loc.T("ThemeSystem")</option>
+                        <option value="light">@Loc.T("ThemeLight")</option>
+                        <option value="dark">@Loc.T("ThemeDark")</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center mb-4">
+        <div class="col-12 col-md-8 d-grid">
+            <button class="btn btn-success btn-lg w-100" @onclick="SavePreferences">@Loc.T("Save")</button>
         </div>
     </div>
 </div>
 
 @code {
     private string? selectedLang;
+    private string selectedTheme = "system";
     private List<AssetVisibilityModel> assetVisibility = new();
     private List<FiatPreferenceStore.FiatCurrencyOption> fiatOptions = new();
     private bool isBiometricSupported;
@@ -135,7 +158,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        selectedLang = Loc.CurrentLanguage;
+        selectedLang = await UserPreferences.GetLanguageAsync();
+        selectedTheme = await UserPreferences.GetThemeAsync();
         assetVisibility = WalletAssetHelper.GetRegisteredAssets()
             .Where(asset => !asset.VisibilityLocked)
             .Select(asset => new AssetVisibilityModel
@@ -190,15 +214,14 @@
         }
     }
 
-    private void SetLanguage()
+    private async Task SavePreferences()
     {
-        if (string.IsNullOrWhiteSpace(selectedLang))
+        if (!string.IsNullOrWhiteSpace(selectedLang))
         {
-            return;
+            await UserPreferences.SetLanguageAsync(selectedLang);
+            Loc.CurrentLanguage = selectedLang;
         }
-
-        Loc.CurrentLanguage = selectedLang;
-        selectedLang = Loc.CurrentLanguage;
+        await UserPreferences.SetThemeAsync(selectedTheme);
         StateHasChanged();
     }
 

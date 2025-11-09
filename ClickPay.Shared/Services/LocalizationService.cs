@@ -1,623 +1,31 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
+using ClickPay.Shared.Resources;
+using ClickPay.Wallet.Core.Services;
 
 namespace ClickPay.Shared.Services
 {
     public class LocalizationService
     {
-    private readonly Dictionary<string, Dictionary<string, string>> _translations = new()
-        {
-            ["it"] = new()
-            {
-                ["WalletOnboardingTitle"] = "Benvenuto in ClickPay Wallet",
-                ["WalletWelcomeTitle"] = "Gestione Wallet",
-                ["WalletWelcomeDescription"] = "Scegli se generare un nuovo wallet o ripristinarne uno esistente tramite passphrase.",
-                ["CreateWalletButton"] = "Genera nuovo wallet",
-                ["RestoreWalletButton"] = "Ripristina wallet esistente",
-                ["CreateWalletTitle"] = "Nuovo Wallet",
-                ["CreateWalletInstructions"] = "Questa è la tua passphrase di 24 parole. Trascrivila e conservala in modo sicuro.",
-                ["PassphraseWarning"] = "La passphrase è l'unico modo per recuperare il wallet. Non perderla!",
-                ["ConfirmCreateWalletButton"] = "Conferma e crea wallet",
-                ["RestoreWalletTitle"] = "Ripristina Wallet",
-                ["RestoreWalletInstructions"] = "Inserisci le 24 parole della passphrase per recuperare il wallet.",
-                ["ConfirmRestoreWalletButton"] = "Conferma e ripristina",
-                ["RestoreWalletError"] = "Passphrase non valida. Controlla le 24 parole e riprova.",
-                ["WalletCreatedSuccess"] = "Wallet creato con successo. La chiave dell'account è stata salvata in locale.",
-                ["WalletRestoredSuccess"] = "Wallet ripristinato con successo. La chiave dell'account è stata aggiornata in locale.",
-                ["WalletXpubLabel"] = "Chiave pubblica estesa (account):",
-                ["WalletBalancePlaceholder"] = "Saldo disponibile:",
-                ["WalletSolanaAddressLabel"] = "Indirizzo Solana (EURC):",
-                ["WalletEurcBalanceLabel"] = "Saldo EURC:",
-                ["WalletLabelFormat"] = "Portafoglio {0}",
-                ["GoldWalletMenuLabel"] = "Oro",
-                ["PayTitle"] = "Paga",
-                ["ScanQRTitle"] = "Scansiona QR richiesta pagamento",
-                ["ScanQRDescription"] = "Inquadra il QR code della richiesta per compilare automaticamente i dati di pagamento.",
-                ["Pay_ScanningInProgress"] = "Scansione in corso...",
-                ["Pay_TapToRetry"] = "Tocca per riprovare.",
-                ["Pay_ScanCancelled"] = "Scansione annullata.",
-                ["Pay_EuroEquivalent"] = "≈ {0} EUR",
-                ["StartQRScan"] = "Avvia scansione QR",
-                ["CounterTitle"] = "Contatore",
-                ["CounterHeading"] = "Contatore",
-                ["CurrentCount"] = "Conteggio attuale:",
-                ["ClickMe"] = "Cliccami",
-                ["ReceivePaymentTitle"] = "Ricevi Pagamento",
-                ["SendPaymentButton"] = "Invia Pagamento",
-                ["StorageUnavailableError"] = "Archiviazione sicura non disponibile in questo ambiente. Assicurati che l'app sia in esecuzione in locale e riprova.",
-                ["WalletTimeoutVault"] = "Timeout durante il controllo del wallet locale. Riprova.",
-                ["WalletTimeoutOverview"] = "Timeout durante il caricamento dei dati del wallet. Controlla la connessione e riprova.",
-                ["WalletTimeoutFiat"] = "Timeout durante l'aggiornamento del valore fiat. Riprova più tardi.",
-                ["WalletTimeoutFeeBalance"] = "Timeout durante il recupero del saldo necessario per le commissioni di rete.",
-                ["WalletFeeWarningTitle"] = "Attenzione:",
-                ["WalletFeeWarningRequirement"] = "Per inviare {0} è necessario avere {1} per pagare le commissioni di rete.",
-                ["WalletFeeWarningBalance"] = "Saldo {0} disponibile: {1}.",
-                ["WalletFeeWarningReserveRecommendation"] = "Mantieni almeno {1} {0} per coprire i costi di rete.",
-                ["WalletFeeInfoRequirement"] = "Le transazioni {0} richiedono commissioni pagate in {1}.",
-                ["WalletFeeInfoRecommended"] = "Ti consigliamo di mantenere almeno {0} {1} come riserva.",
-                ["WalletFeeInfoNative"] = "Le transazioni {0} consumano una parte del saldo come fee di rete. Mantieni almeno {1} come riserva.",
-                ["WalletFeeInfoNativeGeneral"] = "Le transazioni {0} consumano una parte del saldo come fee di rete.",
-                ["WalletFeeOpenFeeWallet"] = "Apri portafoglio {0}",
-                ["SendPageTitle"] = "Invia {0}",
-                ["SendBalanceLabel"] = "Saldo disponibile: {0} {1}",
-                ["SendDestinationLabel"] = "Indirizzo di destinazione",
-                ["SendScanButton"] = "Scansiona QR",
-                ["SendMaxButton"] = "Massimo",
-                ["SendErrorInsufficientFunds"] = "Saldo insufficiente per completare la transazione.",
-                ["SendErrorFeeReserveRequired"] = "È necessario mantenere almeno {0} {1} disponibili per le commissioni di rete.",
-                ["SendFeeNoticeNetwork"] = "Le commissioni di rete sono pagate con la valuta nativa della blockchain. Mantieni una riserva per coprire i costi.",
-                ["SendFeeWarningLowFee"] = "Saldo per le fee basso: disponibili {0}, consigliati almeno {1}.",
-                ["RecentTransactionsTitle"] = "Ultime transazioni",
-                ["NoTransactionsMessage"] = "Nessuna transazione disponibile.",
-                ["Amount"] = "Importo:",
-                ["GenerateRequest"] = "Genera richiesta",
-                ["Address"] = "Indirizzo:",
-                ["ShareRequest"] = "Condividi richiesta",
-                ["QRCode"] = "QR Code",
-                ["RequestDetails"] = "Dettagli richiesta",
-                ["ErrorUnsupportedAsset"] = "Asset non supportato.",
-                ["ErrorInvalidAmount"] = "L'importo deve essere positivo.",
-                ["ErrorDestinationRequired"] = "L'indirizzo destinatario è obbligatorio.",
-                ["TransactionSentFormat"] = "Transazione inviata: {0}",
-                ["QrScan_Prompt_Title"] = "Inquadra il QR code",
-                ["QrScan_Prompt_Message"] = "Allinea il codice nell'inquadratura per compilare i dati di pagamento.",
-                ["QrScan_Prompt_Cancel"] = "Annulla",
-                ["QrScan_Error_NotAvailable"] = "La scansione QR non è disponibile su questo dispositivo.",
-                ["QrScan_Error_NoCamera"] = "Questo browser non consente l'accesso alla fotocamera.",
-                ["QrScan_Error_NoBarcodeApi"] = "Il browser non supporta il rilevamento nativo dei QR code.",
-                ["QrScan_Error_PermissionDenied"] = "Accesso alla fotocamera negato. Concedi il permesso e riprova.",
-                ["QrScan_Error_InitFailed"] = "Impossibile inizializzare lo scanner QR.",
-                ["QrScan_Error_Stream"] = "Errore durante l'avvio della fotocamera.",
-                ["QrScan_Error_Generic"] = "Scansione QR non riuscita.",
-                ["QrScan_Error_NoData"] = "Il codice QR non contiene dati.",
-                ["QrScan_Error_WrongNetwork"] = "Il codice QR appartiene a una blockchain differente.",
-                ["QrScan_Error_InvalidFormat"] = "Formato QR non valido.",
-                ["QrScan_Error_InvalidAmount"] = "Importo nel QR non valido.",
-                ["QrScan_Error_InvalidAddress"] = "Indirizzo in QR non valido.",
-                ["QrScan_Error_WrongToken"] = "Il QR fa riferimento a un token diverso da EURC.",
-                ["SetupTitle"] = "Impostazioni",
-                ["SelectLanguage"] = "Seleziona lingua:",
-                ["SetupAssetPreferencesTitle"] = "Preferenze asset",
-                ["SetupAssetPreferencesDescription"] = "Scegli quali asset mostrare nel menu principale.",
-                ["SetupAssetNoneConfigured"] = "Nessun asset configurato.",
-                ["SetupAssetHideLabel"] = "Nascondi {0}",
-                ["CommonSavingInProgress"] = "Salvataggio in corso…",
-                ["FiatPreferenceTitle"] = "Valuta di riferimento",
-                ["FiatPreferenceDescription"] = "Scegli la valuta che vuoi usare per vedere il valore dei tuoi asset.",
-                ["SetupFiatUpdating"] = "Aggiornamento della valuta in corso…",
-                ["FiatCurrency_EUR"] = "Euro",
-                ["FiatCurrency_USD"] = "Dollaro statunitense",
-                ["FiatCurrency_JPY"] = "Yen giapponese",
-                ["FiatCurrency_GBP"] = "Sterlina britannica",
-                ["FiatCurrency_CNY"] = "Yuan cinese",
-                ["FiatCurrency_AUD"] = "Dollaro australiano",
-                ["FiatCurrency_CAD"] = "Dollaro canadese",
-                ["FiatCurrency_CHF"] = "Franco svizzero",
-                ["FiatCurrency_HKD"] = "Dollaro di Hong Kong",
-                ["FiatCurrency_SGD"] = "Dollaro di Singapore",
-                ["FiatCurrency_INR"] = "Rupia indiana",
-                ["Save"] = "Salva",
-                ["SetupBiometricTitle"] = "Protezione biometrica",
-                ["SetupBiometricDescription"] = "Richiedi l'impronta digitale all'avvio dell'app su questo dispositivo.",
-                ["SetupBiometricToggleLabel"] = "Richiedi impronta digitale",
-                ["SetupBiometricChecking"] = "Verifica dei requisiti in corso…",
-                ["BiometricAuthCanceled"] = "Autenticazione annullata.",
-                ["BiometricAuthFailed"] = "Autenticazione biometrica non riuscita.",
-                ["BiometricOverlayTitle"] = "Protezione attiva",
-                ["BiometricOverlayPrompt"] = "Autenticazione biometrica richiesta per continuare.",
-                ["BiometricRetryButton"] = "Riprova",
-                ["ErrorUnhandledMessage"] = "Si è verificato un errore imprevisto.",
-                ["ErrorReloadLink"] = "Ricarica",
-                ["DisclaimerTitle"] = "ClickPay Wallet Privacy",
-                ["DisclaimerText1"] = "Nessuno, compreso ClickPay, ha accesso ai tuoi wallet o alle tue chiavi. I dati sono protetti e non vengono condivisi o sincronizzati in cloud, salvo che la crittografia sia zero-knowledge robusta e indecifrabile anche per i futuri computer quantistici. Conserva con cura la tua passphrase: è l'unico modo per accedere ai tuoi fondi.",
-                ["DisclaimerText2"] = "Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.",
-            },
-            ["en"] = new()
-            {
-                ["WalletOnboardingTitle"] = "Welcome to ClickPay Wallet",
-                ["WalletWelcomeTitle"] = "Wallet Management",
-                ["WalletWelcomeDescription"] = "Choose to create a new wallet or restore an existing one using your passphrase.",
-                ["CreateWalletButton"] = "Create new wallet",
-                ["RestoreWalletButton"] = "Restore existing wallet",
-                ["CreateWalletTitle"] = "New Wallet",
-                ["CreateWalletInstructions"] = "This is your 24-word passphrase. Write it down and keep it safe.",
-                ["PassphraseWarning"] = "The passphrase is the only way to recover your wallet. Do not lose it!",
-                ["ConfirmCreateWalletButton"] = "Confirm and create wallet",
-                ["RestoreWalletTitle"] = "Restore Wallet",
-                ["RestoreWalletInstructions"] = "Enter your 24-word passphrase to restore your wallet.",
-                ["ConfirmRestoreWalletButton"] = "Confirm and restore",
-                ["RestoreWalletError"] = "Invalid passphrase. Please check all 24 words and try again.",
-                ["WalletCreatedSuccess"] = "Wallet created successfully. The account key has been stored locally.",
-                ["WalletRestoredSuccess"] = "Wallet restored successfully. The account key has been updated locally.",
-                ["WalletXpubLabel"] = "Extended public key (account):",
-                ["WalletBalancePlaceholder"] = "Available balance:",
-                ["WalletSolanaAddressLabel"] = "Solana address (EURC):",
-                ["WalletEurcBalanceLabel"] = "EURC balance:",
-                ["WalletLabelFormat"] = "{0} wallet",
-                ["GoldWalletMenuLabel"] = "Gold",
-                ["PayTitle"] = "Pay",
-                ["ScanQRTitle"] = "Scan QR payment request",
-                ["ScanQRDescription"] = "Point the camera at the QR code of the request to automatically fill in the payment details.",
-                ["Pay_ScanningInProgress"] = "Scanning in progress...",
-                ["Pay_TapToRetry"] = "Tap to retry.",
-                ["Pay_ScanCancelled"] = "Scan cancelled.",
-                ["Pay_EuroEquivalent"] = "≈ {0} EUR",
-                ["StartQRScan"] = "Start QR scan",
-                ["CounterTitle"] = "Counter",
-                ["CounterHeading"] = "Counter",
-                ["CurrentCount"] = "Current count:",
-                ["ClickMe"] = "Click me",
-                ["ReceivePaymentTitle"] = "Receive Payment",
-                ["SendPaymentButton"] = "Send Payment",
-                ["StorageUnavailableError"] = "Secure storage is unavailable in this hosting environment. Ensure the app is running locally and try again.",
-                ["WalletTimeoutVault"] = "Timeout while checking the local wallet. Please try again.",
-                ["WalletTimeoutOverview"] = "Timeout while loading wallet data. Check your connection and retry.",
-                ["WalletTimeoutFiat"] = "Timeout while refreshing the fiat value. Please try again later.",
-                ["WalletTimeoutFeeBalance"] = "Timeout while retrieving the balance required for network fees.",
-                ["WalletFeeWarningTitle"] = "Warning:",
-                ["WalletFeeWarningRequirement"] = "To send {0} you must hold {1} to cover network fees.",
-                ["WalletFeeWarningBalance"] = "Available {0} balance: {1}.",
-                ["WalletFeeWarningReserveRecommendation"] = "Keep at least {1} {0} available to cover network costs.",
-                ["WalletFeeInfoRequirement"] = "Transactions in {0} require fees paid in {1}.",
-                ["WalletFeeInfoRecommended"] = "It's recommended to keep at least {0} {1} in reserve.",
-                ["WalletFeeInfoNative"] = "Transactions in {0} consume part of the balance as network fees. Keep at least {1} in reserve.",
-                ["WalletFeeInfoNativeGeneral"] = "Transactions in {0} consume part of the balance as network fees.",
-                ["WalletFeeOpenFeeWallet"] = "Open {0} wallet",
-                ["SendPageTitle"] = "Send {0}",
-                ["SendBalanceLabel"] = "Available balance: {0} {1}",
-                ["SendDestinationLabel"] = "Destination address",
-                ["SendScanButton"] = "Scan QR",
-                ["SendMaxButton"] = "Max",
-                ["SendErrorInsufficientFunds"] = "Insufficient funds to complete the transaction.",
-                ["SendErrorFeeReserveRequired"] = "At least {0} {1} must remain available for network fees.",
-                ["SendFeeNoticeNetwork"] = "Network fees are paid with the native currency of the blockchain. Keep a reserve available to cover costs.",
-                ["SendFeeWarningLowFee"] = "Native fee balance is low: {0} available, at least {1} recommended.",
-                ["RecentTransactionsTitle"] = "Recent transactions",
-                ["NoTransactionsMessage"] = "No transactions available.",
-                ["Amount"] = "Amount:",
-                ["GenerateRequest"] = "Generate Request",
-                ["Address"] = "Address:",
-                ["ShareRequest"] = "Share Request",
-                ["QRCode"] = "QR Code",
-                ["RequestDetails"] = "Request Details",
-                ["ErrorUnsupportedAsset"] = "Unsupported asset.",
-                ["ErrorInvalidAmount"] = "Amount must be positive.",
-                ["ErrorDestinationRequired"] = "Destination address is required.",
-                ["TransactionSentFormat"] = "Transaction sent: {0}",
-                ["QrScan_Prompt_Title"] = "Align the QR code",
-                ["QrScan_Prompt_Message"] = "Point the code inside the frame to fill the payment details.",
-                ["QrScan_Prompt_Cancel"] = "Cancel",
-                ["QrScan_Error_NotAvailable"] = "QR scanning is not available on this device.",
-                ["QrScan_Error_NoCamera"] = "This browser cannot access the camera.",
-                ["QrScan_Error_NoBarcodeApi"] = "The browser does not support native QR detection.",
-                ["QrScan_Error_PermissionDenied"] = "Camera access denied. Please allow it and retry.",
-                ["QrScan_Error_InitFailed"] = "Unable to initialize the QR scanner.",
-                ["QrScan_Error_Stream"] = "Camera failed to start.",
-                ["QrScan_Error_Generic"] = "QR scanning failed.",
-                ["QrScan_Error_NoData"] = "The QR code does not contain any data.",
-                ["QrScan_Error_WrongNetwork"] = "The QR code targets a different blockchain.",
-                ["QrScan_Error_InvalidFormat"] = "Invalid QR format.",
-                ["QrScan_Error_InvalidAmount"] = "Invalid amount in QR.",
-                ["QrScan_Error_InvalidAddress"] = "Invalid address in QR.",
-                ["QrScan_Error_WrongToken"] = "The QR references a token different from EURC.",
-                ["SetupTitle"] = "Settings",
-                ["SelectLanguage"] = "Select language:",
-                ["SetupAssetPreferencesTitle"] = "Asset preferences",
-                ["SetupAssetPreferencesDescription"] = "Choose which assets to show in the main menu.",
-                ["SetupAssetNoneConfigured"] = "No assets configured.",
-                ["SetupAssetHideLabel"] = "Hide {0}",
-                ["CommonSavingInProgress"] = "Saving…",
-                ["FiatPreferenceTitle"] = "Reference currency",
-                ["FiatPreferenceDescription"] = "Choose the currency you want to use when showing your asset values.",
-                ["SetupFiatUpdating"] = "Updating currency…",
-                ["FiatCurrency_EUR"] = "Euro",
-                ["FiatCurrency_USD"] = "US Dollar",
-                ["FiatCurrency_JPY"] = "Japanese Yen",
-                ["FiatCurrency_GBP"] = "British Pound",
-                ["FiatCurrency_CNY"] = "Chinese Yuan",
-                ["FiatCurrency_AUD"] = "Australian Dollar",
-                ["FiatCurrency_CAD"] = "Canadian Dollar",
-                ["FiatCurrency_CHF"] = "Swiss Franc",
-                ["FiatCurrency_HKD"] = "Hong Kong Dollar",
-                ["FiatCurrency_SGD"] = "Singapore Dollar",
-                ["FiatCurrency_INR"] = "Indian Rupee",
-                ["Save"] = "Save",
-                ["SetupBiometricTitle"] = "Biometric protection",
-                ["SetupBiometricDescription"] = "Require fingerprint when the app starts on this device.",
-                ["SetupBiometricToggleLabel"] = "Require fingerprint",
-                ["SetupBiometricChecking"] = "Checking requirements…",
-                ["BiometricAuthCanceled"] = "Authentication cancelled.",
-                ["BiometricAuthFailed"] = "Biometric authentication failed.",
-                ["BiometricOverlayTitle"] = "Protection enabled",
-                ["BiometricOverlayPrompt"] = "Biometric authentication is required to continue.",
-                ["BiometricRetryButton"] = "Try again",
-                ["ErrorUnhandledMessage"] = "An unexpected error has occurred.",
-                ["ErrorReloadLink"] = "Reload",
-                ["DisclaimerTitle"] = "ClickPay Wallet Privacy",
-                ["DisclaimerText1"] = "Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.",
-                ["DisclaimerText2"] = "Nessuno, compreso ClickPay, ha accesso ai tuoi wallet o alle tue chiavi. I dati sono protetti e non vengono condivisi o sincronizzati in cloud, salvo che la crittografia sia zero-knowledge robusta e indecifrabile anche per i futuri computer quantistici. Conserva con cura la tua passphrase: è l'unico modo per accedere ai tuoi fondi.",
-            },
-            ["fr"] = new()
-            {
-                ["WalletOnboardingTitle"] = "Bienvenue dans ClickPay Wallet",
-                ["WalletWelcomeTitle"] = "Gestion du portefeuille",
-                ["WalletWelcomeDescription"] = "Choisissez de créer un nouveau portefeuille ou d'en restaurer un existant avec votre phrase secrète.",
-                ["CreateWalletButton"] = "Créer un nouveau portefeuille",
-                ["RestoreWalletButton"] = "Restaurer un portefeuille existant",
-                ["CreateWalletTitle"] = "Nouveau portefeuille",
-                ["CreateWalletInstructions"] = "Voici votre phrase secrète de 24 mots. Notez-la et conservez-la en sécurité.",
-                ["PassphraseWarning"] = "La phrase secrète est le seul moyen de récupérer le portefeuille. Ne la perdez pas!",
-                ["ConfirmCreateWalletButton"] = "Confirmer et créer le portefeuille",
-                ["RestoreWalletTitle"] = "Restaurer le portefeuille",
-                ["RestoreWalletInstructions"] = "Saisissez votre phrase secrète de 24 mots pour restaurer le portefeuille.",
-                ["ConfirmRestoreWalletButton"] = "Confirmer et restaurer",
-                ["RestoreWalletError"] = "Phrase secrète invalide. Vérifiez les 24 mots et réessayez.",
-                ["WalletCreatedSuccess"] = "Portefeuille créé avec succès. La clé du compte a été enregistrée localement.",
-                ["WalletRestoredSuccess"] = "Portefeuille restauré avec succès. La clé du compte a été mise à jour localement.",
-                ["WalletXpubLabel"] = "Clé publique étendue (compte) :",
-                ["WalletBalancePlaceholder"] = "Solde disponible :",
-                ["WalletSolanaAddressLabel"] = "Adresse Solana (EURC) :",
-                ["WalletEurcBalanceLabel"] = "Solde EURC :",
-                ["WalletLabelFormat"] = "Portefeuille {0}",
-                ["GoldWalletMenuLabel"] = "Or",
-                ["PayTitle"] = "Payer",
-                ["ScanQRTitle"] = "Scanner la demande de paiement QR",
-                ["ScanQRDescription"] = "Pointez l'appareil photo sur le code QR de la demande pour remplir automatiquement les détails du paiement.",
-                ["Pay_ScanningInProgress"] = "Scan en cours...",
-                ["Pay_TapToRetry"] = "Touchez pour réessayer.",
-                ["Pay_ScanCancelled"] = "Scan annulé.",
-                ["Pay_EuroEquivalent"] = "≈ {0} EUR",
-                ["StartQRScan"] = "Démarrer le scan QR",
-                ["CounterTitle"] = "Compteur",
-                ["CounterHeading"] = "Compteur",
-                ["CurrentCount"] = "Comptage actuel :",
-                ["ClickMe"] = "Cliquez-moi",
-                ["ReceivePaymentTitle"] = "Recevoir un paiement",
-                ["SendPaymentButton"] = "Envoyer un paiement",
-                ["StorageUnavailableError"] = "Le stockage sécurisé n'est pas disponible dans cet environnement. Vérifiez que l'application s'exécute en local puis réessayez.",
-                ["WalletTimeoutVault"] = "Délai dépassé lors de la vérification du portefeuille local. Veuillez réessayer.",
-                ["WalletTimeoutOverview"] = "Délai dépassé lors du chargement des données du portefeuille. Vérifiez votre connexion puis réessayez.",
-                ["WalletTimeoutFiat"] = "Délai dépassé lors de la mise à jour de la valeur fiat. Veuillez réessayer plus tard.",
-                ["WalletTimeoutFeeBalance"] = "Délai dépassé lors de la récupération du solde nécessaire aux frais réseau.",
-                ["WalletFeeWarningTitle"] = "Attention :",
-                ["WalletFeeWarningRequirement"] = "Pour envoyer {0}, vous devez disposer de {1} pour payer les frais réseau.",
-                ["WalletFeeWarningBalance"] = "Solde {0} disponible : {1}.",
-                ["WalletFeeWarningReserveRecommendation"] = "Gardez au moins {1} {0} en réserve pour couvrir les frais réseau.",
-                ["WalletFeeInfoRequirement"] = "Les transactions en {0} nécessitent des frais payés en {1}.",
-                ["WalletFeeInfoRecommended"] = "Nous recommandons de conserver au moins {0} {1} en réserve.",
-                ["WalletFeeInfoNative"] = "Les transactions en {0} consomment une partie du solde en frais réseau. Conservez au moins {1} en réserve.",
-                ["WalletFeeInfoNativeGeneral"] = "Les transactions en {0} consomment une partie du solde en frais réseau.",
-                ["WalletFeeOpenFeeWallet"] = "Ouvrir le portefeuille {0}",
-                ["SendPageTitle"] = "Envoyer {0}",
-                ["SendBalanceLabel"] = "Solde disponible : {0} {1}",
-                ["SendDestinationLabel"] = "Adresse de destination",
-                ["SendScanButton"] = "Scanner un QR",
-                ["SendMaxButton"] = "Max",
-                ["SendErrorInsufficientFunds"] = "Fonds insuffisants pour finaliser la transaction.",
-                ["SendErrorFeeReserveRequired"] = "Au moins {0} {1} doivent rester disponibles pour les frais réseau.",
-                ["SendFeeNoticeNetwork"] = "Les frais réseau sont réglés avec la monnaie native de la blockchain. Gardez une réserve pour couvrir les coûts.",
-                ["SendFeeWarningLowFee"] = "Solde dédié aux frais faible : {0} disponibles, au moins {1} recommandés.",
-                ["RecentTransactionsTitle"] = "Transactions récentes",
-                ["NoTransactionsMessage"] = "Aucune transaction disponible.",
-                ["Amount"] = "Montant :",
-                ["GenerateRequest"] = "Générer la demande",
-                ["Address"] = "Adresse :",
-                ["ShareRequest"] = "Partager la demande",
-                ["QRCode"] = "QR Code",
-                ["RequestDetails"] = "Détails de la demande",
-                ["ErrorUnsupportedAsset"] = "Actif non pris en charge.",
-                ["ErrorInvalidAmount"] = "Le montant doit être positif.",
-                ["ErrorDestinationRequired"] = "L'adresse de destination est obligatoire.",
-                ["TransactionSentFormat"] = "Transaction envoyée : {0}",
-                ["QrScan_Prompt_Title"] = "Cadrez le code QR",
-                ["QrScan_Prompt_Message"] = "Placez le code dans le cadre pour remplir les détails du paiement.",
-                ["QrScan_Prompt_Cancel"] = "Annuler",
-                ["QrScan_Error_NotAvailable"] = "La numérisation de QR n'est pas disponible sur cet appareil.",
-                ["QrScan_Error_NoCamera"] = "Ce navigateur ne peut pas accéder à la caméra.",
-                ["QrScan_Error_NoBarcodeApi"] = "Le navigateur ne prend pas en charge la détection native des QR.",
-                ["QrScan_Error_PermissionDenied"] = "Accès à la caméra refusé. Autorisez-le et réessayez.",
-                ["QrScan_Error_InitFailed"] = "Impossible d'initialiser le scanner QR.",
-                ["QrScan_Error_Stream"] = "Impossible de démarrer la caméra.",
-                ["QrScan_Error_Generic"] = "Échec de la numérisation du QR.",
-                ["QrScan_Error_NoData"] = "Le code QR ne contient aucune donnée.",
-                ["QrScan_Error_WrongNetwork"] = "Le code QR cible une autre blockchain.",
-                ["QrScan_Error_InvalidFormat"] = "Format de QR invalide.",
-                ["QrScan_Error_InvalidAmount"] = "Montant du QR invalide.",
-                ["QrScan_Error_InvalidAddress"] = "Adresse du QR invalide.",
-                ["QrScan_Error_WrongToken"] = "Le QR fait référence à un token différent de l'EURC.",
-                ["SetupTitle"] = "Paramètres",
-                ["SelectLanguage"] = "Choisir la langue :",
-                ["SetupAssetPreferencesTitle"] = "Préférences des actifs",
-                ["SetupAssetPreferencesDescription"] = "Choisissez les actifs à afficher dans le menu principal.",
-                ["SetupAssetNoneConfigured"] = "Aucun actif configuré.",
-                ["SetupAssetHideLabel"] = "Masquer {0}",
-                ["CommonSavingInProgress"] = "Enregistrement en cours…",
-                ["FiatPreferenceTitle"] = "Devise de référence",
-                ["FiatPreferenceDescription"] = "Choisissez la devise à utiliser pour afficher la valeur de vos actifs.",
-                ["SetupFiatUpdating"] = "Mise à jour de la devise en cours…",
-                ["FiatCurrency_EUR"] = "Euro",
-                ["FiatCurrency_USD"] = "Dollar américain",
-                ["FiatCurrency_JPY"] = "Yen japonais",
-                ["FiatCurrency_GBP"] = "Livre sterling",
-                ["FiatCurrency_CNY"] = "Yuan chinois",
-                ["FiatCurrency_AUD"] = "Dollar australien",
-                ["FiatCurrency_CAD"] = "Dollar canadien",
-                ["FiatCurrency_CHF"] = "Franc suisse",
-                ["FiatCurrency_HKD"] = "Dollar de Hong Kong",
-                ["FiatCurrency_SGD"] = "Dollar de Singapour",
-                ["FiatCurrency_INR"] = "Roupie indienne",
-                ["Save"] = "Enregistrer",
-                ["SetupBiometricTitle"] = "Protection biométrique",
-                ["SetupBiometricDescription"] = "Exiger l'empreinte digitale au démarrage de l'application sur cet appareil.",
-                ["SetupBiometricToggleLabel"] = "Exiger l'empreinte digitale",
-                ["SetupBiometricChecking"] = "Vérification des exigences en cours…",
-                ["BiometricAuthCanceled"] = "Authentification annulée.",
-                ["BiometricAuthFailed"] = "Échec de l'authentification biométrique.",
-                ["BiometricOverlayTitle"] = "Protection active",
-                ["BiometricOverlayPrompt"] = "Une authentification biométrique est requise pour continuer.",
-                ["BiometricRetryButton"] = "Réessayer",
-                ["ErrorUnhandledMessage"] = "Une erreur inattendue s'est produite.",
-                ["ErrorReloadLink"] = "Recharger",
-                ["DisclaimerTitle"] = "Confidentialité du portefeuille ClickPay",
-                ["DisclaimerText1"] = "Personne, y compris ClickPay, n'a accès à vos portefeuilles ou à vos clés. Vos données sont protégées et ne sont pas partagées ou synchronisées dans le cloud, sauf si le chiffrement est robuste, à connaissance nulle et résistant aux ordinateurs quantiques. Gardez votre phrase secrète en sécurité : c'est le seul moyen d'accéder à vos fonds.",
-                ["DisclaimerText2"] = "Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.",
-            },
-            ["es"] = new()
-            {
-                ["WalletOnboardingTitle"] = "Bienvenido a ClickPay Wallet",
-                ["WalletWelcomeTitle"] = "Gestión de billetera",
-                ["WalletWelcomeDescription"] = "Elige crear una nueva billetera o restaurar una existente usando tu frase secreta.",
-                ["CreateWalletButton"] = "Crear nueva billetera",
-                ["RestoreWalletButton"] = "Restaurar billetera existente",
-                ["CreateWalletTitle"] = "Nueva billetera",
-                ["CreateWalletInstructions"] = "Esta es tu frase secreta de 24 palabras. Escríbela y guárdala de forma segura.",
-                ["PassphraseWarning"] = "La frase secreta es la única forma de recuperar la billetera. ¡No la pierdas!",
-                ["ConfirmCreateWalletButton"] = "Confirmar y crear billetera",
-                ["RestoreWalletTitle"] = "Restaurar billetera",
-                ["RestoreWalletInstructions"] = "Introduce tu frase secreta de 24 palabras para restaurar la billetera.",
-                ["ConfirmRestoreWalletButton"] = "Confirmar y restaurar",
-                ["RestoreWalletError"] = "Frase secreta inválida. Verifica las 24 palabras e inténtalo de nuevo.",
-                ["WalletCreatedSuccess"] = "Billetera creada correctamente. La clave de la cuenta se guardó localmente.",
-                ["WalletRestoredSuccess"] = "Billetera restaurada correctamente. La clave de la cuenta se actualizó localmente.",
-                ["WalletXpubLabel"] = "Clave pública extendida (cuenta):",
-                ["WalletBalancePlaceholder"] = "Saldo disponible:",
-                ["WalletSolanaAddressLabel"] = "Dirección Solana (EURC):",
-                ["WalletEurcBalanceLabel"] = "Saldo EURC:",
-                ["WalletLabelFormat"] = "Billetera {0}",
-                ["GoldWalletMenuLabel"] = "Oro",
-                ["PayTitle"] = "Pagar",
-                ["ScanQRTitle"] = "Escanear solicitud de pago QR",
-                ["ScanQRDescription"] = "Apunte la cámara al código QR de la solicitud para completar automáticamente los detalles del pago.",
-                ["Pay_ScanningInProgress"] = "Escaneo en curso...",
-                ["Pay_TapToRetry"] = "Toca para reintentar.",
-                ["Pay_ScanCancelled"] = "Escaneo cancelado.",
-                ["Pay_EuroEquivalent"] = "≈ {0} EUR",
-                ["StartQRScan"] = "Iniciar escaneo QR",
-                ["CounterTitle"] = "Contador",
-                ["CounterHeading"] = "Contador",
-                ["CurrentCount"] = "Conteo actual:",
-                ["ClickMe"] = "Haz clic en mí",
-                ["ReceivePaymentTitle"] = "Recibir pago",
-                ["SendPaymentButton"] = "Enviar pago",
-                ["StorageUnavailableError"] = "El almacenamiento seguro no está disponible en este entorno. Asegúrate de ejecutar la aplicación en local e inténtalo de nuevo.",
-                ["WalletTimeoutVault"] = "Se agotó el tiempo al comprobar la cartera local. Inténtalo de nuevo.",
-                ["WalletTimeoutOverview"] = "Se agotó el tiempo al cargar los datos de la cartera. Verifica la conexión e inténtalo de nuevo.",
-                ["WalletTimeoutFiat"] = "Se agotó el tiempo al actualizar el valor fiduciario. Vuelve a intentarlo más tarde.",
-                ["WalletTimeoutFeeBalance"] = "Se agotó el tiempo al recuperar el saldo necesario para las comisiones de red.",
-                ["WalletFeeWarningTitle"] = "Atención:",
-                ["WalletFeeWarningRequirement"] = "Para enviar {0} debes disponer de {1} para cubrir las comisiones de la red.",
-                ["WalletFeeWarningBalance"] = "Saldo disponible de {0}: {1}.",
-                ["WalletFeeWarningReserveRecommendation"] = "Mantén al menos {1} {0} como reserva para cubrir la red.",
-                ["WalletFeeInfoRequirement"] = "Las transacciones de {0} requieren comisiones pagadas en {1}.",
-                ["WalletFeeInfoRecommended"] = "Recomendamos conservar al menos {0} {1} como reserva.",
-                ["WalletFeeInfoNative"] = "Las transacciones de {0} consumen parte del saldo como comisión de red. Mantén al menos {1} como reserva.",
-                ["WalletFeeInfoNativeGeneral"] = "Las transacciones de {0} consumen parte del saldo como comisión de red.",
-                ["WalletFeeOpenFeeWallet"] = "Abrir cartera {0}",
-                ["SendPageTitle"] = "Enviar {0}",
-                ["SendBalanceLabel"] = "Saldo disponible: {0} {1}",
-                ["SendDestinationLabel"] = "Dirección de destino",
-                ["SendScanButton"] = "Escanear QR",
-                ["SendMaxButton"] = "Máx",
-                ["SendErrorInsufficientFunds"] = "Fondos insuficientes para completar la transacción.",
-                ["SendErrorFeeReserveRequired"] = "Es necesario mantener al menos {0} {1} disponibles para las comisiones de red.",
-                ["SendFeeNoticeNetwork"] = "Las comisiones de red se pagan con la moneda nativa de la blockchain. Mantén una reserva para cubrir los costes.",
-                ["SendFeeWarningLowFee"] = "Saldo para comisiones bajo: {0} disponibles, se recomiendan al menos {1}.",
-                ["RecentTransactionsTitle"] = "Transacciones recientes",
-                ["NoTransactionsMessage"] = "No hay transacciones disponibles.",
-                ["Amount"] = "Importe:",
-                ["GenerateRequest"] = "Generar solicitud",
-                ["Address"] = "Dirección:",
-                ["ShareRequest"] = "Compartir solicitud",
-                ["QRCode"] = "Código QR",
-                ["RequestDetails"] = "Detalles de la solicitud",
-                ["ErrorUnsupportedAsset"] = "Activo no compatible.",
-                ["ErrorInvalidAmount"] = "El importe debe ser positivo.",
-                ["ErrorDestinationRequired"] = "La dirección de destino es obligatoria.",
-                ["TransactionSentFormat"] = "Transacción enviada: {0}",
-                ["QrScan_Prompt_Title"] = "Encuadra el código QR",
-                ["QrScan_Prompt_Message"] = "Coloca el código dentro del marco para completar los datos de pago.",
-                ["QrScan_Prompt_Cancel"] = "Cancelar",
-                ["QrScan_Error_NotAvailable"] = "La lectura de QR no está disponible en este dispositivo.",
-                ["QrScan_Error_NoCamera"] = "Este navegador no puede acceder a la cámara.",
-                ["QrScan_Error_NoBarcodeApi"] = "El navegador no admite la detección nativa de códigos QR.",
-                ["QrScan_Error_PermissionDenied"] = "Acceso a la cámara denegado. Permítelo y vuelve a intentarlo.",
-                ["QrScan_Error_InitFailed"] = "No se pudo inicializar el lector QR.",
-                ["QrScan_Error_Stream"] = "Error al iniciar la cámara.",
-                ["QrScan_Error_Generic"] = "Fallo en la lectura del QR.",
-                ["QrScan_Error_NoData"] = "El código QR no contiene datos.",
-                ["QrScan_Error_WrongNetwork"] = "El código QR pertenece a otra blockchain.",
-                ["QrScan_Error_InvalidFormat"] = "Formato de QR no válido.",
-                ["QrScan_Error_InvalidAmount"] = "Importe del QR no válido.",
-                ["QrScan_Error_InvalidAddress"] = "Dirección del QR no válida.",
-                ["QrScan_Error_WrongToken"] = "El QR hace referencia a un token distinto de EURC.",
-                ["SetupTitle"] = "Configuración",
-                ["SelectLanguage"] = "Seleccionar idioma:",
-                ["SetupAssetPreferencesTitle"] = "Preferencias de activos",
-                ["SetupAssetPreferencesDescription"] = "Elige qué activos mostrar en el menú principal.",
-                ["SetupAssetNoneConfigured"] = "Ningún activo configurado.",
-                ["SetupAssetHideLabel"] = "Ocultar {0}",
-                ["CommonSavingInProgress"] = "Guardando…",
-                ["FiatPreferenceTitle"] = "Moneda de referencia",
-                ["FiatPreferenceDescription"] = "Elige la moneda que quieres usar para mostrar el valor de tus activos.",
-                ["SetupFiatUpdating"] = "Actualizando moneda…",
-                ["FiatCurrency_EUR"] = "Euro",
-                ["FiatCurrency_USD"] = "Dólar estadounidense",
-                ["FiatCurrency_JPY"] = "Yen japonés",
-                ["FiatCurrency_GBP"] = "Libra esterlina",
-                ["FiatCurrency_CNY"] = "Yuan chino",
-                ["FiatCurrency_AUD"] = "Dólar australiano",
-                ["FiatCurrency_CAD"] = "Dólar canadiense",
-                ["FiatCurrency_CHF"] = "Franco suizo",
-                ["FiatCurrency_HKD"] = "Dólar de Hong Kong",
-                ["FiatCurrency_SGD"] = "Dólar de Singapur",
-                ["FiatCurrency_INR"] = "Rupia india",
-                ["Save"] = "Guardar",
-                ["SetupBiometricTitle"] = "Protección biométrica",
-                ["SetupBiometricDescription"] = "Solicitar huella dactilar al iniciar la app en este dispositivo.",
-                ["SetupBiometricToggleLabel"] = "Solicitar huella dactilar",
-                ["SetupBiometricChecking"] = "Comprobando requisitos…",
-                ["BiometricAuthCanceled"] = "Autenticación cancelada.",
-                ["BiometricAuthFailed"] = "Falló la autenticación biométrica.",
-                ["BiometricOverlayTitle"] = "Protección activa",
-                ["BiometricOverlayPrompt"] = "Se requiere autenticación biométrica para continuar.",
-                ["BiometricRetryButton"] = "Intentar de nuevo",
-                ["ErrorUnhandledMessage"] = "Se produjo un error inesperado.",
-                ["ErrorReloadLink"] = "Recargar",
-                ["DisclaimerTitle"] = "Privacidad de la billetera ClickPay",
-                ["DisclaimerText1"] = "Nadie, incluido ClickPay, puede acceder a tus billeteras o claves. Tus datos están protegidos y no se comparten ni sincronizan en la nube, a menos que el cifrado sea robusto, de conocimiento cero y resistente a la computación cuántica. Mantén tu frase secreta segura: es la única forma de acceder a tus fondos.",
-                ["DisclaimerText2"] = "Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.",
-            },
-            ["de"] = new()
-            {
-                ["WalletOnboardingTitle"] = "Willkommen bei ClickPay Wallet",
-                ["WalletWelcomeTitle"] = "Wallet-Verwaltung",
-                ["WalletWelcomeDescription"] = "Wählen Sie, ob Sie ein neues Wallet erstellen oder ein bestehendes mit Ihrer Passphrase wiederherstellen möchten.",
-                ["CreateWalletButton"] = "Neues Wallet erstellen",
-                ["RestoreWalletButton"] = "Bestehendes Wallet wiederherstellen",
-                ["CreateWalletTitle"] = "Neues Wallet",
-                ["CreateWalletInstructions"] = "Dies ist Ihre 24-Wort-Passphrase. Schreiben Sie sie auf und bewahren Sie sie sicher auf.",
-                ["PassphraseWarning"] = "Die Passphrase ist der einzige Weg, Ihr Wallet wiederherzustellen. Verlieren Sie sie nicht!",
-                ["ConfirmCreateWalletButton"] = "Bestätigen und Wallet erstellen",
-                ["RestoreWalletTitle"] = "Wallet wiederherstellen",
-                ["RestoreWalletInstructions"] = "Geben Sie Ihre 24-Wort-Passphrase ein, um Ihr Wallet wiederherzustellen.",
-                ["ConfirmRestoreWalletButton"] = "Bestätigen und wiederherstellen",
-                ["RestoreWalletError"] = "Ungültige Passphrase. Bitte überprüfen Sie alle 24 Wörter und versuchen Sie es erneut.",
-                ["WalletCreatedSuccess"] = "Wallet erfolgreich erstellt. Der Account-Schlüssel wurde lokal gespeichert.",
-                ["WalletRestoredSuccess"] = "Wallet erfolgreich wiederhergestellt. Der Account-Schlüssel wurde lokal aktualisiert.",
-                ["WalletXpubLabel"] = "Erweiterter öffentlicher Schlüssel (Account):",
-                ["WalletBalancePlaceholder"] = "Verfügbarer Saldo:",
-                ["WalletSolanaAddressLabel"] = "Solana-Adresse (EURC):",
-                ["WalletEurcBalanceLabel"] = "EURC-Saldo:",
-                ["WalletLabelFormat"] = "Wallet {0}",
-                ["GoldWalletMenuLabel"] = "Gold",
-                ["Pay_ScanningInProgress"] = "Scan läuft...",
-                ["Pay_TapToRetry"] = "Zum Wiederholen tippen.",
-                ["Pay_ScanCancelled"] = "Scan abgebrochen.",
-                ["Pay_EuroEquivalent"] = "≈ {0} EUR",
-                ["CounterTitle"] = "Zähler",
-                ["CounterHeading"] = "Zähler",
-                ["CurrentCount"] = "Aktueller Zählerstand:",
-                ["ClickMe"] = "Klick mich",
-                ["ReceivePaymentTitle"] = "Zahlung empfangen",
-                ["SendPaymentButton"] = "Zahlung senden",
-                ["StorageUnavailableError"] = "Sicherer Speicher ist in dieser Umgebung nicht verfügbar. Stellen Sie sicher, dass die App lokal ausgeführt wird, und versuchen Sie es erneut.",
-                ["WalletTimeoutVault"] = "Zeitüberschreitung bei der Prüfung des lokalen Wallets. Bitte versuchen Sie es erneut.",
-                ["WalletTimeoutOverview"] = "Zeitüberschreitung beim Laden der Wallet-Daten. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
-                ["WalletTimeoutFiat"] = "Zeitüberschreitung bei der Aktualisierung des Fiat-Werts. Bitte versuchen Sie es später erneut.",
-                ["WalletTimeoutFeeBalance"] = "Zeitüberschreitung beim Abrufen des für Netzwerkgebühren benötigten Guthabens.",
-                ["WalletFeeWarningTitle"] = "Achtung:",
-                ["WalletFeeWarningRequirement"] = "Zum Versenden von {0} benötigen Sie {1}, um die Netzwerkgebühren zu bezahlen.",
-                ["WalletFeeWarningBalance"] = "Verfügbares {0}-Guthaben: {1}.",
-                ["WalletFeeWarningReserveRecommendation"] = "Halten Sie mindestens {1} {0} als Reserve für Netzwerkkosten bereit.",
-                ["WalletFeeInfoRequirement"] = "Transaktionen in {0} erfordern Gebühren, die in {1} bezahlt werden.",
-                ["WalletFeeInfoRecommended"] = "Es wird empfohlen, mindestens {0} {1} als Reserve zu halten.",
-                ["WalletFeeInfoNative"] = "{0}-Transaktionen verbrauchen einen Teil des Guthabens als Netzwerkgebühr. Halten Sie mindestens {1} als Reserve bereit.",
-                ["WalletFeeInfoNativeGeneral"] = "{0}-Transaktionen verbrauchen einen Teil des Guthabens als Netzwerkgebühr.",
-                ["WalletFeeOpenFeeWallet"] = "{0}-Wallet öffnen",
-                ["SendPageTitle"] = "{0} senden",
-                ["SendBalanceLabel"] = "Verfügbarer Saldo: {0} {1}",
-                ["SendDestinationLabel"] = "Zieladresse",
-                ["SendScanButton"] = "QR scannen",
-                ["SendMaxButton"] = "Max",
-                ["SendErrorInsufficientFunds"] = "Unzureichendes Guthaben für die Transaktion.",
-                ["SendErrorFeeReserveRequired"] = "Mindestens {0} {1} müssen für Netzwerkgebühren verfügbar bleiben.",
-                ["SendFeeNoticeNetwork"] = "Netzwerkgebühren werden mit der nativen Währung der Blockchain bezahlt. Halten Sie eine Reserve zur Deckung der Kosten bereit.",
-                ["SendFeeWarningLowFee"] = "Gebührenguthaben niedrig: {0} verfügbar, empfohlen sind mindestens {1}.",
-                ["RecentTransactionsTitle"] = "Neueste Transaktionen",
-                ["NoTransactionsMessage"] = "Keine Transaktionen verfügbar.",
-                ["Amount"] = "Betrag:",
-                ["GenerateRequest"] = "Anfrage generieren",
-                ["Address"] = "Adresse:",
-                ["ShareRequest"] = "Anfrage teilen",
-                ["QRCode"] = "QR-Code",
-                ["RequestDetails"] = "Anfragedetails",
-                ["SetupTitle"] = "Einstellungen",
-                ["SelectLanguage"] = "Sprache auswählen:",
-                ["SetupAssetPreferencesTitle"] = "Asset-Einstellungen",
-                ["SetupAssetPreferencesDescription"] = "Wählen Sie, welche Assets im Hauptmenü angezeigt werden sollen.",
-                ["SetupAssetNoneConfigured"] = "Keine Assets konfiguriert.",
-                ["SetupAssetHideLabel"] = "{0} ausblenden",
-                ["CommonSavingInProgress"] = "Speichern läuft…",
-                ["FiatPreferenceTitle"] = "Referenzwährung",
-                ["FiatPreferenceDescription"] = "Wählen Sie die Währung, in der die Werte Ihrer Assets angezeigt werden sollen.",
-                ["SetupFiatUpdating"] = "Währung wird aktualisiert…",
-                ["FiatCurrency_EUR"] = "Euro",
-                ["FiatCurrency_USD"] = "US-Dollar",
-                ["FiatCurrency_JPY"] = "Japanischer Yen",
-                ["FiatCurrency_GBP"] = "Britisches Pfund",
-                ["FiatCurrency_CNY"] = "Chinesischer Yuan",
-                ["FiatCurrency_AUD"] = "Australischer Dollar",
-                ["FiatCurrency_CAD"] = "Kanadischer Dollar",
-                ["FiatCurrency_CHF"] = "Schweizer Franken",
-                ["FiatCurrency_HKD"] = "Hongkong-Dollar",
-                ["FiatCurrency_SGD"] = "Singapur-Dollar",
-                ["FiatCurrency_INR"] = "Indische Rupie",
-                ["Save"] = "Speichern",
-                ["SetupBiometricTitle"] = "Biometrischer Schutz",
-                ["SetupBiometricDescription"] = "Fingerabdruck beim Start der App auf diesem Gerät verlangen.",
-                ["SetupBiometricToggleLabel"] = "Fingerabdruck anfordern",
-                ["SetupBiometricChecking"] = "Anforderungen werden geprüft…",
-                ["BiometricAuthCanceled"] = "Authentifizierung abgebrochen.",
-                ["BiometricAuthFailed"] = "Biometrische Authentifizierung fehlgeschlagen.",
-                ["BiometricOverlayTitle"] = "Schutz aktiv",
-                ["BiometricOverlayPrompt"] = "Biometrische Authentifizierung ist zum Fortfahren erforderlich.",
-                ["BiometricRetryButton"] = "Erneut versuchen",
-                ["ErrorUnhandledMessage"] = "Es ist ein unerwarteter Fehler aufgetreten.",
-                ["ErrorReloadLink"] = "Neu laden",
-                ["DisclaimerTitle"] = "ClickPay Wallet Datenschutz",
-                ["DisclaimerText1"] = "Niemand, auch nicht ClickPay, hat Zugriff auf Ihre Wallets oder Schlüssel. Ihre Daten sind geschützt und werden nicht in der Cloud geteilt oder synchronisiert, es sei denn, die Verschlüsselung ist robust, kenntnisfrei und quantensicher. Bewahren Sie Ihre Passphrase sicher auf: Sie ist der einzige Weg, auf Ihre Gelder zuzugreifen.",
-                ["DisclaimerText2"] = "Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.",
-            },
-        };
-
+    private readonly System.Resources.ResourceManager _resourceManager = ClickPay.Shared.Resources.Resources.ResourceManager;
         private string _currentLanguage;
+        private readonly UserPreferenceService? _userPreferences;
 
         public event Action? LanguageChanged;
 
+        // Costruttore legacy (senza UserPreferenceService)
         public LocalizationService()
         {
             _currentLanguage = NormalizeLanguageCode(CultureInfo.CurrentUICulture.Name);
+        }
+
+        // Costruttore con UserPreferenceService per persistenza centralizzata
+        public LocalizationService(UserPreferenceService userPreferences)
+        {
+            _userPreferences = userPreferences;
+            _currentLanguage = "en";
         }
 
         public string CurrentLanguage
@@ -626,30 +34,51 @@ namespace ClickPay.Shared.Services
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
-                {
                     return;
-                }
-
                 var normalized = NormalizeLanguageCode(value);
-
                 if (_currentLanguage == normalized)
                 {
                     LanguageChanged?.Invoke();
                     return;
                 }
-
                 _currentLanguage = normalized;
+                // Se disponibile, salva anche in UserPreferenceService (sincrono per retrocompatibilità)
+                _userPreferences?.SetLanguageAsync(normalized);
                 LanguageChanged?.Invoke();
             }
         }
 
+        // Versione asincrona per chi vuole solo async
+        public async Task<string> GetCurrentLanguageAsync()
+        {
+            if (_userPreferences != null)
+            {
+                _currentLanguage = await _userPreferences.GetLanguageAsync();
+            }
+            return _currentLanguage;
+        }
+
+        public async Task SetCurrentLanguageAsync(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+            var normalized = NormalizeLanguageCode(value);
+            if (_currentLanguage == normalized)
+            {
+                LanguageChanged?.Invoke();
+                return;
+            }
+            _currentLanguage = normalized;
+            if (_userPreferences != null)
+                await _userPreferences.SetLanguageAsync(normalized);
+            LanguageChanged?.Invoke();
+        }
+
         public string T(string key)
         {
-            if (_translations.TryGetValue(CurrentLanguage, out var dict) && dict.TryGetValue(key, out var value))
-                return value;
-            if (_translations["en"].TryGetValue(key, out var fallback))
-                return fallback;
-            return key;
+            var culture = new CultureInfo(_currentLanguage);
+            var value = _resourceManager.GetString(key, culture);
+            return value ?? key;
         }
 
         public string FormatWalletLabel(string assetLabel)
@@ -658,21 +87,29 @@ namespace ClickPay.Shared.Services
             return string.Format(CultureInfo.CurrentCulture, format, assetLabel);
         }
 
-        private string NormalizeLanguageCode(string language)
-        {
-            if (string.IsNullOrWhiteSpace(language))
-            {
-                return "en";
-            }
+		private string NormalizeLanguageCode(string language)
+		{
+			if (string.IsNullOrWhiteSpace(language))
+			{
+				return "en";
+			}
 
-            var normalized = language.Trim().ToLowerInvariant();
-            var dashIndex = normalized.IndexOf('-');
-            if (dashIndex >= 0)
-            {
-                normalized = normalized[..dashIndex];
-            }
+			var normalized = language.Trim().ToLowerInvariant();
+			var dashIndex = normalized.IndexOf('-');
+			if (dashIndex >= 0)
+			{
+				normalized = normalized[..dashIndex];
+			}
 
-            return _translations.ContainsKey(normalized) ? normalized : "en";
-        }
+			// Supporta solo le lingue per cui esiste una .resx satellite
+			return normalized switch
+			{
+				"it" => "it",
+				"fr" => "fr",
+				"es" => "es",
+				"de" => "de",
+				_ => "en"
+			};
+		}
     }
 }

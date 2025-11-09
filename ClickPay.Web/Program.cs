@@ -24,7 +24,8 @@ builder.Services.AddRazorComponents()
 // Add device-specific services used by the ClickPay.Shared project
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
-builder.Services.AddSingleton<LocalizationService>();
+builder.Services.AddScoped<LocalizationService>();
+builder.Services.AddScoped<UserPreferenceService>();
 builder.Services.AddScoped<FiatPreferenceStore>();
 builder.Services.Configure<MarketDataCacheOptions>(options =>
 {

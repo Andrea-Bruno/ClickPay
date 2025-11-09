@@ -3,6 +3,26 @@
   "WorkspaceRootPath": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|c:\\users\\andre\\onedrive\\sorgenti\\clickpay\\clickpay.shared\\resources\\resources.de.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|solutionrelative:clickpay.shared\\resources\\resources.de.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|c:\\users\\andre\\onedrive\\sorgenti\\clickpay\\clickpay.shared\\resources\\resources.es.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|solutionrelative:clickpay.shared\\resources\\resources.es.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|c:\\users\\andre\\onedrive\\sorgenti\\clickpay\\clickpay.shared\\resources\\resources.fr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|solutionrelative:clickpay.shared\\resources\\resources.fr.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|c:\\users\\andre\\onedrive\\sorgenti\\clickpay\\clickpay.shared\\resources\\resources.it.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|solutionrelative:clickpay.shared\\resources\\resources.it.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|c:\\users\\andre\\onedrive\\sorgenti\\clickpay\\clickpay.shared\\resources\\resources.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{F89F50B3-64C1-4FE2-A9F9-DD14FC258292}|ClickPay.Shared\\ClickPay.Shared.csproj|solutionrelative:clickpay.shared\\resources\\resources.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{04D6E369-D0A6-7654-96A4-1131F51ED1C2}|ClickPay.Wallet.Core\\ClickPay.Wallet.Core.csproj|c:\\users\\andre\\onedrive\\sorgenti\\clickpay\\clickpay.wallet.core\\services\\ethereumwalletservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{04D6E369-D0A6-7654-96A4-1131F51ED1C2}|ClickPay.Wallet.Core\\ClickPay.Wallet.Core.csproj|solutionrelative:clickpay.wallet.core\\services\\ethereumwalletservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -38,21 +58,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 10,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "EthereumWalletService.cs",
-              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
-              "RelativeDocumentMoniker": "ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
-              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
-              "RelativeToolTip": "ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAAAWwBcAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-09T00:49:27.043Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
@@ -90,8 +97,90 @@
               "Name": "ST:0:0:{57d563b6-44a5-47df-85be-f4199ad6b651}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Resources.de.resx",
+              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.de.resx",
+              "RelativeDocumentMoniker": "ClickPay.Shared\\Resources\\Resources.de.resx",
+              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.de.resx",
+              "RelativeToolTip": "ClickPay.Shared\\Resources\\Resources.de.resx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-09T14:21:18.505Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Resources.es.resx",
+              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.es.resx",
+              "RelativeDocumentMoniker": "ClickPay.Shared\\Resources\\Resources.es.resx",
+              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.es.resx",
+              "RelativeToolTip": "ClickPay.Shared\\Resources\\Resources.es.resx",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-09T14:20:34.927Z",
+              "EditorCaption": ""
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Resources.fr.resx",
+              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.fr.resx",
+              "RelativeDocumentMoniker": "ClickPay.Shared\\Resources\\Resources.fr.resx",
+              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.fr.resx",
+              "RelativeToolTip": "ClickPay.Shared\\Resources\\Resources.fr.resx",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAwwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-09T14:19:19.956Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Resources.it.resx",
+              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.it.resx",
+              "RelativeDocumentMoniker": "ClickPay.Shared\\Resources\\Resources.it.resx",
+              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.it.resx",
+              "RelativeToolTip": "ClickPay.Shared\\Resources\\Resources.it.resx",
+              "ViewState": "AgIAAHEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-09T14:17:28.06Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Resources.resx",
+              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.resx",
+              "RelativeDocumentMoniker": "ClickPay.Shared\\Resources\\Resources.resx",
+              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Resources\\Resources.resx",
+              "RelativeToolTip": "ClickPay.Shared\\Resources\\Resources.resx",
+              "ViewState": "AgIAAHEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-11-09T14:15:16.403Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "EthereumWalletService.cs",
+              "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
+              "RelativeDocumentMoniker": "ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
+              "ToolTip": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
+              "RelativeToolTip": "ClickPay.Wallet.Core\\Services\\EthereumWalletService.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-09T00:49:27.043Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "BitcoinNetworkClient.cs",
               "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Wallet.Core\\Services\\BitcoinNetworkClient.cs",
               "RelativeDocumentMoniker": "ClickPay.Wallet.Core\\Services\\BitcoinNetworkClient.cs",
@@ -99,16 +188,11 @@
               "RelativeToolTip": "ClickPay.Wallet.Core\\Services\\BitcoinNetworkClient.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACsAAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-09T00:41:27.757Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+              "WhenOpened": "2025-11-09T00:41:27.757Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
               "Title": "Wallet.razor",
               "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Pages\\Wallet.razor",
               "RelativeDocumentMoniker": "ClickPay.Shared\\Pages\\Wallet.razor",
@@ -116,12 +200,11 @@
               "RelativeToolTip": "ClickPay.Shared\\Pages\\Wallet.razor",
               "ViewState": "AgIAAOYAAAAAAAAAAAAAAPcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-08T15:05:01.503Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-08T15:05:01.503Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 9,
               "Title": "_Imports.razor",
               "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\_Imports.razor",
               "RelativeDocumentMoniker": "ClickPay.Shared\\_Imports.razor",
@@ -129,12 +212,11 @@
               "RelativeToolTip": "ClickPay.Shared\\_Imports.razor",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-11-07T13:16:30.177Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T13:16:30.177Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "LocalSecureStore.cs",
               "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay.Shared\\Services\\LocalSecureStore.cs",
               "RelativeDocumentMoniker": "ClickPay.Shared\\Services\\LocalSecureStore.cs",
@@ -146,7 +228,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 10,
               "Title": "index.html",
               "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\wwwroot\\index.html",
               "RelativeDocumentMoniker": "ClickPay\\wwwroot\\index.html",
@@ -158,7 +240,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
               "Title": "MauiProgram.cs",
               "DocumentMoniker": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\MauiProgram.cs",
               "RelativeDocumentMoniker": "ClickPay\\MauiProgram.cs",
@@ -166,8 +248,7 @@
               "RelativeToolTip": "ClickPay\\MauiProgram.cs",
               "ViewState": "AgIAAFQAAAAAAAAAAAAlwGYAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-07T13:04:39.785Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-11-07T13:04:39.785Z"
             }
           ]
         }

@@ -32,12 +32,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName>ScopedCss</AssetTraitName>
       <AssetTraitValue>ApplicationBundle</AssetTraitValue>
-      <Fingerprint>a1k8nculjd</Fingerprint>
-      <Integrity>kqFmjrAeCF32jVQETFIcaN+ZQIyIx14WaOS1sIiQYEI=</Integrity>
+      <Fingerprint>eo73qefyu0</Fingerprint>
+      <Integrity>ngtWDmfxrnAnlje2AQzKFjr2d8UdYPehclOb7Fuvylc=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>81</FileLength>
-      <LastWriteTime>Sun, 09 Nov 2025 02:17:45 GMT</LastWriteTime>
+      <FileLength>72</FileLength>
+      <LastWriteTime>Sun, 09 Nov 2025 13:37:47 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.styles.css'))</OriginalItemSpec>
     </StaticWebAsset>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))">
@@ -52,12 +52,12 @@
       <RelatedAsset></RelatedAsset>
       <AssetTraitName></AssetTraitName>
       <AssetTraitValue></AssetTraitValue>
-      <Fingerprint>drlnsyack4</Fingerprint>
-      <Integrity>6dGdReIgjDIcr/Ui5i59QsRdBbLaLLKz4PAPjwahcaY=</Integrity>
+      <Fingerprint>5hf4hs2w2p</Fingerprint>
+      <Integrity>WegM3fsYshwsdGMAdxWy9wEcUxfEKi0J9D8UzKn4IS0=</Integrity>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      <FileLength>766</FileLength>
-      <LastWriteTime>Wed, 05 Nov 2025 03:58:53 GMT</LastWriteTime>
+      <FileLength>801</FileLength>
+      <LastWriteTime>Sun, 09 Nov 2025 11:51:28 GMT</LastWriteTime>
       <OriginalItemSpec>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</OriginalItemSpec>
     </StaticWebAsset>
   </ItemGroup>

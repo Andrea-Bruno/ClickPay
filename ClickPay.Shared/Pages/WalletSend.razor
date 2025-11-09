@@ -106,7 +106,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="amountInput">@Loc.T("Amount") (@overview.Symbol)</label>
+                            <label class="form-label" for="amountInput">@Loc.T("Amount") (@assetDefinition?.Code)</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
                                 <input id="amountInput" class="form-control" type="text" value="@cryptoAmountText" @oninput="OnCryptoAmountInput" @onblur="OnCryptoAmountBlur" placeholder="@GetCryptoPlaceholder()" inputmode="decimal" autocomplete="off" disabled="@sending" />

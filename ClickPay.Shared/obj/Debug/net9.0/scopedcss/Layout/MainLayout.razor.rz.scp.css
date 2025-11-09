@@ -21,6 +21,18 @@ main[b-fkul4avu0x] {
     align-items: center;
 }
 
+@media (max-width: 640.98px) {
+    .top-row.d-none[b-fkul4avu0x] {
+        display: none !important;
+    }
+}
+
+@media (min-width: 641px) {
+    .top-row.d-md-flex[b-fkul4avu0x] {
+        display: flex !important;
+    }
+}
+
     .top-row[b-fkul4avu0x]  a, .top-row[b-fkul4avu0x]  .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;
