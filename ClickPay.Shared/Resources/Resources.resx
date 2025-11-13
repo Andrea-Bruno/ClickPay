@@ -132,4 +132,9 @@
   <data name="DisclaimerText1" xml:space="preserve"><value>Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.</value></data>
   <data name="CopyPaymentRequest" xml:space="preserve"><value>Copy payment request</value></data>
 
+  <data name="RequestPayment_Title" xml:space="preserve"><value>Request payment</value></data>
+  <data name="RequestPayment_CurrencyLabel" xml:space="preserve"><value>Currency:</value></data>
+  <data name="RequestPayment_Backspace" xml:space="preserve"><value>Del</value></data>
+  <data name="RequestPayment_Confirm" xml:space="preserve"><value>OK</value></data>
+
 </root>

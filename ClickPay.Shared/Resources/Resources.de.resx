@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+
+
 <root>
   <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
   <resheader name="version"><value>2.0</value></resheader>
@@ -131,4 +132,9 @@
   <data name="DisclaimerTitle" xml:space="preserve"><value>ClickPay Wallet Privacy</value></data>
   <data name="DisclaimerText1" xml:space="preserve"><value>Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.</value></data>
 
+  <data name="CopyPaymentRequest" xml:space="preserve"><value>Zahlungsanforderung kopieren</value></data>
+  <data name="RequestPayment_Title" xml:space="preserve"><value>Zahlung anfordern</value></data>
+  <data name="RequestPayment_CurrencyLabel" xml:space="preserve"><value>Währung:</value></data>
+  <data name="RequestPayment_Backspace" xml:space="preserve"><value>Löschen</value></data>
+  <data name="RequestPayment_Confirm" xml:space="preserve"><value>OK</value></data>
 </root>

@@ -41,7 +41,9 @@
             "name": "ClickPay Android (MAUI)",
             "type": "android",
             "request": "launch",
-            "preLaunchTask": "build-android"
+            "preLaunchTask": "build-android",
+            "appSrcRoot": "${workspaceFolder}/ClickPay",
+            "apkFile": "${workspaceFolder}/ClickPay/bin/Debug/net9.0-android/com.companyname.clickpay-Signed.apk"
         }
     ]
 }
