@@ -1,3 +1,12 @@
+/* Responsive: margini minimi solo su mobile verticale */
+@media (max-width: 600px) and (orientation: portrait) {
+    .main-content, .container, .page-content {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

@@ -1,0 +1,65 @@
+@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager Navigation
+@inject ClickPay.Shared.Services.LocalizationService Loc
+
+<div class="modal fade @(Show ? "show d-block" : "")" tabindex="-1" style="background:rgba(0,0,0,0.5);" role="dialog">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Richiedi pagamento</h5>
+        <button type="button" class="btn-close" @onclick="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <div class="display-4 mb-3">@FormatAmount(RequestAmountCents) @ReferenceCurrency</div>
+        <div class="row g-2">
+          @foreach (var row in KeyboardRows)
+          {
+              <div class="col-4" style="padding:0;">
+                @foreach (var key in row)
+                {
+                  <button class="btn btn-lg btn-primary w-100" style="height:60px;" @onclick="() => OnKeyPress(key)">@key</button>
+                }
+              </div>
+          }
+          <div class="col-4" style="padding:0;">
+            <button class="btn btn-lg btn-secondary w-100" style="height:60px;" @onclick="OnBackspace">←</button>
+          </div>
+          <div class="col-4" style="padding:0;">
+            <button class="btn btn-lg btn-success w-100" style="height:60px;" @onclick="OnConfirm">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+    [Parameter] public bool Show { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public string ReferenceCurrency { get; set; } = "EURC";
+    [Parameter] public EventCallback<int> OnConfirmAmount { get; set; }
+
+    private int RequestAmountCents = 0;
+    private List<List<string>> KeyboardRows => new() { new() { "1", "2", "3" }, new() { "4", "5", "6" }, new() { "7", "8", "9" }, new() { "0" } };
+
+    private void OnKeyPress(string key)
+    {
+        if (RequestAmountCents < 100000000) // max 1 milione
+            RequestAmountCents = RequestAmountCents * 10 + int.Parse(key);
+    }
+    private void OnBackspace() => RequestAmountCents /= 10;
+    private async Task OnConfirm()
+    {
+        if (OnConfirmAmount.HasDelegate)
+            await OnConfirmAmount.InvokeAsync(RequestAmountCents);
+        await Close();
+    }
+    private async Task Close()
+    {
+        RequestAmountCents = 0;
+        if (OnClose.HasDelegate)
+            await OnClose.InvokeAsync();
+    }
+    private string FormatAmount(int cents) => (cents / 100.0).ToString("N2");
+}

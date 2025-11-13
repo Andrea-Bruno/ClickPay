@@ -1,5 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="240" height="240" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Wallet icon">
-  <path d="M3 7h18v10H3z"/>
-  <path d="M3 7V5a2 2 0 0 1 2-2h14v4"/>
-  <circle cx="17" cy="12" r="1.2" fill="#000"/>
+  <g transform="scale(0.5) translate(12,12)">
+    <path d="M3 7h18v10H3z"/>
+    <path d="M3 7V5a2 2 0 0 1 2-2h14v4"/>
+    <circle cx="17" cy="12" r="1.2" fill="#000"/>
+  </g>
 </svg>

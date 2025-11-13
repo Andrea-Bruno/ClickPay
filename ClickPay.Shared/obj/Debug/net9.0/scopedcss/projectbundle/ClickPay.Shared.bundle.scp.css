@@ -279,6 +279,14 @@ main[b-fkul4avu0x] {
     }
 }
 /* _content/ClickPay.Shared/Pages/Wallet.razor.rz.scp.css */
+@media (max-width: 767.98px) and (orientation: portrait) {
+    .address-complete[b-rxft0yfe7b] { display: none !important; }
+    .address-abbr[b-rxft0yfe7b] { display: block !important; }
+}
+@media (max-width: 767.98px) and (orientation: landscape), (min-width: 768px) {
+    .address-complete[b-rxft0yfe7b] { display: block !important; }
+    .address-abbr[b-rxft0yfe7b] { display: none !important; }
+}
 .wallet-page[b-rxft0yfe7b] {
     padding-bottom: 6rem;
 }

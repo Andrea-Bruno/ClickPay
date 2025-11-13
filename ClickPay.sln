@@ -14,6 +14,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolanaEurcSimulation", "Sim
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickPay.Wallet.Core", "ClickPay.Wallet.Core\ClickPay.Wallet.Core.csproj", "{04D6E369-D0A6-7654-96A4-1131F51ED1C2}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Elementi di soluzione", "Elementi di soluzione", "{9DF70304-0A22-CE1E-AA12-D5904EE55694}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickPayServer", "ClickPayServer\ClickPayServer.csproj", "{C6E26320-3E41-2426-9978-A4DBBB181C2B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,10 @@ Global
 		{04D6E369-D0A6-7654-96A4-1131F51ED1C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04D6E369-D0A6-7654-96A4-1131F51ED1C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04D6E369-D0A6-7654-96A4-1131F51ED1C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6E26320-3E41-2426-9978-A4DBBB181C2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6E26320-3E41-2426-9978-A4DBBB181C2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6E26320-3E41-2426-9978-A4DBBB181C2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6E26320-3E41-2426-9978-A4DBBB181C2B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,11 +30,14 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimul
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Configuration.Json.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.DependencyInjection.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Diagnostics.dll
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Diagnostics.Abstractions.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.FileProviders.Abstractions.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.FileProviders.Composite.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.FileProviders.Embedded.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.FileProviders.Physical.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Http.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Logging.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Logging.Abstractions.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Microsoft.Extensions.Logging.Configuration.dll
@@ -77,6 +80,7 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimul
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Solnet.Programs.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Solnet.Rpc.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\Solnet.Wallet.dll
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.DiagnosticSource.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\zxing.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\ZXing.Net.MAUI.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\ZXing.Net.MAUI.Controls.dll
@@ -140,7 +144,6 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimul
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Data.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.Contracts.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.Debug.dll
-C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.DiagnosticSource.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.FileVersionInfo.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.Process.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\bin\Debug\net9.0-ios\iossimulator-x64\System.Diagnostics.StackTrace.dll
@@ -332,7 +335,7 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimul
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\scopedcss\bundle\ClickPay.styles.css
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\0ihvwvvswc-obgb1x923p.gz
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\jzxph2ci6i-5hf4hs2w2p.gz
-C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\57ha7236ii-eo73qefyu0.gz
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\57ha7236ii-54t70q82mp.gz
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\staticwebassets.build.json
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\staticwebassets.build.json.cache
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\staticwebassets.development.json
@@ -345,7 +348,7 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimul
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\staticwebassets.pack.json
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\publish\0ihvwvvswc-obgb1x923p.br
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\publish\jzxph2ci6i-5hf4hs2w2p.br
-C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\publish\57ha7236ii-eo73qefyu0.br
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\compressed\publish\57ha7236ii-54t70q82mp.br
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\staticwebassets.publish.json
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\staticwebassets.publish.endpoints.json
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay\obj\Debug\net9.0-ios\iossimulator-x64\mauiimage.inputs

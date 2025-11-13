@@ -131,6 +131,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
             "NBitcoin": {
               "target": "Package",
               "version": "[9.0.3, )"

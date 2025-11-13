@@ -138,7 +138,8 @@
                         {
                             <li class="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
-                                    <div class="fw-semibold">@tx.TransactionId</div>
+                                    <div class="fw-semibold address-complete">@tx.TransactionId</div>
+                                    <div class="fw-semibold address-abbr">@AbbreviateAddress(tx.TransactionId)</div>
                                     <small class="text-muted">@tx.Timestamp.LocalDateTime.ToString("g")</small>
                                 </div>
                                 <span class="badge bg-@(tx.IsIncoming ? "success" : "danger")">
@@ -158,10 +159,10 @@
             <div class="container py-3">
                 <div class="row g-3 justify-content-center">
                     <div class="col-6 col-md-3 d-grid">
-                        <button class="btn btn-success btn-lg" @onclick="ReceivePayment">@Loc.T("ReceivePaymentTitle")</button>
+                        <button class="btn btn-success btn-lg" @onclick="ReceivePayment"> <span class="fs-1">▼</span><br /> @Loc.T("ReceivePaymentTitle")</button>
                     </div>
                     <div class="col-6 col-md-3 d-grid">
-                        <button class="btn btn-primary btn-lg" @onclick="SendPayment">@Loc.T("SendPaymentButton")</button>
+                        <button class="btn btn-primary btn-lg" @onclick="SendPayment"> <span class="fs-1">▲</span><br /> @Loc.T("SendPaymentButton")</button>
                     </div>
                 </div>
             </div>
@@ -179,6 +180,13 @@
     private bool loading = true;
     private string? error;
     private decimal? fiatValue;
+
+    private string AbbreviateAddress(string address)
+    {
+        if (string.IsNullOrEmpty(address) || address.Length <= 15)
+            return address;
+        return $"{address.Substring(0, 6)}...{address.Substring(address.Length - 6)}";
+    }
     private CachedExchangeRate? cachedFiatRate;
     private FiatPreferenceStore.FiatCurrencyOption? fiatPreference;
     private bool awaitingInteractive;

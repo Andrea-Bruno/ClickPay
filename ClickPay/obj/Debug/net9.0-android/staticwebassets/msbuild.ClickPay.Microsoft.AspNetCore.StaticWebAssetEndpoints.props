@@ -12,17 +12,17 @@
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"obgb1x923p"},{"Name":"integrity","Value":"sha256-nAPExVxs4MSkXKnxvGIYwMYuD37zfvuOz6q6ILLNXLU="},{"Name":"label","Value":"app.css"}]]]></EndpointProperties>
       <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"416"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022nAPExVxs4MSkXKnxvGIYwMYuD37zfvuOz6q6ILLNXLU=\u0022"},{"Name":"Last-Modified","Value":"Wed, 05 Nov 2025 03:58:53 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
-    <StaticWebAssetEndpoint Include="ClickPay.783tq4qn7v.styles.css">
+    <StaticWebAssetEndpoint Include="ClickPay.54t70q82mp.styles.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.styles.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"783tq4qn7v"},{"Name":"integrity","Value":"sha256-aQBkVxOyQWOmreR1bs2VGqp5ob2n6a2vbWWD1XbuCuU="},{"Name":"label","Value":"ClickPay.styles.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"81"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022aQBkVxOyQWOmreR1bs2VGqp5ob2n6a2vbWWD1XbuCuU=\u0022"},{"Name":"Last-Modified","Value":"Sun, 09 Nov 2025 14:06:24 GMT"},{"Name":"Link","Value":"\u003C_content/ClickPay.Shared/ClickPay.Shared.z6r791m1ri.bundle.scp.css\u003E; rel=\u0022preload\u0022; as=\u0022style\u0022"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"54t70q82mp"},{"Name":"integrity","Value":"sha256-28hmtLC4hD7fWG/Ltxp0gtlePWVQgwNYmfdRyM0T5rc="},{"Name":"label","Value":"ClickPay.styles.css"}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"81"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u002228hmtLC4hD7fWG/Ltxp0gtlePWVQgwNYmfdRyM0T5rc=\u0022"},{"Name":"Last-Modified","Value":"Wed, 12 Nov 2025 14:28:28 GMT"},{"Name":"Link","Value":"\u003C_content/ClickPay.Shared/ClickPay.Shared.cfnwpk5huy.bundle.scp.css\u003E; rel=\u0022preload\u0022; as=\u0022style\u0022"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="ClickPay.styles.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.styles.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
-      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-aQBkVxOyQWOmreR1bs2VGqp5ob2n6a2vbWWD1XbuCuU="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"81"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022aQBkVxOyQWOmreR1bs2VGqp5ob2n6a2vbWWD1XbuCuU=\u0022"},{"Name":"Last-Modified","Value":"Sun, 09 Nov 2025 14:06:24 GMT"},{"Name":"Link","Value":"\u003C_content/ClickPay.Shared/ClickPay.Shared.z6r791m1ri.bundle.scp.css\u003E; rel=\u0022preload\u0022; as=\u0022style\u0022"}]]]></ResponseHeaders>
+      <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-28hmtLC4hD7fWG/Ltxp0gtlePWVQgwNYmfdRyM0T5rc="}]]]></EndpointProperties>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"81"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u002228hmtLC4hD7fWG/Ltxp0gtlePWVQgwNYmfdRyM0T5rc=\u0022"},{"Name":"Last-Modified","Value":"Wed, 12 Nov 2025 14:28:28 GMT"},{"Name":"Link","Value":"\u003C_content/ClickPay.Shared/ClickPay.Shared.cfnwpk5huy.bundle.scp.css\u003E; rel=\u0022preload\u0022; as=\u0022style\u0022"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="index.5hf4hs2w2p.html">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\index.html'))</AssetFile>

@@ -130,5 +130,6 @@
   <data name="ErrorReloadLink" xml:space="preserve"><value>Reload</value></data>
   <data name="DisclaimerTitle" xml:space="preserve"><value>ClickPay Wallet Privacy</value></data>
   <data name="DisclaimerText1" xml:space="preserve"><value>Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.</value></data>
+  <data name="CopyPaymentRequest" xml:space="preserve"><value>Copy payment request</value></data>
 
 </root>

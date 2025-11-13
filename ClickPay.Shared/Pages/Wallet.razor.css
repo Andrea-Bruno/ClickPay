@@ -1,3 +1,11 @@
+@media (max-width: 767.98px) and (orientation: portrait) {
+    .address-complete { display: none !important; }
+    .address-abbr { display: block !important; }
+}
+@media (max-width: 767.98px) and (orientation: landscape), (min-width: 768px) {
+    .address-complete { display: block !important; }
+    .address-abbr { display: none !important; }
+}
 .wallet-page {
     padding-bottom: 6rem;
 }
