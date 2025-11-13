@@ -201,7 +201,7 @@
     {
       "code": "NU1608",
       "level": "Warning",
-      "message": "È stata rilevata una versione del pacchetto all'esterno del vincolo di dipendenza: Nethereum.JsonRpc.Client 5.0.0 richiede Microsoft.Extensions.Logging.Abstractions (>= 6.0.0 && < 10.0.0) ma è stata risolta la versione Microsoft.Extensions.Logging.Abstractions 10.0.0.",
+      "message": "Detected package version outside of dependency constraint: Nethereum.JsonRpc.Client 5.0.0 requires Microsoft.Extensions.Logging.Abstractions (>= 6.0.0 && < 10.0.0) but version Microsoft.Extensions.Logging.Abstractions 10.0.0 was resolved.",
       "projectPath": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\ClickPay.csproj",
       "warningLevel": 1,
       "filePath": "C:\\Users\\andre\\OneDrive\\Sorgenti\\ClickPay\\ClickPay\\ClickPay.csproj",

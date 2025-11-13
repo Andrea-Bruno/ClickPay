@@ -137,4 +137,8 @@
   <data name="RequestPayment_CurrencyLabel" xml:space="preserve"><value>Währung:</value></data>
   <data name="RequestPayment_Backspace" xml:space="preserve"><value>Löschen</value></data>
   <data name="RequestPayment_Confirm" xml:space="preserve"><value>OK</value></data>
+  <data name="RequestPayment_ErrorAmount" xml:space="preserve"><value>Geben Sie einen gültigen Betrag größer als Null ein.</value></data>
+  <data name="RequestPayment_ErrorApi" xml:space="preserve"><value>Zahlungsanforderung fehlgeschlagen. Bitte versuchen Sie es erneut.</value></data>
+  <data name="RequestPayment_ErrorNetwork" xml:space="preserve"><value>Keine Internetverbindung oder Server nicht erreichbar.</value></data>
+  <data name="RequestPayment_Success" xml:space="preserve"><value>Zahlungsanforderung erfolgreich gesendet!</value></data>
 </root>

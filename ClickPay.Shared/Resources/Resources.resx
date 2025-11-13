@@ -136,5 +136,9 @@
   <data name="RequestPayment_CurrencyLabel" xml:space="preserve"><value>Currency:</value></data>
   <data name="RequestPayment_Backspace" xml:space="preserve"><value>Del</value></data>
   <data name="RequestPayment_Confirm" xml:space="preserve"><value>OK</value></data>
+  <data name="RequestPayment_ErrorAmount" xml:space="preserve"><value>Enter a valid amount greater than zero.</value></data>
+  <data name="RequestPayment_ErrorApi" xml:space="preserve"><value>Payment request failed. Please try again.</value></data>
+  <data name="RequestPayment_ErrorNetwork" xml:space="preserve"><value>No internet connection or server unreachable.</value></data>
+  <data name="RequestPayment_Success" xml:space="preserve"><value>Payment request sent successfully!</value></data>
 
 </root>

@@ -1,0 +1,108 @@
+@page "/request-payment"
+@using Microsoft.AspNetCore.Components
+@inject NavigationManager Navigation
+@inject LocalizationService Loc
+
+<div class="container py-4 d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
+    <h2 class="mb-4">@Loc.T("RequestPayment_Title")</h2>
+    <div class="mb-3 w-100 text-center">
+        <div class="display-3 fw-bold">@DisplayAmount</div>
+        <div class="text-muted">@Loc.T("RequestPayment_CurrencyLabel") @ReferenceCurrencyCode</div>
+    </div>
+    <div class="w-100 d-flex flex-column align-items-center">
+        <div class="keypad w-100" style="max-width: 400px;">
+            <div class="row g-2 mb-2">
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("1")'>1</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("2")'>2</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("3")'>3</button></div>
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("4")'>4</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("5")'>5</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("6")'>6</button></div>
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("7")'>7</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("8")'>8</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("9")'>9</button></div>
+            </div>
+            <div class="row g-2 mb-2">
+                <div class="col-4"><button class="btn btn-lg btn-outline-secondary w-100" @onclick="Backspace"><i class="bi bi-backspace"></i>@Loc.T("RequestPayment_Backspace")</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("0")'>0</button></div>
+                <div class="col-4"><button class="btn btn-lg btn-success w-100" @onclick="ConfirmAmount"><i class="bi bi-check-lg"></i>@Loc.T("RequestPayment_Confirm")</button></div>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div class="alert alert-danger mt-3">@ErrorMessage</div>
+        }
+        @if (Success)
+        {
+            <div class="alert alert-success mt-3">@Loc.T("RequestPayment_Success")</div>
+        }
+    </div>
+</div>
+
+@code {
+    private API.ClickPayServerAPIClient Api => API.ApiGlobals.Instance!;
+    private string InputDigits = string.Empty;
+    private string ReferenceCurrencyCode => "EUR"; // TODO: bind to real currency
+    private string ErrorMessage = string.Empty;
+    private bool Success = false;
+    private bool IsLoading = false;
+
+    // TODO: recupera lo shopId reale da servizio/utente
+    private string ShopId => "SHOP_ID_PLACEHOLDER";
+
+    private void AddDigit(string digit)
+    {
+        if (InputDigits.Length < 9)
+            InputDigits += digit;
+    }
+
+    private void Backspace()
+    {
+        if (InputDigits.Length > 0)
+            InputDigits = InputDigits.Substring(0, InputDigits.Length - 1);
+    }
+
+    private async Task ConfirmAmount()
+    {
+        ErrorMessage = string.Empty;
+        Success = false;
+        if (!decimal.TryParse(DisplayAmount.Replace(",", "."), out var amount) || amount <= 0)
+        {
+            ErrorMessage = Loc.T("RequestPayment_ErrorAmount");
+            return;
+        }
+        IsLoading = true;
+        try
+        {
+            var result = await Api.SetNextPayment(ShopId, ReferenceCurrencyCode, (float)amount);
+            Success = result;
+            if (!result)
+                ErrorMessage = Loc.T("RequestPayment_ErrorApi");
+        }
+        catch
+        {
+            ErrorMessage = Loc.T("RequestPayment_ErrorNetwork");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private string DisplayAmount
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(InputDigits))
+                return "0,00";
+            var digits = InputDigits.PadLeft(3, '0');
+            var intPart = digits.Substring(0, digits.Length - 2);
+            var decPart = digits.Substring(digits.Length - 2, 2);
+            return $"{int.Parse(intPart):N0},{decPart}";
+        }
+    }
+}

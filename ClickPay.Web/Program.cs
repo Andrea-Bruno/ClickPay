@@ -17,6 +17,9 @@ using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Inizializza l'istanza globale dell'API client
+API.ApiGlobals.Initialize(builder.Configuration);
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
