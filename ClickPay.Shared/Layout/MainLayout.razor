@@ -2,15 +2,16 @@
 @inherits LayoutComponentBase
 @using System
 @using System.Linq
-@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Wallet
 @using ClickPay.Wallet.Core.CryptoAssets
 @using Microsoft.Extensions.Logging
 @inject NavigationManager Navigation
-@inject WalletKeyService WalletKeyService
-@inject MultiChainWalletService WalletService
+@inject ILocalSecureStore SecureStore
 @inject IBiometricLockService BiometricLock
 @inject ILogger<MainLayout> Logger
 @inject LocalizationService Loc
+@using ClickPay.Wallet.Core.Blockchain
+@inject WalletProviderRegistry ProviderRegistry
 
 @code {
     private bool _hasCheckedKey;
@@ -43,7 +44,7 @@
 
         try
         {
-            var vault = await WalletKeyService.GetVaultAsync();
+            var vault = await WalletKeyUtility.GetVaultAsync(SecureStore);
             _hasCheckedKey = true;
 
             if (vault is null)
@@ -180,8 +181,20 @@
     {
         try
         {
-            await WalletService.GetOverviewAsync(asset.Code);
-            await WalletService.GetTransactionsAsync(asset.Code);
+            await MultiChainWalletUtility.GetOverviewAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                Logger,
+                asset.Code,
+                null,
+                CancellationToken.None);
+            await MultiChainWalletUtility.GetTransactionsAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                Logger,
+                asset.Code,
+                null,
+                CancellationToken.None);
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("Nessun wallet", StringComparison.OrdinalIgnoreCase))
         {

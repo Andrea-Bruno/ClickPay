@@ -1,3 +1,5 @@
+
+using ClickPay.Wallet.Core.Wallet;
 namespace ClickPay.Wallet.Core.Services;
 
 // Abstraction used by components to store small protected values.

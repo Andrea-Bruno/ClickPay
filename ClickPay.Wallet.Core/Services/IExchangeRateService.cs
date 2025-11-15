@@ -7,6 +7,6 @@ namespace ClickPay.Wallet.Core.Services
 {
     public interface IExchangeRateService
     {
-        Task<CachedExchangeRate?> GetRateAsync(CryptoAsset asset, string fiatCode, Action? refresh = null, CancellationToken cancellationToken = default);
+        Task<ClickPay.Wallet.Core.Utility.CachedExchangeRate?> GetRateAsync(CryptoAsset asset, string fiatCode, Action? refresh = null, CancellationToken cancellationToken = default);
     }
 }

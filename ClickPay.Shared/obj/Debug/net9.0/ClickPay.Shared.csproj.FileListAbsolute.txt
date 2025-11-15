@@ -49,6 +49,8 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compr
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\48z9nihx3q-gw31cjdotg.gz
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\4vrzntha8v-dnowj5dap0.gz
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\gujn8kmlyl-19smwjp1mj.gz
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\luaof99xwx-cfnwpk5huy.gz
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\1datut7o0v-cfnwpk5huy.gz
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.development.json
@@ -68,5 +70,3 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\de\Cl
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\es\ClickPay.Shared.resources.cs
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\fr\ClickPay.Shared.resources.cs
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\it\ClickPay.Shared.resources.cs
-C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\luaof99xwx-cfnwpk5huy.gz
-C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\compressed\1datut7o0v-cfnwpk5huy.gz

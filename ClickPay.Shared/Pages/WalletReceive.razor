@@ -1,3 +1,7 @@
+@using ClickPay.Wallet.Core.Wallet
+@using ClickPay.Wallet.Core.Blockchain
+@inject WalletProviderRegistry ProviderRegistry
+@inject ILocalSecureStore SecureStore
 @page "/wallet/{type}/receive"
 @using System.Collections.Generic
 @using System.Globalization
@@ -7,12 +11,10 @@
 @using Microsoft.JSInterop
 @using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Pages
-@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Utility
 @using ClickPay.Wallet.Core.CryptoAssets
 @inject IJSRuntime JS
 @inject LocalizationService Loc
-@inject MultiChainWalletService Wallets
-@inject WalletKeyService Vaults
 @inject NavigationManager Navigation
 @inject FiatPreferenceStore FiatPreferences
 @inject IExchangeRateService ExchangeRates
@@ -217,13 +219,17 @@ else if (info is not null)
     {
         try
         {
-            if (!await Vaults.HasVaultAsync())
+            if (!await WalletKeyUtility.HasVaultAsync(SecureStore))
             {
                 Navigation.NavigateTo("/onboarding", true);
                 return;
             }
 
-            info = await Wallets.GetReceiveInfoAsync(assetCode);
+            info = await MultiChainWalletUtility.GetReceiveInfoAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                assetCode,
+                CancellationToken.None);
             loading = false;
 
             SetCryptoAmount(amount, updatePayment: false);

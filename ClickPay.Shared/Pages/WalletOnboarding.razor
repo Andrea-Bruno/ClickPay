@@ -1,15 +1,14 @@
+@inject ILocalSecureStore SecureStore
 
 @page "/onboarding"
 @using System.Collections.Generic
 @using System.Linq
-@using ClickPay.Wallet.Core.Services
 @using ClickPay.Wallet.Core.Blockchain
 @using ClickPay.Wallet.Core.Wallet
 @using Microsoft.Extensions.Logging
 @using Microsoft.AspNetCore.Components
 @inject LocalizationService Loc
 @inject WalletMnemonicService Mnemonics
-@inject WalletKeyService WalletKeys
 @inject WalletProviderRegistry ProviderRegistry
 @inject NavigationManager Navigation
 @inject ILogger<WalletOnboarding> Logger
@@ -154,7 +153,7 @@
     {
         var vault = BuildVault(mnemonic, passphrase);
 
-        await WalletKeys.SaveVaultAsync(vault);
+        await WalletKeyUtility.SaveVaultAsync(SecureStore, vault);
 
         successMessage = success;
         restoreError = null;

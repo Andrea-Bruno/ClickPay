@@ -2,10 +2,10 @@
 @using System.Threading.Tasks
 @using Microsoft.AspNetCore.Components
 @using ClickPay.Wallet.Core.CryptoAssets
-@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Wallet
 @inject LocalizationService Loc
 @inject NavigationManager Navigation
-@inject WalletKeyService WalletKeys
+@inject ILocalSecureStore SecureStore
 @implements IDisposable
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -40,7 +40,7 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="richiedi-pagamento">
+            <NavLink class="nav-link" href="request-payment">
                 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
                     <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.5" />
                     <text x="12" y="16" text-anchor="middle" font-size="10" fill="currentColor">€</text>
@@ -174,7 +174,7 @@
 
         try
         {
-            await WalletKeys.RemoveVaultAsync();
+            await WalletKeyUtility.RemoveVaultAsync(SecureStore);
             Navigation.NavigateTo("/onboarding", forceLoad: true);
         }
         catch (Exception ex)

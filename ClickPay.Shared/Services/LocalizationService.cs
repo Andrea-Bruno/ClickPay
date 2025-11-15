@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using ClickPay.Shared.Resources;
-using ClickPay.Wallet.Core.Services;
+
 
 namespace ClickPay.Shared.Services
 {
@@ -11,21 +11,14 @@ namespace ClickPay.Shared.Services
     {
     private readonly System.Resources.ResourceManager _resourceManager = ClickPay.Shared.Resources.Resources.ResourceManager;
         private string _currentLanguage;
-        private readonly UserPreferenceService? _userPreferences;
+
 
         public event Action? LanguageChanged;
 
-        // Costruttore legacy (senza UserPreferenceService)
+
         public LocalizationService()
         {
             _currentLanguage = NormalizeLanguageCode(CultureInfo.CurrentUICulture.Name);
-        }
-
-        // Costruttore con UserPreferenceService per persistenza centralizzata
-        public LocalizationService(UserPreferenceService userPreferences)
-        {
-            _userPreferences = userPreferences;
-            _currentLanguage = "en";
         }
 
         public string CurrentLanguage
@@ -42,36 +35,28 @@ namespace ClickPay.Shared.Services
                     return;
                 }
                 _currentLanguage = normalized;
-                // Se disponibile, salva anche in UserPreferenceService (sincrono per retrocompatibilità)
-                _userPreferences?.SetLanguageAsync(normalized);
                 LanguageChanged?.Invoke();
             }
         }
 
         // Versione asincrona per chi vuole solo async
-        public async Task<string> GetCurrentLanguageAsync()
+        public Task<string> GetCurrentLanguageAsync()
         {
-            if (_userPreferences != null)
-            {
-                _currentLanguage = await _userPreferences.GetLanguageAsync();
-            }
-            return _currentLanguage;
+            return Task.FromResult(_currentLanguage);
         }
 
-        public async Task SetCurrentLanguageAsync(string value)
+        public Task SetCurrentLanguageAsync(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-                return;
-            var normalized = NormalizeLanguageCode(value);
-            if (_currentLanguage == normalized)
+            if (!string.IsNullOrWhiteSpace(value))
             {
-                LanguageChanged?.Invoke();
-                return;
+                var normalized = NormalizeLanguageCode(value);
+                if (_currentLanguage != normalized)
+                {
+                    _currentLanguage = normalized;
+                    LanguageChanged?.Invoke();
+                }
             }
-            _currentLanguage = normalized;
-            if (_userPreferences != null)
-                await _userPreferences.SetLanguageAsync(normalized);
-            LanguageChanged?.Invoke();
+            return Task.CompletedTask;
         }
 
         public string T(string key)

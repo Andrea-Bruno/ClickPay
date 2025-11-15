@@ -1,3 +1,4 @@
+@inject ILocalSecureStore SecureStore
 @page "/setup"
 @using System.Collections.Generic
 @using System.Globalization
@@ -5,12 +6,12 @@
 @using System.Threading.Tasks
 @using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Services
-@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Utility
+@using ClickPay.Wallet.Core.Preferences
 @using ClickPay.Wallet.Core.CryptoAssets
 @inject LocalizationService Loc
 @inject FiatPreferenceStore FiatPreferences
 @inject IBiometricLockService BiometricLock
-@inject UserPreferenceService UserPreferences
 
 <PageTitle>@Loc.T("SetupTitle")</PageTitle>
 
@@ -158,8 +159,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        selectedLang = await UserPreferences.GetLanguageAsync();
-        selectedTheme = await UserPreferences.GetThemeAsync();
+        selectedLang = await UserPreferenceUtility.GetLanguageAsync(SecureStore);
+        selectedTheme = await UserPreferenceUtility.GetThemeAsync(SecureStore);
         assetVisibility = WalletAssetHelper.GetRegisteredAssets()
             .Where(asset => !asset.VisibilityLocked)
             .Select(asset => new AssetVisibilityModel
@@ -218,10 +219,10 @@
     {
         if (!string.IsNullOrWhiteSpace(selectedLang))
         {
-            await UserPreferences.SetLanguageAsync(selectedLang);
+            await UserPreferenceUtility.SetLanguageAsync(SecureStore, selectedLang);
             Loc.CurrentLanguage = selectedLang;
         }
-        await UserPreferences.SetThemeAsync(selectedTheme);
+        await UserPreferenceUtility.SetThemeAsync(SecureStore, selectedTheme);
         StateHasChanged();
     }
 

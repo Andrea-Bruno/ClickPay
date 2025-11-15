@@ -1,3 +1,7 @@
+@using ClickPay.Wallet.Core.Wallet
+@using ClickPay.Wallet.Core.Blockchain
+@inject WalletProviderRegistry ProviderRegistry
+@inject ILocalSecureStore SecureStore
 @page "/wallet/{type}/send"
 @using System.Collections.Generic
 @using System.Globalization
@@ -6,13 +10,11 @@
 @using Microsoft.AspNetCore.Components.Web
 @using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Pages
-@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Utility
 @using ClickPay.Wallet.Core.CryptoAssets
 @implements IDisposable
 @inject NavigationManager Navigation
 @inject LocalizationService Loc
-@inject MultiChainWalletService Wallets
-@inject WalletKeyService Vaults
 @inject IQrScannerService QrScanner
 @inject PaymentRequestParser PaymentParser
 @inject FiatPreferenceStore FiatPreferences
@@ -505,13 +507,19 @@
 
         try
         {
-            if (!await Vaults.HasVaultAsync())
+            if (!await WalletKeyUtility.HasVaultAsync(SecureStore))
             {
                 Navigation.NavigateTo("/onboarding", true);
                 return;
             }
 
-            overview = await Wallets.GetOverviewAsync(assetCode);
+            overview = await MultiChainWalletUtility.GetOverviewAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                null,
+                assetCode,
+                null,
+                CancellationToken.None);
 
             await LoadFiatContextAsync();
             await RefreshFeeAssetOverviewsAsync();
@@ -579,7 +587,13 @@
         feeAssetOverviews.Clear();
 
         var overviewTasks = feeAssetDefinitions
-            .Select(definition => Wallets.GetOverviewAsync(definition.Code))
+            .Select(definition => MultiChainWalletUtility.GetOverviewAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                null,
+                definition.Code,
+                null,
+                CancellationToken.None))
             .ToArray();
 
         var results = await Task.WhenAll(overviewTasks);
@@ -681,11 +695,23 @@
 
         try
         {
-            var result = await Wallets.SendAsync(assetCode, form.Destination.Trim(), form.Amount);
+            var result = await MultiChainWalletUtility.SendAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                assetCode,
+                form.Destination.Trim(),
+                form.Amount,
+                CancellationToken.None);
             successMessage = string.Format(CultureInfo.CurrentCulture, Loc.T("TransactionSentFormat"), result.TransactionId);
             SetCryptoAmount(0m);
 
-            overview = await Wallets.GetOverviewAsync(assetCode);
+            overview = await MultiChainWalletUtility.GetOverviewAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                null,
+                assetCode,
+                null,
+                CancellationToken.None);
             await LoadFiatContextAsync();
             await RefreshFeeAssetOverviewsAsync();
         }

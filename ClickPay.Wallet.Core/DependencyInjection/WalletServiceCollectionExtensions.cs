@@ -5,6 +5,7 @@ using Bitcoin = ClickPay.Wallet.Core.Blockchain.Bitcoin;
 using EthereumChain = ClickPay.Wallet.Core.Blockchain.Ethereum;
 using SolanaChain = ClickPay.Wallet.Core.Blockchain.Solana;
 using ClickPay.Wallet.Core.Services;
+using ClickPay.Wallet.Core.Utility;
 using ClickPay.Wallet.Core.Wallet;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -21,7 +22,6 @@ namespace ClickPay.Wallet.Core.DependencyInjection
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services.AddScoped<WalletKeyService>();
             services.AddSingleton<WalletMnemonicService>();
             services.AddSingleton<WalletErrorLocalizer>();
 
@@ -58,7 +58,6 @@ namespace ClickPay.Wallet.Core.DependencyInjection
             services.AddScoped<IWalletProvider, EthereumChain.EthereumWalletProvider>();
 
             services.AddScoped<WalletProviderRegistry>();
-            services.AddScoped<MultiChainWalletService>();
 
             services.AddSingleton(BlockchainProviderRegistry.Default);
 

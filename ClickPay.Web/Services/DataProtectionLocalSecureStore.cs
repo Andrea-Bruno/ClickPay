@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using ClickPay.Wallet.Core.Services;
+using ClickPay.Wallet.Core.Wallet;
 using Microsoft.Extensions.Logging;
 
 namespace ClickPay.Web.Services;

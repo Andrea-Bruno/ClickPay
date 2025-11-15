@@ -40,13 +40,13 @@
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.Shared.cfnwpk5huy.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"integrity","Value":"sha256-aKg/7xKXYV/sH4f6r4Vbbwx\u002BABPdT6LYQXt1gtNaTHE="}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7571"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022aKg/7xKXYV/sH4f6r4Vbbwx\u002BABPdT6LYQXt1gtNaTHE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 12 Nov 2025 13:46:51 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"no-cache"},{"Name":"Content-Length","Value":"7571"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022aKg/7xKXYV/sH4f6r4Vbbwx\u002BABPdT6LYQXt1gtNaTHE=\u0022"},{"Name":"Last-Modified","Value":"Sat, 15 Nov 2025 04:30:40 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/ClickPay.Shared/ClickPay.Shared.cfnwpk5huy.bundle.scp.css">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\ClickPay.Shared.cfnwpk5huy.bundle.scp.css'))</AssetFile>
       <Selectors><![CDATA[[]]]></Selectors>
       <EndpointProperties><![CDATA[[{"Name":"fingerprint","Value":"cfnwpk5huy"},{"Name":"integrity","Value":"sha256-aKg/7xKXYV/sH4f6r4Vbbwx\u002BABPdT6LYQXt1gtNaTHE="},{"Name":"label","Value":"_content/ClickPay.Shared/ClickPay.Shared.bundle.scp.css"}]]]></EndpointProperties>
-      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7571"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022aKg/7xKXYV/sH4f6r4Vbbwx\u002BABPdT6LYQXt1gtNaTHE=\u0022"},{"Name":"Last-Modified","Value":"Wed, 12 Nov 2025 13:46:51 GMT"}]]]></ResponseHeaders>
+      <ResponseHeaders><![CDATA[[{"Name":"Accept-Ranges","Value":"bytes"},{"Name":"Cache-Control","Value":"max-age=31536000, immutable"},{"Name":"Content-Length","Value":"7571"},{"Name":"Content-Type","Value":"text/css"},{"Name":"ETag","Value":"\u0022aKg/7xKXYV/sH4f6r4Vbbwx\u002BABPdT6LYQXt1gtNaTHE=\u0022"},{"Name":"Last-Modified","Value":"Sat, 15 Nov 2025 04:30:40 GMT"}]]]></ResponseHeaders>
     </StaticWebAssetEndpoint>
     <StaticWebAssetEndpoint Include="_content/ClickPay.Shared/favicon.ifv42okdf2.png">
       <AssetFile>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\staticwebassets\favicon.png'))</AssetFile>

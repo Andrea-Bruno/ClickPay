@@ -1,7 +1,7 @@
 @page "/wallet/{type}"
 @using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Services
-@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Utility
 @using ClickPay.Wallet.Core.CryptoAssets
 @using System.Globalization
 @using System.Threading
@@ -11,18 +11,17 @@
 @using Microsoft.Extensions.Logging
 @using Microsoft.JSInterop
 @implements IDisposable
+
 @inject NavigationManager Navigation
 @inject LocalizationService Loc
-@inject MultiChainWalletService Wallets
-@inject WalletKeyService Vaults
 @inject FiatPreferenceStore FiatPreferences
 @inject IJSRuntime JS
 @inject ILogger<Wallet> Logger
-@inject IExchangeRateService ExchangeRates
+@inject HttpClient httpClient
+@inject ClickPay.Wallet.Core.Services.ILocalSecureStore SecureStore
+@using ClickPay.Wallet.Core.Blockchain
+@inject WalletProviderRegistry ProviderRegistry
 
-<PageTitle>Wallet</PageTitle>
-
-<div class="container wallet-page py-4 pb-5 pb-md-6">
     @if (loading)
     {
         <div class="row">
@@ -43,87 +42,81 @@
     {
         <div class="row mb-4">
             <div class="col-12">
-                <div class="card text-center shadow-lg">
-                    <div class="card-body">
-                        <h2 class="card-title">
-                            @if (assetDefinition is not null)
-                            {
-                                @GetWalletHeading(assetDefinition)
-                            }
-                            else
-                            {
-                                @(overview != null ? Loc.FormatWalletLabel(overview.Symbol) : Loc.T("WalletWelcomeTitle"))
-                            }
-                        </h2>
-                        <div class="display-4 my-3 text-primary wallet-balance-display">
-                            @if (overview is not null)
-                            {
-                                <span class="wallet-balance-amount">@overview.Balance.ToString("N4")</span>
-                                @if (!string.IsNullOrEmpty(assetIconDataUri))
-                                {
-                                    <img src="@assetIconDataUri" alt="@overview.Symbol" class="wallet-balance-icon" />
-                                }
-                                else
-                                {
-                                    <span class="wallet-balance-symbol">@overview.Symbol</span>
-                                }
-                            }
-                        </div>
-                        <div class="text-muted">@Loc.T("WalletBalancePlaceholder")</div>
-                        <div class="mt-2">
-                            <span class="fs-5 text-secondary">≈ @((fiatValue ?? 0).ToString("N2")) @GetFiatDisplayUnit()</span>
-                        </div>
-                        @if (HasFeeAssets)
+                <h2 class="card-title">
+                    @if (assetDefinition is not null)
+                    {
+                        @GetWalletHeading(assetDefinition)
+                    }
+                    else
+                    {
+                        @(overview != null ? Loc.FormatWalletLabel(overview.Symbol) : Loc.T("WalletWelcomeTitle"))
+                    }
+                </h2>
+                <div class="display-4 my-3 text-primary wallet-balance-display">
+                    @if (overview is not null)
+                    {
+                        <span class="wallet-balance-amount">@overview.Balance.ToString("N4")</span>
+                        @if (!string.IsNullOrEmpty(assetIconDataUri))
                         {
-                            if (ShouldWarnFeeReserve)
-                            {
-                                <div class="alert alert-warning mt-3">
-                                    <strong>@Loc.T("WalletFeeWarningTitle")</strong>
-                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
-                                    <br />
-                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningBalance"), FormatFeeAssetList(), FormatAmount(FeeReserveBalance))</span>
-                                    @if (RecommendedFeeReserve is { } reserve)
-                                    {
-                                        <br />
-                                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningReserveRecommendation"), FormatFeeAssetList(), FormatAmount(reserve))</span>
-                                    }
-                                    @if (PrimaryFeeAsset is { } primaryFeeAsset)
-                                    {
-                                        <br />
-                                        <button class="btn btn-outline-primary mt-2" @onclick="() => OpenFeeAssetWallet(primaryFeeAsset.Code)">@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeOpenFeeWallet"), GetAssetShortLabel(primaryFeeAsset))</button>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="alert alert-info mt-3">
-                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
-                                    @if (RecommendedFeeReserve is { } reserve)
-                                    {
-                                        <br />
-                                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRecommended"), FormatAmount(reserve), FormatFeeAssetList())</span>
-                                    }
-                                </div>
-                            }
+                            <img src="@assetIconDataUri" alt="@overview.Symbol" class="wallet-balance-icon" />
                         }
-                        else if (IsNativeAsset)
+                        else
                         {
-                            <div class="alert alert-info mt-3">
-                                @if (assetDefinition?.NetworkFeeMinimumBalance is { } nativeReserve && nativeReserve > 0m)
-                                {
-                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNative"), GetMainAssetLabel(), FormatAmount(nativeReserve))</span>
-                                }
-                                else
-                                {
-                                    <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNativeGeneral"), GetMainAssetLabel())</span>
-                                }
-                            </div>
+                            <span class="wallet-balance-symbol">@overview.Symbol</span>
+                        }
+                    }
+                </div>
+                <div class="text-muted">@Loc.T("WalletBalancePlaceholder")</div>
+                <div class="mt-2">
+                    <span class="fs-5 text-secondary">≈ @((fiatValue ?? 0).ToString("N2")) @GetFiatDisplayUnit()</span>
+                </div>
+                @if (HasFeeAssets)
+                {
+                    if (ShouldWarnFeeReserve)
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <strong>@Loc.T("WalletFeeWarningTitle")</strong>
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningBalance"), FormatFeeAssetList(), FormatAmount(FeeReserveBalance))</span>
+                            @if (RecommendedFeeReserve is { } reserve)
+                            {
+                                <br />
+                                <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningReserveRecommendation"), FormatFeeAssetList(), FormatAmount(reserve))</span>
+                            }
+                            @if (PrimaryFeeAsset is { } primaryFeeAsset)
+                            {
+                                <br />
+                                <button class="btn btn-outline-primary mt-2" @onclick="() => OpenFeeAssetWallet(primaryFeeAsset.Code)">@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeOpenFeeWallet"), GetAssetShortLabel(primaryFeeAsset))</button>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info mt-3">
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
+                            @if (RecommendedFeeReserve is { } reserve)
+                            {
+                                <br />
+                                <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRecommended"), FormatAmount(reserve), FormatFeeAssetList())</span>
+                            }
+                        </div>
+                    }
+                }
+                else if (IsNativeAsset)
+                {
+                    <div class="alert alert-info mt-3">
+                        @if (assetDefinition?.NetworkFeeMinimumBalance is { } nativeReserve && nativeReserve > 0m)
+                        {
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNative"), GetMainAssetLabel(), FormatAmount(nativeReserve))</span>
+                        }
+                        else
+                        {
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNativeGeneral"), GetMainAssetLabel())</span>
                         }
                     </div>
-                </div>
+                }
             </div>
         </div>
-
         <div class="row mb-4">
             <div class="col-12">
                 <h4>@Loc.T("RecentTransactionsTitle")</h4>
@@ -153,6 +146,7 @@
         </div>
     }
 
+
     @if (overview is not null && string.IsNullOrEmpty(error))
     {
         <div class="wallet-action-bar fixed-bottom">
@@ -168,12 +162,13 @@
             </div>
         </div>
     }
-</div>
+
 
 @code {
     [Parameter] public string? type { get; set; }
     private string assetCode = string.Empty;
     private WalletOverview? overview;
+    private decimal? cachedFiatRate;
     private CryptoAsset? assetDefinition;
     private string? assetIconDataUri;
     private List<WalletTransaction> transactions = new();
@@ -187,7 +182,7 @@
             return address;
         return $"{address.Substring(0, 6)}...{address.Substring(address.Length - 6)}";
     }
-    private CachedExchangeRate? cachedFiatRate;
+            // Transactions are loaded in LoadWalletAsync
     private FiatPreferenceStore.FiatCurrencyOption? fiatPreference;
     private bool awaitingInteractive;
     private readonly Dictionary<string, WalletOverview> feeAssetOverviews = new(StringComparer.OrdinalIgnoreCase);
@@ -213,7 +208,13 @@
         {
             try
             {
-                var updated = await Wallets.GetOverviewAsync(asset, null, CancellationToken.None).ConfigureAwait(false);
+                var updated = await MultiChainWalletUtility.GetOverviewAsync(
+                    ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                    ProviderRegistry,
+                    Logger,
+                    asset,
+                    null,
+                    CancellationToken.None).ConfigureAwait(false);
                 if (disposed || updated is null)
                 {
                     return;
@@ -249,7 +250,13 @@
         {
             try
             {
-                var refreshed = await Wallets.GetTransactionsAsync(asset, null, CancellationToken.None).ConfigureAwait(false);
+                var refreshed = await MultiChainWalletUtility.GetTransactionsAsync(
+                    ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                    ProviderRegistry,
+                    Logger,
+                    asset,
+                    null,
+                    CancellationToken.None).ConfigureAwait(false);
                 if (disposed)
                 {
                     return;
@@ -282,7 +289,13 @@
         {
             try
             {
-                var updated = await Wallets.GetOverviewAsync(feeAssetCode, null, CancellationToken.None).ConfigureAwait(false);
+                var updated = await MultiChainWalletUtility.GetOverviewAsync(
+                    ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                    ProviderRegistry,
+                    Logger,
+                    feeAssetCode,
+                    null,
+                    CancellationToken.None).ConfigureAwait(false);
                 if (disposed)
                 {
                     return;
@@ -320,17 +333,18 @@
         {
             try
             {
-                var refreshed = await ExchangeRates.GetRateAsync(definition, fiat, null, CancellationToken.None).ConfigureAwait(false);
+                var refreshed = await ClickPay.Wallet.Core.MarketData.CoinGeckoExchangeRateUtility.GetRateAsync(httpClient, Logger, definition, fiat, null, CancellationToken.None).ConfigureAwait(false);
                 if (disposed || refreshed is null)
                 {
                     return;
                 }
 
-                cachedFiatRate = refreshed;
+                cachedFiatRate = refreshed?.Value;
 
                 if (overview is not null)
                 {
-                    fiatValue = overview.Balance * refreshed.Value;
+                    if (refreshed != null)
+                        fiatValue = overview.Balance * refreshed.Value;
                 }
 
                 await InvokeAsync(StateHasChanged);
@@ -476,8 +490,8 @@
             return true;
         }
 
-    var rate = await ExchangeRates.GetRateAsync(assetDefinition, preference.Code, ScheduleFiatRefresh, cancellationToken);
-        cachedFiatRate = rate;
+    var rate = await ClickPay.Wallet.Core.MarketData.CoinGeckoExchangeRateUtility.GetRateAsync(httpClient, Logger, assetDefinition, preference.Code, ScheduleFiatRefresh, cancellationToken);
+        cachedFiatRate = rate?.Value;
 
         if (rate is not null)
         {
@@ -501,7 +515,7 @@
 
         try
         {
-            var vaultCheck = await RunWithTimeoutAsync(ct => Vaults.HasVaultAsync(ct), Loc.T("WalletTimeoutVault"));
+            var vaultCheck = await RunWithTimeoutAsync(ct => WalletKeyUtility.HasVaultAsync(SecureStore, ct), Loc.T("WalletTimeoutVault"));
             if (disposed)
             {
                 return;
@@ -518,7 +532,13 @@
                 return;
             }
 
-            var overviewResult = await RunWithTimeoutAsync(ct => Wallets.GetOverviewAsync(assetCode, ScheduleOverviewRefresh, ct), Loc.T("WalletTimeoutOverview"));
+            var overviewResult = await RunWithTimeoutAsync(ct => MultiChainWalletUtility.GetOverviewAsync(
+                    ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                Logger,
+                assetCode,
+                ScheduleOverviewRefresh,
+                ct), Loc.T("WalletTimeoutOverview"));
             if (disposed)
             {
                 return;
@@ -537,7 +557,13 @@
                 return;
             }
 
-            var transactionsResult = await RunWithTimeoutAsync(ct => Wallets.GetTransactionsAsync(assetCode, ScheduleTransactionsRefresh, ct), Loc.T("WalletTimeoutTransactions"));
+            var transactionsResult = await RunWithTimeoutAsync(ct => MultiChainWalletUtility.GetTransactionsAsync(
+                    ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                Logger,
+                assetCode,
+                ScheduleTransactionsRefresh,
+                ct), Loc.T("WalletTimeoutTransactions"));
             if (disposed)
             {
                 return;
@@ -692,7 +718,13 @@
         foreach (var definition in feeAssetDefinitions)
         {
             var feeCode = definition.Code;
-            var feeResult = await RunWithTimeoutAsync(ct => Wallets.GetOverviewAsync(feeCode, () => ScheduleFeeAssetRefresh(feeCode), ct), Loc.T("WalletTimeoutFeeBalance"));
+            var feeResult = await RunWithTimeoutAsync(ct => MultiChainWalletUtility.GetOverviewAsync(
+                    ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                Logger,
+                feeCode,
+                () => ScheduleFeeAssetRefresh(feeCode),
+                ct), Loc.T("WalletTimeoutFeeBalance"));
             if (disposed)
             {
                 return false;

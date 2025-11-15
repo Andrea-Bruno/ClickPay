@@ -1,50 +1,336 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build-clickpay-web",
-            "type": "shell",
-            "command": "dotnet",
-            "args": [
-                "build",
-                "ClickPay.Web/ClickPay.Web.csproj"
-            ],
-            "group": "build",
-            "problemMatcher": ["$msCompile"],
-            "presentation": {
-                "reveal": "always"
-            }
-        },
-        {
-            "label": "build-android",
-            "type": "shell",
-            "command": "dotnet",
-            "args": [
-                "build",
-                "ClickPay/ClickPay.csproj",
-                "-f",
-                "net9.0-android"
-            ],
-            "group": "build",
-            "problemMatcher": ["$msCompile"],
-            "presentation": {
-                "reveal": "always"
-            }
-    },
-        {
-            "label": "start-android-emulator-and-run",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-NoProfile",
-                "-ExecutionPolicy", "Bypass",
-                "-File", "${workspaceFolder}/scripts/debug-android.ps1"
-            ],
-            "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
-            },
-            "problemMatcher": []
-        }
-    ]
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"presentation": {
+				"reveal": "always"
+			}
+		},
+		{
+			"label": "build-android",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay/ClickPay.csproj",
+				"-f",
+				"net9.0-android"
+			],
+			"group": "build",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"presentation": {
+				"reveal": "always"
+			}
+		},
+		{
+			"label": "start-android-emulator-and-run",
+			"type": "shell",
+			"command": "powershell",
+			"args": [
+				"-NoProfile",
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/debug-android.ps1"
+			],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated"
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-wallet-core",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Wallet.Core/ClickPay.Wallet.Core.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		},
+		{
+			"label": "build-clickpay-web",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"build",
+				"ClickPay.Web/ClickPay.Web.csproj"
+			],
+			"group": "build"
+		}
+	]
 }

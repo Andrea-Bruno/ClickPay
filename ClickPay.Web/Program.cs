@@ -28,7 +28,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
 builder.Services.AddScoped<LocalizationService>();
-builder.Services.AddScoped<UserPreferenceService>();
+// UserPreferenceService removed: replaced by static UserPreferenceUtility
 builder.Services.AddScoped<FiatPreferenceStore>();
 builder.Services.Configure<MarketDataCacheOptions>(options =>
 {
@@ -83,7 +83,7 @@ builder.Services.Configure<EthereumWalletOptions>(options =>
     }
 });
 builder.Services.AddScoped<HttpClient>(sp => new HttpClient());
-builder.Services.AddScoped<IExchangeRateService, CoinGeckoExchangeRateService>();
+// CoinGeckoExchangeRateService removed: replaced by static CoinGeckoExchangeRateUtility
 if (OperatingSystem.IsWindows())
 {
     builder.Services.AddSingleton<ILocalSecureStore, DataProtectionLocalSecureStore>();
