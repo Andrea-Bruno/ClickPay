@@ -2,6 +2,7 @@
   "name": "Solana",
   "code": "SOL",
   "blockchain": "solana",
+  "nativeContractAddress": "So11111111111111111111111111111112",
   "decimals": 9,
   "chainId": 101,
   "coingeckoId": "solana",

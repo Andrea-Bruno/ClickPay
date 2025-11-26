@@ -21,6 +21,31 @@ public sealed class CryptoAsset
     [JsonPropertyName("contractAddress")]
     public string? ContractAddress { get; init; }
 
+    [JsonPropertyName("devnetContractAddress")]
+    public string? DevnetContractAddress { get; init; }
+
+    [JsonPropertyName("nativeContractAddress")]
+    public string? NativeContractAddress { get; init; }
+
+    /// <summary>
+    /// Restituisce l'indirizzo del contratto effettivo basato sulla modalità (devnet se DEBUG e disponibile, altrimenti mainnet).
+    /// Per asset nativi, usa NativeContractAddress se ContractAddress è null.
+    /// </summary>
+    public string? EffectiveContractAddress
+    {
+        get
+        {
+            var baseAddress = ContractAddress;
+#if DEBUG
+            if (!string.IsNullOrWhiteSpace(DevnetContractAddress))
+            {
+                baseAddress = DevnetContractAddress;
+            }
+#endif
+            return string.IsNullOrWhiteSpace(baseAddress) ? NativeContractAddress : baseAddress;
+        }
+    }
+
     [JsonPropertyName("decimals")]
     public int Decimals { get; init; } = 0;
 

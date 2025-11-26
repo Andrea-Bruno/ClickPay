@@ -1,6 +1,7 @@
 using System;
 using System.Text.Json;
 using ClickPay.Wallet.Core.Services;
+using ClickPay.Wallet.Core.Wallet;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
 

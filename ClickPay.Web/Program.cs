@@ -24,6 +24,9 @@ API.ApiGlobals.Initialize(builder.Configuration);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add controllers for API endpoints
+builder.Services.AddControllers();
+
 // Add device-specific services used by the ClickPay.Shared project
 
 builder.Services.AddSingleton<IFormFactor, FormFactor>();
@@ -50,11 +53,9 @@ builder.Services.Configure<SolanaWalletOptions>(options =>
 #if DEBUG
     options.RpcEndpoint = builder.Configuration["Solana:Devnet:RpcEndpoint"] ?? SolanaWalletOptions.DevnetRpcEndpoint;
     options.Commitment = builder.Configuration["Solana:Devnet:Commitment"] ?? SolanaWalletOptions.DefaultCommitment;
-    options.EurcMintAddress = builder.Configuration["Solana:Devnet:EurcMintAddress"] ?? SolanaWalletOptions.DevnetEurcMint;
 #else
     options.RpcEndpoint = builder.Configuration["Solana:Mainnet:RpcEndpoint"] ?? SolanaWalletOptions.MainnetRpcEndpoint;
     options.Commitment = builder.Configuration["Solana:Mainnet:Commitment"] ?? SolanaWalletOptions.ProductionCommitment;
-    options.EurcMintAddress = builder.Configuration["Solana:Mainnet:EurcMintAddress"] ?? SolanaWalletOptions.MainnetEurcMint;
 #endif
 
     if (int.TryParse(builder.Configuration["Solana:TransactionHistoryLimit"], out var historyLimit) && historyLimit > 0)
@@ -111,6 +112,9 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+// Map controllers
+app.MapControllers();
 
 app.MapRazorComponents<RootDocument>()
     .AddInteractiveServerRenderMode()

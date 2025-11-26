@@ -24,8 +24,8 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSZXF1ZXN0UGF5bWVudE1vZGFsLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Counter.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Convert.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udmVydC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Home.razor]
@@ -42,10 +42,6 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/Setup.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2V0dXAucmF6b3I=
-build_metadata.AdditionalFiles.CssScope = 
-
-[C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/WalletOnboarding.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcV2FsbGV0T25ib2FyZGluZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/andre/OneDrive/Sorgenti/ClickPay/ClickPay.Shared/Pages/WalletReceive.razor]

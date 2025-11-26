@@ -3,6 +3,7 @@
   "code": "EURC",
   "blockchain": "solana",
   "contractAddress": "8XSigVnK9VwYq9FmkYdNvKcJsteVEh9UpAJZKkdYwGKu",
+  "devnetContractAddress": "6wbfrFjEGwaksktwuDsMJ7d4Zt6wkFFwmwUcvJrQVJ6",
   "decimals": 6,
   "chainId": 101,
   "coingeckoId": "euro-coin",

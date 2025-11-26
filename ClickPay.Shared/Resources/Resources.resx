@@ -1,144 +1,573 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, ...</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value></resheader>
-  <data name="WalletOnboardingTitle" xml:space="preserve"><value>Welcome to ClickPay Wallet</value></data>
-  <data name="WalletWelcomeTitle" xml:space="preserve"><value>Wallet Management</value></data>
-  <data name="WalletWelcomeDescription" xml:space="preserve"><value>Choose to create a new wallet or restore an existing one using your passphrase.</value></data>
-  <data name="CreateWalletButton" xml:space="preserve"><value>Create new wallet</value></data>
-  <data name="RestoreWalletButton" xml:space="preserve"><value>Restore existing wallet</value></data>
-  <data name="CreateWalletTitle" xml:space="preserve"><value>New Wallet</value></data>
-  <data name="CreateWalletInstructions" xml:space="preserve"><value>This is your 24-word passphrase. Write it down and keep it safe.</value></data>
-  <data name="PassphraseWarning" xml:space="preserve"><value>The passphrase is the only way to recover your wallet. Do not lose it!</value></data>
-  <data name="ConfirmCreateWalletButton" xml:space="preserve"><value>Confirm and create wallet</value></data>
-  <data name="RestoreWalletTitle" xml:space="preserve"><value>Restore Wallet</value></data>
-  <data name="RestoreWalletInstructions" xml:space="preserve"><value>Enter your 24-word passphrase to restore your wallet.</value></data>
-  <data name="ConfirmRestoreWalletButton" xml:space="preserve"><value>Confirm and restore</value></data>
-  <data name="RestoreWalletError" xml:space="preserve"><value>Invalid passphrase. Please check all 24 words and try again.</value></data>
-  <data name="WalletCreatedSuccess" xml:space="preserve"><value>Wallet created successfully. The account key has been stored locally.</value></data>
-  <data name="WalletRestoredSuccess" xml:space="preserve"><value>Wallet restored successfully. The account key has been updated locally.</value></data>
-  <data name="WalletXpubLabel" xml:space="preserve"><value>Extended public key (account):</value></data>
-  <data name="WalletBalancePlaceholder" xml:space="preserve"><value>Available balance:</value></data>
-  <data name="WalletSolanaAddressLabel" xml:space="preserve"><value>Solana address (EURC):</value></data>
-  <data name="WalletEurcBalanceLabel" xml:space="preserve"><value>EURC balance:</value></data>
-  <data name="WalletLabelFormat" xml:space="preserve"><value>{0} wallet</value></data>
-  <data name="GoldWalletMenuLabel" xml:space="preserve"><value>Gold</value></data>
-  <data name="PayTitle" xml:space="preserve"><value>Pay</value></data>
-  <data name="ScanQRTitle" xml:space="preserve"><value>Scan QR payment request</value></data>
-  <data name="ScanQRDescription" xml:space="preserve"><value>Point the camera at the QR code of the request to automatically fill in the payment details.</value></data>
-  <data name="Pay_ScanningInProgress" xml:space="preserve"><value>Scanning in progress...</value></data>
-  <data name="Pay_TapToRetry" xml:space="preserve"><value>Tap to retry.</value></data>
-  <data name="Pay_ScanCancelled" xml:space="preserve"><value>Scan cancelled.</value></data>
-  <data name="Pay_EuroEquivalent" xml:space="preserve"><value>≈ {0} EUR</value></data>
-  <data name="StartQRScan" xml:space="preserve"><value>Start QR scan</value></data>
-  <data name="CounterTitle" xml:space="preserve"><value>Counter</value></data>
-  <data name="CounterHeading" xml:space="preserve"><value>Counter</value></data>
-  <data name="CurrentCount" xml:space="preserve"><value>Current count:</value></data>
-  <data name="ClickMe" xml:space="preserve"><value>Click me</value></data>
-  <data name="ReceivePaymentTitle" xml:space="preserve"><value>Receive Payment</value></data>
-  <data name="SendPaymentButton" xml:space="preserve"><value>Send Payment</value></data>
-  <data name="StorageUnavailableError" xml:space="preserve"><value>Secure storage is unavailable in this hosting environment. Ensure the app is running locally and try again.</value></data>
-  <data name="WalletTimeoutVault" xml:space="preserve"><value>Timeout while checking the local wallet. Please try again.</value></data>
-  <data name="WalletTimeoutOverview" xml:space="preserve"><value>Timeout while loading wallet data. Check your connection and retry.</value></data>
-  <data name="WalletTimeoutFiat" xml:space="preserve"><value>Timeout while refreshing the fiat value. Please try again later.</value></data>
-  <data name="WalletTimeoutFeeBalance" xml:space="preserve"><value>Timeout while retrieving the balance required for network fees.</value></data>
-  <data name="WalletFeeWarningTitle" xml:space="preserve"><value>Warning:</value></data>
-  <data name="WalletFeeWarningRequirement" xml:space="preserve"><value>To send {0} you must hold {1} to cover network fees.</value></data>
-  <data name="WalletFeeWarningBalance" xml:space="preserve"><value>Available {0} balance: {1}.</value></data>
-  <data name="WalletFeeWarningReserveRecommendation" xml:space="preserve"><value>Keep at least {1} {0} available to cover network costs.</value></data>
-  <data name="WalletFeeInfoRequirement" xml:space="preserve"><value>Transactions in {0} require fees paid in {1}.</value></data>
-  <data name="WalletFeeInfoRecommended" xml:space="preserve"><value>It's recommended to keep at least {0} {1} in reserve.</value></data>
-  <data name="WalletFeeInfoNative" xml:space="preserve"><value>Transactions in {0} consume part of the balance as network fees. Keep at least {1} in reserve.</value></data>
-  <data name="WalletFeeInfoNativeGeneral" xml:space="preserve"><value>Transactions in {0} consume part of the balance as network fees.</value></data>
-  <data name="WalletFeeOpenFeeWallet" xml:space="preserve"><value>Open {0} wallet</value></data>
-  <data name="SendPageTitle" xml:space="preserve"><value>Send {0}</value></data>
-  <data name="SendBalanceLabel" xml:space="preserve"><value>Available balance: {0} {1}</value></data>
-  <data name="SendDestinationLabel" xml:space="preserve"><value>Destination address</value></data>
-  <data name="SendScanButton" xml:space="preserve"><value>Scan QR</value></data>
-  <data name="SendMaxButton" xml:space="preserve"><value>Max</value></data>
-  <data name="SendErrorInsufficientFunds" xml:space="preserve"><value>Insufficient funds to complete the transaction.</value></data>
-  <data name="SendErrorFeeReserveRequired" xml:space="preserve"><value>At least {0} {1} must remain available for network fees.</value></data>
-  <data name="SendFeeNoticeNetwork" xml:space="preserve"><value>Network fees are paid with the native currency of the blockchain. Keep a reserve available to cover costs.</value></data>
-  <data name="SendFeeWarningLowFee" xml:space="preserve"><value>Native fee balance is low: {0} available, at least {1} recommended.</value></data>
-  <data name="RecentTransactionsTitle" xml:space="preserve"><value>Recent transactions</value></data>
-  <data name="NoTransactionsMessage" xml:space="preserve"><value>No transactions available.</value></data>
-  <data name="Amount" xml:space="preserve"><value>Amount:</value></data>
-  <data name="GenerateRequest" xml:space="preserve"><value>Generate Request</value></data>
-  <data name="Address" xml:space="preserve"><value>Address:</value></data>
-  <data name="ShareRequest" xml:space="preserve"><value>Share Request</value></data>
-  <data name="QRCode" xml:space="preserve"><value>QR Code</value></data>
-  <data name="RequestDetails" xml:space="preserve"><value>Request Details</value></data>
-  <data name="ErrorUnsupportedAsset" xml:space="preserve"><value>Unsupported asset.</value></data>
-  <data name="ErrorInvalidAmount" xml:space="preserve"><value>Amount must be positive.</value></data>
-  <data name="ErrorDestinationRequired" xml:space="preserve"><value>Destination address is required.</value></data>
-  <data name="TransactionSentFormat" xml:space="preserve"><value>Transaction sent: {0}</value></data>
-  <data name="QrScan_Prompt_Title" xml:space="preserve"><value>Align the QR code</value></data>
-  <data name="QrScan_Prompt_Message" xml:space="preserve"><value>Point the code inside the frame to fill the payment details.</value></data>
-  <data name="QrScan_Prompt_Cancel" xml:space="preserve"><value>Cancel</value></data>
-  <data name="QrScan_Error_NotAvailable" xml:space="preserve"><value>QR scanning is not available on this device.</value></data>
-  <data name="QrScan_Error_NoCamera" xml:space="preserve"><value>This browser cannot access the camera.</value></data>
-  <data name="QrScan_Error_NoBarcodeApi" xml:space="preserve"><value>The browser does not support native QR detection.</value></data>
-  <data name="QrScan_Error_PermissionDenied" xml:space="preserve"><value>Camera access denied. Please allow it and retry.</value></data>
-  <data name="QrScan_Error_InitFailed" xml:space="preserve"><value>Unable to initialize the QR scanner.</value></data>
-  <data name="QrScan_Error_Stream" xml:space="preserve"><value>Camera failed to start.</value></data>
-  <data name="QrScan_Error_Generic" xml:space="preserve"><value>QR scanning failed.</value></data>
-  <data name="QrScan_Error_NoData" xml:space="preserve"><value>The QR code does not contain any data.</value></data>
-  <data name="QrScan_Error_WrongNetwork" xml:space="preserve"><value>The QR code targets a different blockchain.</value></data>
-  <data name="QrScan_Error_InvalidFormat" xml:space="preserve"><value>Invalid QR format.</value></data>
-  <data name="QrScan_Error_InvalidAmount" xml:space="preserve"><value>Invalid amount in QR.</value></data>
-  <data name="QrScan_Error_InvalidAddress" xml:space="preserve"><value>Invalid address in QR.</value></data>
-  <data name="QrScan_Error_WrongToken" xml:space="preserve"><value>The QR references a token different from EURC.</value></data>
-  <data name="SetupTitle" xml:space="preserve"><value>Settings</value></data>
-  <data name="SelectLanguage" xml:space="preserve"><value>Select language:</value></data>
-  <data name="SetupAssetPreferencesTitle" xml:space="preserve"><value>Asset preferences</value></data>
-  <data name="SetupAssetPreferencesDescription" xml:space="preserve"><value>Choose which assets to show in the main menu.</value></data>
-  <data name="SetupAssetNoneConfigured" xml:space="preserve"><value>No assets configured.</value></data>
-  <data name="SetupAssetHideLabel" xml:space="preserve"><value>Hide {0}</value></data>
-  <data name="CommonSavingInProgress" xml:space="preserve"><value>Saving…</value></data>
-  <data name="FiatPreferenceTitle" xml:space="preserve"><value>Reference currency</value></data>
-  <data name="FiatPreferenceDescription" xml:space="preserve"><value>Choose the currency you want to use when showing your asset values.</value></data>
-  <data name="SetupFiatUpdating" xml:space="preserve"><value>Updating currency…</value></data>
-  <data name="FiatCurrency_EUR" xml:space="preserve"><value>Euro</value></data>
-  <data name="FiatCurrency_USD" xml:space="preserve"><value>US Dollar</value></data>
-  <data name="FiatCurrency_JPY" xml:space="preserve"><value>Japanese Yen</value></data>
-  <data name="FiatCurrency_GBP" xml:space="preserve"><value>British Pound</value></data>
-  <data name="FiatCurrency_CNY" xml:space="preserve"><value>Chinese Yuan</value></data>
-  <data name="FiatCurrency_AUD" xml:space="preserve"><value>Australian Dollar</value></data>
-  <data name="FiatCurrency_CAD" xml:space="preserve"><value>Canadian Dollar</value></data>
-  <data name="FiatCurrency_CHF" xml:space="preserve"><value>Swiss Franc</value></data>
-  <data name="FiatCurrency_HKD" xml:space="preserve"><value>Hong Kong Dollar</value></data>
-  <data name="FiatCurrency_SGD" xml:space="preserve"><value>Singapore Dollar</value></data>
-  <data name="FiatCurrency_INR" xml:space="preserve"><value>Indian Rupee</value></data>
-  <data name="ThemePreferenceTitle" xml:space="preserve"><value>App theme</value></data>
-  <data name="ThemePreferenceDescription" xml:space="preserve"><value>Choose your preferred interface theme:</value></data>
-  <data name="ThemeSystem" xml:space="preserve"><value>System default</value></data>
-  <data name="ThemeLight" xml:space="preserve"><value>Light</value></data>
-  <data name="ThemeDark" xml:space="preserve"><value>Dark</value></data>
-  <data name="Save" xml:space="preserve"><value>Save</value></data>
-  <data name="SetupBiometricTitle" xml:space="preserve"><value>Biometric protection</value></data>
-  <data name="SetupBiometricDescription" xml:space="preserve"><value>Require fingerprint when the app starts on this device.</value></data>
-  <data name="SetupBiometricToggleLabel" xml:space="preserve"><value>Require fingerprint</value></data>
-  <data name="SetupBiometricChecking" xml:space="preserve"><value>Checking requirements…</value></data>
-  <data name="BiometricAuthCanceled" xml:space="preserve"><value>Authentication cancelled.</value></data>
-  <data name="BiometricAuthFailed" xml:space="preserve"><value>Biometric authentication failed.</value></data>
-  <data name="BiometricOverlayTitle" xml:space="preserve"><value>Protection enabled</value></data>
-  <data name="BiometricOverlayPrompt" xml:space="preserve"><value>Biometric authentication is required to continue.</value></data>
-  <data name="BiometricRetryButton" xml:space="preserve"><value>Try again</value></data>
-  <data name="ErrorUnhandledMessage" xml:space="preserve"><value>An unexpected error has occurred.</value></data>
-  <data name="ErrorReloadLink" xml:space="preserve"><value>Reload</value></data>
-  <data name="DisclaimerTitle" xml:space="preserve"><value>ClickPay Wallet Privacy</value></data>
-  <data name="DisclaimerText1" xml:space="preserve"><value>Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.</value></data>
-  <data name="CopyPaymentRequest" xml:space="preserve"><value>Copy payment request</value></data>
-
-  <data name="RequestPayment_Title" xml:space="preserve"><value>Request payment</value></data>
-  <data name="RequestPayment_CurrencyLabel" xml:space="preserve"><value>Currency:</value></data>
-  <data name="RequestPayment_Backspace" xml:space="preserve"><value>Del</value></data>
-  <data name="RequestPayment_Confirm" xml:space="preserve"><value>OK</value></data>
-  <data name="RequestPayment_ErrorAmount" xml:space="preserve"><value>Enter a valid amount greater than zero.</value></data>
-  <data name="RequestPayment_ErrorApi" xml:space="preserve"><value>Payment request failed. Please try again.</value></data>
-  <data name="RequestPayment_ErrorNetwork" xml:space="preserve"><value>No internet connection or server unreachable.</value></data>
-  <data name="RequestPayment_Success" xml:space="preserve"><value>Payment request sent successfully!</value></data>
-
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, ...</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, ...</value>
+  </resheader>
+  <data name="WalletOnboardingTitle" xml:space="preserve">
+    <value>Welcome to ClickPay Wallet</value>
+  </data>
+  <data name="WalletWelcomeTitle" xml:space="preserve">
+    <value>Wallet Management</value>
+  </data>
+  <data name="WalletWelcomeDescription" xml:space="preserve">
+    <value>Choose to create a new wallet or restore an existing one using your passphrase.</value>
+  </data>
+  <data name="CreateWalletButton" xml:space="preserve">
+    <value>Create new wallet</value>
+  </data>
+  <data name="RestoreWalletButton" xml:space="preserve">
+    <value>Restore existing wallet</value>
+  </data>
+  <data name="CreateWalletTitle" xml:space="preserve">
+    <value>New Wallet</value>
+  </data>
+  <data name="CreateWalletInstructions" xml:space="preserve">
+    <value>This is your 24-word passphrase. Write it down and keep it safe.</value>
+  </data>
+  <data name="PassphraseWarning" xml:space="preserve">
+    <value>The passphrase is the only way to recover your wallet. Do not lose it!</value>
+  </data>
+  <data name="ConfirmCreateWalletButton" xml:space="preserve">
+    <value>Confirm and create wallet</value>
+  </data>
+  <data name="RestoreWalletTitle" xml:space="preserve">
+    <value>Restore Wallet</value>
+  </data>
+  <data name="RestoreWalletInstructions" xml:space="preserve">
+    <value>Enter your 24-word passphrase to restore your wallet.</value>
+  </data>
+  <data name="ConfirmRestoreWalletButton" xml:space="preserve">
+    <value>Confirm and restore</value>
+  </data>
+  <data name="RestoreWalletError" xml:space="preserve">
+    <value>Invalid passphrase. Please check all 24 words and try again.</value>
+  </data>
+  <data name="WalletCreatedSuccess" xml:space="preserve">
+    <value>Wallet created successfully. The account key has been stored locally.</value>
+  </data>
+  <data name="WalletRestoredSuccess" xml:space="preserve">
+    <value>Wallet restored successfully. The account key has been updated locally.</value>
+  </data>
+  <data name="WalletXpubLabel" xml:space="preserve">
+    <value>Extended public key (account):</value>
+  </data>
+  <data name="WalletBalancePlaceholder" xml:space="preserve">
+    <value>Available balance:</value>
+  </data>
+  <data name="WalletSolanaAddressLabel" xml:space="preserve">
+    <value>Solana address (EURC):</value>
+  </data>
+  <data name="WalletEurcBalanceLabel" xml:space="preserve">
+    <value>EURC balance:</value>
+  </data>
+  <data name="WalletLabelFormat" xml:space="preserve">
+    <value>{0} wallet</value>
+  </data>
+  <data name="GoldWalletMenuLabel" xml:space="preserve">
+    <value>Gold</value>
+  </data>
+  <data name="PayTitle" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="ScanQRTitle" xml:space="preserve">
+    <value>Scan QR payment request</value>
+  </data>
+  <data name="ScanQRDescription" xml:space="preserve">
+    <value>Point the camera at the QR code of the request to automatically fill in the payment details.</value>
+  </data>
+  <data name="Pay_ScanningInProgress" xml:space="preserve">
+    <value>Scanning in progress...</value>
+  </data>
+  <data name="Pay_TapToRetry" xml:space="preserve">
+    <value>Tap to retry.</value>
+  </data>
+  <data name="Pay_ScanCancelled" xml:space="preserve">
+    <value>Scan cancelled.</value>
+  </data>
+  <data name="Pay_EuroEquivalent" xml:space="preserve">
+    <value>≈ {0} EUR</value>
+  </data>
+  <data name="StartQRScan" xml:space="preserve">
+    <value>Start QR scan</value>
+  </data>
+  <data name="CounterTitle" xml:space="preserve">
+    <value>Counter</value>
+  </data>
+  <data name="CounterHeading" xml:space="preserve">
+    <value>Counter</value>
+  </data>
+  <data name="CurrentCount" xml:space="preserve">
+    <value>Current count:</value>
+  </data>
+  <data name="ClickMe" xml:space="preserve">
+    <value>Click me</value>
+  </data>
+  <data name="ReceivePaymentTitle" xml:space="preserve">
+    <value>Receive Payment</value>
+  </data>
+  <data name="SendPaymentButton" xml:space="preserve">
+    <value>Send Payment</value>
+  </data>
+  <data name="StorageUnavailableError" xml:space="preserve">
+    <value>Secure storage is unavailable in this hosting environment. Ensure the app is running locally and try again.</value>
+  </data>
+  <data name="WalletTimeoutVault" xml:space="preserve">
+    <value>Timeout while checking the local wallet. Please try again.</value>
+  </data>
+  <data name="WalletTimeoutOverview" xml:space="preserve">
+    <value>Timeout while loading wallet data. Check your connection and retry.</value>
+  </data>
+  <data name="WalletTimeoutFiat" xml:space="preserve">
+    <value>Timeout while refreshing the fiat value. Please try again later.</value>
+  </data>
+  <data name="WalletTimeoutFeeBalance" xml:space="preserve">
+    <value>Timeout while retrieving the balance required for network fees.</value>
+  </data>
+  <data name="WalletFeeWarningTitle" xml:space="preserve">
+    <value>Warning:</value>
+  </data>
+  <data name="WalletFeeWarningRequirement" xml:space="preserve">
+    <value>To send {0} you must hold {1} to cover network fees.</value>
+  </data>
+  <data name="WalletFeeWarningBalance" xml:space="preserve">
+    <value>Available {0} balance: {1}.</value>
+  </data>
+  <data name="WalletFeeWarningReserveRecommendation" xml:space="preserve">
+    <value>Keep at least {1} {0} available to cover network costs.</value>
+  </data>
+  <data name="WalletFeeInfoRequirement" xml:space="preserve">
+    <value>Transactions in {0} require fees paid in {1}.</value>
+  </data>
+  <data name="WalletFeeInfoRecommended" xml:space="preserve">
+    <value>It's recommended to keep at least {0} {1} in reserve.</value>
+  </data>
+  <data name="WalletFeeInfoNative" xml:space="preserve">
+    <value>Transactions in {0} consume part of the balance as network fees. Keep at least {1} in reserve.</value>
+  </data>
+  <data name="WalletFeeInfoNativeGeneral" xml:space="preserve">
+    <value>Transactions in {0} consume part of the balance as network fees.</value>
+  </data>
+  <data name="WalletFeeOpenFeeWallet" xml:space="preserve">
+    <value>Open {0} wallet</value>
+  </data>
+  <data name="SendPageTitle" xml:space="preserve">
+    <value>Send {0}</value>
+  </data>
+  <data name="SendBalanceLabel" xml:space="preserve">
+    <value>Available balance: {0} {1}</value>
+  </data>
+  <data name="SendDestinationLabel" xml:space="preserve">
+    <value>Destination address</value>
+  </data>
+  <data name="SendScanButton" xml:space="preserve">
+    <value>Scan QR</value>
+  </data>
+  <data name="SendMaxButton" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="SendErrorInsufficientFunds" xml:space="preserve">
+    <value>Insufficient funds to complete the transaction.</value>
+  </data>
+  <data name="SendErrorFeeReserveRequired" xml:space="preserve">
+    <value>At least {0} {1} must remain available for network fees.</value>
+  </data>
+  <data name="SendFeeNoticeNetwork" xml:space="preserve">
+    <value>Network fees are paid with the native currency of the blockchain. Keep a reserve available to cover costs.</value>
+  </data>
+  <data name="SendFeeWarningLowFee" xml:space="preserve">
+    <value>Native fee balance is low: {0} available, at least {1} recommended.</value>
+  </data>
+  <data name="RecentTransactionsTitle" xml:space="preserve">
+    <value>Recent transactions</value>
+  </data>
+  <data name="NoTransactionsMessage" xml:space="preserve">
+    <value>No transactions available.</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Amount:</value>
+  </data>
+  <data name="GenerateRequest" xml:space="preserve">
+    <value>Generate Request</value>
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address:</value>
+  </data>
+  <data name="ShareRequest" xml:space="preserve">
+    <value>Share Request</value>
+  </data>
+  <data name="QRCode" xml:space="preserve">
+    <value>QR Code</value>
+  </data>
+  <data name="RequestDetails" xml:space="preserve">
+    <value>Request Details</value>
+  </data>
+  <data name="ErrorUnsupportedAsset" xml:space="preserve">
+    <value>Unsupported asset.</value>
+  </data>
+  <data name="ErrorInvalidAmount" xml:space="preserve">
+    <value>Amount must be positive.</value>
+  </data>
+  <data name="ErrorDestinationRequired" xml:space="preserve">
+    <value>Destination address is required.</value>
+  </data>
+  <data name="TransactionSentFormat" xml:space="preserve">
+    <value>Transaction sent: {0}</value>
+  </data>
+  <data name="QrScan_Prompt_Title" xml:space="preserve">
+    <value>Align the QR code</value>
+  </data>
+  <data name="QrScan_Prompt_Message" xml:space="preserve">
+    <value>Point the code inside the frame to fill the payment details.</value>
+  </data>
+  <data name="QrScan_Prompt_Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="QrScan_Error_NotAvailable" xml:space="preserve">
+    <value>QR scanning is not available on this device.</value>
+  </data>
+  <data name="QrScan_Error_NoCamera" xml:space="preserve">
+    <value>This browser cannot access the camera.</value>
+  </data>
+  <data name="QrScan_Error_NoBarcodeApi" xml:space="preserve">
+    <value>The browser does not support native QR detection.</value>
+  </data>
+  <data name="QrScan_Error_PermissionDenied" xml:space="preserve">
+    <value>Camera access denied. Please allow it and retry.</value>
+  </data>
+  <data name="QrScan_Error_InitFailed" xml:space="preserve">
+    <value>Unable to initialize the QR scanner.</value>
+  </data>
+  <data name="QrScan_Error_Stream" xml:space="preserve">
+    <value>Camera failed to start.</value>
+  </data>
+  <data name="QrScan_Error_Generic" xml:space="preserve">
+    <value>QR scanning failed.</value>
+  </data>
+  <data name="QrScan_Error_NoData" xml:space="preserve">
+    <value>The QR code does not contain any data.</value>
+  </data>
+  <data name="QrScan_Error_WrongNetwork" xml:space="preserve">
+    <value>The QR code targets a different blockchain.</value>
+  </data>
+  <data name="QrScan_Error_InvalidFormat" xml:space="preserve">
+    <value>Invalid QR format.</value>
+  </data>
+  <data name="QrScan_Error_InvalidAmount" xml:space="preserve">
+    <value>Invalid amount in QR.</value>
+  </data>
+  <data name="QrScan_Error_InvalidAddress" xml:space="preserve">
+    <value>Invalid address in QR.</value>
+  </data>
+  <data name="QrScan_Error_WrongToken" xml:space="preserve">
+    <value>The QR references a token different from EURC.</value>
+  </data>
+  <data name="SetupTitle" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="SelectLanguage" xml:space="preserve">
+    <value>Select language:</value>
+  </data>
+  <data name="SetupAssetPreferencesTitle" xml:space="preserve">
+    <value>Asset preferences</value>
+  </data>
+  <data name="SetupAssetPreferencesDescription" xml:space="preserve">
+    <value>Choose which assets to show in the main menu.</value>
+  </data>
+  <data name="SetupAssetNoneConfigured" xml:space="preserve">
+    <value>No assets configured.</value>
+  </data>
+  <data name="SetupAssetHideLabel" xml:space="preserve">
+    <value>Hide {0}</value>
+  </data>
+  <data name="CommonSavingInProgress" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="FiatPreferenceTitle" xml:space="preserve">
+    <value>Reference currency</value>
+  </data>
+  <data name="FiatPreferenceDescription" xml:space="preserve">
+    <value>Choose the currency you want to use when showing your asset values.</value>
+  </data>
+  <data name="SetupFiatUpdating" xml:space="preserve">
+    <value>Updating currency…</value>
+  </data>
+  <data name="FiatCurrency_EUR" xml:space="preserve">
+    <value>Euro</value>
+  </data>
+  <data name="FiatCurrency_USD" xml:space="preserve">
+    <value>US Dollar</value>
+  </data>
+  <data name="FiatCurrency_JPY" xml:space="preserve">
+    <value>Japanese Yen</value>
+  </data>
+  <data name="FiatCurrency_GBP" xml:space="preserve">
+    <value>British Pound</value>
+  </data>
+  <data name="FiatCurrency_CNY" xml:space="preserve">
+    <value>Chinese Yuan</value>
+  </data>
+  <data name="FiatCurrency_AUD" xml:space="preserve">
+    <value>Australian Dollar</value>
+  </data>
+  <data name="FiatCurrency_CAD" xml:space="preserve">
+    <value>Canadian Dollar</value>
+  </data>
+  <data name="FiatCurrency_CHF" xml:space="preserve">
+    <value>Swiss Franc</value>
+  </data>
+  <data name="FiatCurrency_HKD" xml:space="preserve">
+    <value>Hong Kong Dollar</value>
+  </data>
+  <data name="FiatCurrency_SGD" xml:space="preserve">
+    <value>Singapore Dollar</value>
+  </data>
+  <data name="FiatCurrency_INR" xml:space="preserve">
+    <value>Indian Rupee</value>
+  </data>
+  <data name="ThemePreferenceTitle" xml:space="preserve">
+    <value>App theme</value>
+  </data>
+  <data name="ThemePreferenceDescription" xml:space="preserve">
+    <value>Choose your preferred interface theme:</value>
+  </data>
+  <data name="ThemeSystem" xml:space="preserve">
+    <value>System default</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SetupBiometricTitle" xml:space="preserve">
+    <value>Biometric protection</value>
+  </data>
+  <data name="SetupBiometricDescription" xml:space="preserve">
+    <value>Require fingerprint when the app starts on this device.</value>
+  </data>
+  <data name="SetupBiometricToggleLabel" xml:space="preserve">
+    <value>Require fingerprint</value>
+  </data>
+  <data name="SetupBiometricChecking" xml:space="preserve">
+    <value>Checking requirements…</value>
+  </data>
+  <data name="BiometricAuthCanceled" xml:space="preserve">
+    <value>Authentication cancelled.</value>
+  </data>
+  <data name="BiometricAuthFailed" xml:space="preserve">
+    <value>Biometric authentication failed.</value>
+  </data>
+  <data name="BiometricOverlayTitle" xml:space="preserve">
+    <value>Protection enabled</value>
+  </data>
+  <data name="BiometricOverlayPrompt" xml:space="preserve">
+    <value>Biometric authentication is required to continue.</value>
+  </data>
+  <data name="BiometricRetryButton" xml:space="preserve">
+    <value>Try again</value>
+  </data>
+  <data name="ErrorUnhandledMessage" xml:space="preserve">
+    <value>An unexpected error has occurred.</value>
+  </data>
+  <data name="ErrorReloadLink" xml:space="preserve">
+    <value>Reload</value>
+  </data>
+  <data name="DisclaimerTitle" xml:space="preserve">
+    <value>ClickPay Wallet Privacy</value>
+  </data>
+  <data name="DisclaimerText1" xml:space="preserve">
+    <value>Nobody, including ClickPay, can access your wallets or keys. Your data is protected and not shared or synced to the cloud, unless the encryption is robust zero-knowledge and quantum-proof. Keep your passphrase safe: it is the only way to access your funds.</value>
+  </data>
+  <data name="CopyPaymentRequest" xml:space="preserve">
+    <value>Copy payment request</value>
+  </data>
+  <data name="RequestPayment_Title" xml:space="preserve">
+    <value>Request payment</value>
+  </data>
+  <data name="RequestPayment_CurrencyLabel" xml:space="preserve">
+    <value>Currency:</value>
+  </data>
+  <data name="RequestPayment_Backspace" xml:space="preserve">
+    <value>Del</value>
+  </data>
+  <data name="RequestPayment_Confirm" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="RequestPayment_ErrorAmount" xml:space="preserve">
+    <value>Enter a valid amount greater than zero.</value>
+  </data>
+  <data name="RequestPayment_ErrorApi" xml:space="preserve">
+    <value>Payment request failed. Please try again.</value>
+  </data>
+  <data name="RequestPayment_ErrorNetwork" xml:space="preserve">
+    <value>No internet connection or server unreachable.</value>
+  </data>
+  <data name="RequestPayment_Success" xml:space="preserve">
+    <value>Payment request sent successfully!</value>
+  </data>
+  <data name="AcceptDisclaimer" xml:space="preserve">
+    <value>I accept the terms</value>
+  </data>
+  <data name="QRPersonale" xml:space="preserve">
+    <value>QR Personale</value>
+  </data>
+  <data name="UtilitiesTitle" xml:space="preserve">
+    <value>Utilities</value>
+  </data>
+  <data name="QRMerchant" xml:space="preserve">
+    <value>QR shop</value>
+  </data>
+  <data name="ExchangeMenuTitle" xml:space="preserve">
+    <value>Exchange</value>
+  </data>
+  <data name="ExchangeDescription" xml:space="preserve">
+    <value>Exchange one asset for another at the best available rate. Only visible resources are available for trading.</value>
+  </data>
+  <data name="ExchangeFromAsset" xml:space="preserve">
+    <value>As a resource</value>
+  </data>
+  <data name="ExchangeToAsset" xml:space="preserve">
+    <value>A resource</value>
+  </data>
+  <data name="ExchangeAmount" xml:space="preserve">
+    <value>Amount to exchange</value>
+  </data>
+  <data name="ExchangeButton" xml:space="preserve">
+    <value>Exchange</value>
+  </data>
+  <data name="ExchangeErrorSelectDifferentAssets" xml:space="preserve">
+    <value>Select two different assets to trade.</value>
+  </data>
+  <data name="ExchangeErrorAmountRequired" xml:space="preserve">
+    <value>Enter a valid amount to exchange.</value>
+  </data>
+  <data name="ExchangeSuccessMessage" xml:space="preserve">
+    <value>Exchange completed successfully!</value>
+  </data>
+  <data name="ExchangePercentLabel" xml:space="preserve">
+    <value>Choose the percentage of your balance</value>
+  </data>
+  <data name="ExchangeRateNotAvailable" xml:space="preserve">
+    <value>Exchange rate not available for this pair.</value>
+  </data>
+  <data name="ExchangeErrorAmountExceedsBalance" xml:space="preserve">
+    <value>The amount exceeds your available balance.</value>
+  </data>
+  <data name="ExchangeBalanceInfoLabel" xml:space="preserve">
+    <value>Available:</value>
+  </data>
+  <data name="ExchangePercentOfBalanceLabel" xml:space="preserve">
+    <value>of your balance</value>
+  </data>
+  <data name="ExchangeRateDirectLabel" xml:space="preserve">
+    <value>Direct rate</value>
+  </data>
+  <data name="ExchangeRateInverseLabel" xml:space="preserve">
+    <value>Reverse rate</value>
+  </data>
+  <data name="ExchangeFeePercentLabel" xml:space="preserve">
+    <value>Estimated transaction fee</value>
+  </data>
+  <data name="ExchangeFeeHighWarning" xml:space="preserve">
+    <value>Please note: the transaction fee is higher than usual.</value>
+  </data>
+  <data name="ExchangeNoFee" xml:space="preserve">
+    <value>No commission applied</value>
+  </data>
+  <data name="ExchangeSummaryNetReceived" xml:space="preserve">
+    <value>Net received</value>
+  </data>
+  <data name="ExchangeSummaryFeeApplied" xml:space="preserve">
+    <value>Rate applied</value>
+  </data>
+  <data name="ExchangeSummaryTotalDebited" xml:space="preserve">
+    <value>Total charged</value>
+  </data>
+  <data name="ExchangeRateNetworkError" xml:space="preserve">
+    <value>Unable to contact the exchange rate provider. Check your connection and try again.</value>
+  </data>
+  <data name="ExchangeRateTimeoutError" xml:space="preserve">
+    <value>The exchange rate request has expired. Please try again later.</value>
+  </data>
+  <data name="ExchangeRateUnknownError" xml:space="preserve">
+    <value>An unexpected error occurred while retrieving exchange rates.</value>
+  </data>
+  <data name="ExchangeRefreshingRates" xml:space="preserve">
+    <value>Upgrade Rates…</value>
+  </data>
+  <data name="SwapError_InvalidAsset" xml:space="preserve">
+    <value>Invalid asset(s) specified.</value>
+  </data>
+  <data name="SwapError_InvalidAmount" xml:space="preserve">
+    <value>Amount must be positive.</value>
+  </data>
+  <data name="SwapError_InvalidAddress" xml:space="preserve">
+    <value>User address is required.</value>
+  </data>
+  <data name="SwapError_NotSupported" xml:space="preserve">
+    <value>This swap type is not supported.</value>
+  </data>
+  <data name="SwapError_InsufficientFunds" xml:space="preserve">
+    <value>Insufficient funds for swap.</value>
+  </data>
+  <data name="SwapError_NetworkError" xml:space="preserve">
+    <value>Network error during swap.</value>
+  </data>
+  <data name="SwapError_Unknown" xml:space="preserve">
+    <value>An unknown error occurred during swap.</value>
+  </data>
+  <data name="Converti" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="FromAsset" xml:space="preserve">
+    <value>From asset</value>
+  </data>
+  <data name="ToAsset" xml:space="preserve">
+    <value>To asset</value>
+  </data>
+  <data name="ConversionSuccess" xml:space="preserve">
+    <value>Conversion successful!</value>
+  </data>
+  <data name="NavMenu_Disclaimer" xml:space="preserve">
+    <value>Disclaimer</value>
+  </data>
+  <data name="NavMenu_Pay" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="NavMenu_Convert" xml:space="preserve">
+    <value>Convert</value>
+  </data>
+  <data name="NavMenu_Setup" xml:space="preserve">
+    <value>Setup</value>
+  </data>
+  <data name="NavMenu_ResetWalletDebug" xml:space="preserve">
+    <value>Reset wallet (debug)</value>
+  </data>
+  <data name="NavMenu_ResettingWallet" xml:space="preserve">
+    <value>Resetting wallet…</value>
+  </data>
+  <data name="ConfirmSwap" xml:space="preserve">
+    <value>Confirm Swap</value>
+  </data>
+  <data name="SwapNotSupported" xml:space="preserve">
+    <value>The conversion between these two cryptocurrencies is not supported.</value>
+  </data>
+  <data name="ExchangeRateError" xml:space="preserve">
+    <value>Error calculating exchange rate: {0}</value>
+  </data>
+  <data name="NoBalanceForPercentage" xml:space="preserve">
+    <value>No balance available to select percentage.</value>
+  </data>
 </root>

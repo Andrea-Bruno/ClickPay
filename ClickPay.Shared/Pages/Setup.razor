@@ -1,4 +1,9 @@
 @inject ILocalSecureStore SecureStore
+@inject LocalizationService Loc
+@inject FiatPreferenceStore FiatPreferences
+@inject IBiometricLockService BiometricLock
+@inject IJSRuntime JSRuntime
+@using System.IO
 @page "/setup"
 @using System.Collections.Generic
 @using System.Globalization
@@ -9,17 +14,14 @@
 @using ClickPay.Wallet.Core.Utility
 @using ClickPay.Wallet.Core.Preferences
 @using ClickPay.Wallet.Core.CryptoAssets
-@inject LocalizationService Loc
-@inject FiatPreferenceStore FiatPreferences
-@inject IBiometricLockService BiometricLock
 
 <PageTitle>@Loc.T("SetupTitle")</PageTitle>
 
 <!--
-    NOTA PER AGENTI AI:
-    L'architettura di ClickPay prevede che tutte le preferenze utente (tema, lingua, ecc.)
-    siano salvate tramite la libreria Core usando UserPreferenceService e ILocalSecureStore.
-    Per ogni futura implementazione di preferenze, utilizzare sempre questa modalità centralizzata.
+    NOTE FOR AI AGENTS:
+    The ClickPay architecture requires that all user preferences (theme, language, etc.)
+    be saved through the Core library using UserPreferenceService and ILocalSecureStore.
+    For any future preference implementations, always use this centralized mode.
 -->
 <div class="container py-4">
     <div class="row justify-content-center mb-4">
@@ -28,7 +30,7 @@
                 <div class="card-body">
                     <h2 class="card-title mb-3">@Loc.T("SetupTitle")</h2>
                     <label class="form-label">@Loc.T("SelectLanguage")</label>
-                    <select class="form-select form-select-lg mb-3" @bind="selectedLang">
+                    <select class="form-select form-select-lg mb-3" @bind="selectedLang" @bind:after="OnLanguageChanged">
                         <option value="en">English</option>
                         <option value="it">Italiano</option>
                         <option value="fr">Français</option>
@@ -128,7 +130,7 @@
                 <div class="card-body">
                     <h3 class="card-title mb-3">@Loc.T("ThemePreferenceTitle")</h3>
                     <p class="text-muted small">@Loc.T("ThemePreferenceDescription")</p>
-                    <select class="form-select form-select-lg mb-3" @bind="selectedTheme">
+                    <select class="form-select form-select-lg mb-3" @bind="selectedTheme" @bind:after="OnThemeChanged">
                         <option value="system">@Loc.T("ThemeSystem")</option>
                         <option value="light">@Loc.T("ThemeLight")</option>
                         <option value="dark">@Loc.T("ThemeDark")</option>
@@ -137,9 +139,26 @@
             </div>
         </div>
     </div>
+    <!-- Saving occurs automatically for each change -->
     <div class="row justify-content-center mb-4">
-        <div class="col-12 col-md-8 d-grid">
-            <button class="btn btn-success btn-lg w-100" @onclick="SavePreferences">@Loc.T("Save")</button>
+        <div class="col-12 col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">@Loc.T("UtilitiesTitle")</h3>
+                    <div class="d-grid">
+                        <a class="btn btn-outline-secondary text-start d-flex align-items-center gap-2" href="/api/qrpdf" download>
+                            <svg viewBox="002424" aria-hidden="true" style="width:1.5rem; height:1.5rem;">
+                                <rect x="3.5" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                                <rect x="14" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                                <rect x="3.5" y="14" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                                <rect x="11.5" y="11.5" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+                                <rect x="17" y="17" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+                            </svg>
+                            <span>@Loc.T("QRPersonale")</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -159,7 +178,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        selectedLang = await UserPreferenceUtility.GetLanguageAsync(SecureStore);
+        selectedLang = Loc.CurrentLanguage ?? await UserPreferenceUtility.GetLanguageAsync(SecureStore) ?? "en";
+        if (Loc.CurrentLanguage != selectedLang)
+        {
+            Loc.CurrentLanguage = selectedLang;
+        }
         selectedTheme = await UserPreferenceUtility.GetThemeAsync(SecureStore);
         assetVisibility = WalletAssetHelper.GetRegisteredAssets()
             .Where(asset => !asset.VisibilityLocked)
@@ -222,6 +245,22 @@
             await UserPreferenceUtility.SetLanguageAsync(SecureStore, selectedLang);
             Loc.CurrentLanguage = selectedLang;
         }
+        await UserPreferenceUtility.SetThemeAsync(SecureStore, selectedTheme);
+        StateHasChanged();
+    }
+
+    private async Task OnLanguageChanged()
+    {
+        if (!string.IsNullOrWhiteSpace(selectedLang))
+        {
+            await UserPreferenceUtility.SetLanguageAsync(SecureStore, selectedLang);
+            Loc.CurrentLanguage = selectedLang;
+        }
+        StateHasChanged();
+    }
+
+    private async Task OnThemeChanged()
+    {
         await UserPreferenceUtility.SetThemeAsync(SecureStore, selectedTheme);
         StateHasChanged();
     }
@@ -355,6 +394,26 @@
         }
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task GenerateQrPdf()
+    {
+        try
+        {
+            var pdfBytes = await QrPdfGenerator.GeneratePersonalQrPdfAsync("ClickPay", SecureStore);
+#if MAUI
+            var tempFile = Path.Combine(Microsoft.Maui.Storage.FileSystem.CacheDirectory, "qr_personale.pdf");
+            await File.WriteAllBytesAsync(tempFile, pdfBytes);
+            await Microsoft.Maui.ApplicationModel.Launcher.Default.OpenAsync(new Microsoft.Maui.ApplicationModel.OpenFileRequest("QR Personale", new Microsoft.Maui.ApplicationModel.ReadOnlyFile(tempFile)));
+#else
+            await JSRuntime.InvokeVoidAsync("downloadFile", "qr_personale.pdf", System.Convert.ToBase64String(pdfBytes));
+#endif
+        }
+        catch (Exception ex)
+        {
+            // Handle error, perhaps show a message
+            Console.WriteLine($"Error generating QR PDF: {ex.Message}");
+        }
     }
 
     private sealed class AssetVisibilityModel

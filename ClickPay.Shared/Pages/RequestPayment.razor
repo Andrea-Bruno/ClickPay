@@ -3,14 +3,27 @@
 @inject NavigationManager Navigation
 @inject LocalizationService Loc
 
-<div class="container py-4 d-flex flex-column align-items-center justify-content-center" style="min-height: 80vh;">
+<div class="container py-4 d-flex flex-column align-items-center justify-content-center position-relative" style="min-height:80vh;">
+    <!-- QR download button styled like a normal square button, icon size matches menu -->
+    <a href="/api/qrpdf" download aria-label="@Loc.T("QRCode")" title="@Loc.T("QRCode")"
+    class="btn btn-outline-primary p-0 d-flex align-items-center justify-content-center"
+    style="position:absolute; top:0.5rem; right:0.5rem; width:3rem; height:3rem; border-radius:0.5rem;">
+    <svg viewBox="002424" aria-hidden="true" style="width:1.5rem; height:1.5rem;">
+    <rect x="3.5" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+    <rect x="14" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+    <rect x="3.5" y="14" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+    <rect x="11.5" y="11.5" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+    <rect x="17" y="17" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+    </svg>
+    </a>
+
     <h2 class="mb-4">@Loc.T("RequestPayment_Title")</h2>
     <div class="mb-3 w-100 text-center">
         <div class="display-3 fw-bold">@DisplayAmount</div>
         <div class="text-muted">@Loc.T("RequestPayment_CurrencyLabel") @ReferenceCurrencyCode</div>
     </div>
     <div class="w-100 d-flex flex-column align-items-center">
-        <div class="keypad w-100" style="max-width: 400px;">
+        <div class="keypad w-100" style="max-width:400px;">
             <div class="row g-2 mb-2">
                 <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("1")'>1</button></div>
                 <div class="col-4"><button class="btn btn-lg btn-outline-primary w-100" @onclick='() => AddDigit("2")'>2</button></div>
@@ -49,7 +62,6 @@
     private string ReferenceCurrencyCode => "EUR"; // TODO: bind to real currency
     private string ErrorMessage = string.Empty;
     private bool Success = false;
-    private bool IsLoading = false;
 
     // TODO: recupera lo shopId reale da servizio/utente
     private string ShopId => "SHOP_ID_PLACEHOLDER";
@@ -75,7 +87,6 @@
             ErrorMessage = Loc.T("RequestPayment_ErrorAmount");
             return;
         }
-        IsLoading = true;
         try
         {
             var result = await Api.SetNextPayment(ShopId, ReferenceCurrencyCode, (float)amount);
@@ -86,10 +97,6 @@
         catch
         {
             ErrorMessage = Loc.T("RequestPayment_ErrorNetwork");
-        }
-        finally
-        {
-            IsLoading = false;
         }
     }
 

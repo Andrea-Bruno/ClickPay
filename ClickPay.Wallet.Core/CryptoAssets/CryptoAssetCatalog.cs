@@ -157,6 +157,8 @@ public sealed class CryptoAssetCatalog
         Code = asset.Code.Trim().ToUpperInvariant(),
         Network = asset.Network,
         ContractAddress = string.IsNullOrWhiteSpace(asset.ContractAddress) ? null : asset.ContractAddress.Trim(),
+        DevnetContractAddress = string.IsNullOrWhiteSpace(asset.DevnetContractAddress) ? null : asset.DevnetContractAddress.Trim(),
+        NativeContractAddress = string.IsNullOrWhiteSpace(asset.NativeContractAddress) ? null : asset.NativeContractAddress.Trim(),
         Decimals = asset.Decimals,
         ChainId = asset.ChainId,
         LogoUrl = string.IsNullOrWhiteSpace(asset.LogoUrl) ? null : asset.LogoUrl.Trim(),

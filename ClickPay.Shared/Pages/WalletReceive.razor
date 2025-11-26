@@ -1,3 +1,4 @@
+@using ClickPay.Wallet.Core.MarketData
 @using ClickPay.Wallet.Core.Wallet
 @using ClickPay.Wallet.Core.Blockchain
 @inject WalletProviderRegistry ProviderRegistry
@@ -17,7 +18,6 @@
 @inject LocalizationService Loc
 @inject NavigationManager Navigation
 @inject FiatPreferenceStore FiatPreferences
-@inject IExchangeRateService ExchangeRates
 @implements IDisposable
 
 <PageTitle>@Loc.T("ReceivePaymentTitle")</PageTitle>
@@ -221,7 +221,7 @@ else if (info is not null)
         {
             if (!await WalletKeyUtility.HasVaultAsync(SecureStore))
             {
-                Navigation.NavigateTo("/onboarding", true);
+                Navigation.NavigateTo("/", true);
                 return;
             }
 
@@ -466,8 +466,9 @@ else if (info is not null)
                 return;
             }
 
-            var rate = await ExchangeRates.GetRateAsync(asset, preferred.Code, ScheduleFiatRefresh, cancellationToken).ConfigureAwait(false);
-            cachedFiatRate = rate is { Value: > 0m } valid ? valid : null;
+            // Usa direttamente CoinGeckoExchangeRateUtility come in Wallet.razor
+            var rate = await CoinGeckoExchangeRateUtility.GetRateAsync(new HttpClient(), null, asset, preferred.Code, ScheduleFiatRefresh, cancellationToken).ConfigureAwait(false);
+            cachedFiatRate = rate is { Value: >0m } valid ? valid : null;
         }
         catch (OperationCanceledException)
         {
@@ -491,7 +492,7 @@ else if (info is not null)
         {
             try
             {
-                var refreshed = await ExchangeRates.GetRateAsync(asset, preference.Code, null, CancellationToken.None).ConfigureAwait(false);
+                var refreshed = await CoinGeckoExchangeRateUtility.GetRateAsync(new HttpClient(), null, asset, preference.Code, null, CancellationToken.None).ConfigureAwait(false);
                 if (disposed)
                 {
                     return;
@@ -499,7 +500,7 @@ else if (info is not null)
 
                 await InvokeAsync(() =>
                 {
-                    cachedFiatRate = refreshed is { Value: > 0m } valid ? valid : null;
+                    cachedFiatRate = refreshed is { Value: >0m } valid ? valid : null;
                     UpdateFiatAmountFromCrypto();
                     StateHasChanged();
                 });

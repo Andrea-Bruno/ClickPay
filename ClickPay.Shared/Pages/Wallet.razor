@@ -22,146 +22,146 @@
 @using ClickPay.Wallet.Core.Blockchain
 @inject WalletProviderRegistry ProviderRegistry
 
-    @if (loading)
-    {
-        <div class="row">
-            <div class="col-12 text-center py-5">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+@if (loading)
+{
+    <div class="row">
+        <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
             </div>
         </div>
-    }
-    else if (!string.IsNullOrEmpty(error))
-    {
-        <div class="alert alert-danger" role="alert">
-            @error
-        </div>
-    }
-    else if (overview is not null)
-    {
-        <div class="row mb-4">
-            <div class="col-12">
-                <h2 class="card-title">
-                    @if (assetDefinition is not null)
-                    {
-                        @GetWalletHeading(assetDefinition)
-                    }
-                    else
-                    {
-                        @(overview != null ? Loc.FormatWalletLabel(overview.Symbol) : Loc.T("WalletWelcomeTitle"))
-                    }
-                </h2>
-                <div class="display-4 my-3 text-primary wallet-balance-display">
-                    @if (overview is not null)
-                    {
-                        <span class="wallet-balance-amount">@overview.Balance.ToString("N4")</span>
-                        @if (!string.IsNullOrEmpty(assetIconDataUri))
-                        {
-                            <img src="@assetIconDataUri" alt="@overview.Symbol" class="wallet-balance-icon" />
-                        }
-                        else
-                        {
-                            <span class="wallet-balance-symbol">@overview.Symbol</span>
-                        }
-                    }
-                </div>
-                <div class="text-muted">@Loc.T("WalletBalancePlaceholder")</div>
-                <div class="mt-2">
-                    <span class="fs-5 text-secondary">≈ @((fiatValue ?? 0).ToString("N2")) @GetFiatDisplayUnit()</span>
-                </div>
-                @if (HasFeeAssets)
+    </div>
+}
+else if (!string.IsNullOrEmpty(error))
+{
+    <div class="alert alert-danger" role="alert">
+        @error
+    </div>
+}
+else if (overview is not null)
+{
+    <div class="row mb-4">
+        <div class="col-12 bg-primary bg-gradient text-white rounded-4 shadow-lg p-4">
+            <h2 class="card-title">
+                @if (assetDefinition is not null)
                 {
-                    if (ShouldWarnFeeReserve)
-                    {
-                        <div class="alert alert-warning mt-3">
-                            <strong>@Loc.T("WalletFeeWarningTitle")</strong>
-                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
-                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningBalance"), FormatFeeAssetList(), FormatAmount(FeeReserveBalance))</span>
-                            @if (RecommendedFeeReserve is { } reserve)
-                            {
-                                <br />
-                                <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningReserveRecommendation"), FormatFeeAssetList(), FormatAmount(reserve))</span>
-                            }
-                            @if (PrimaryFeeAsset is { } primaryFeeAsset)
-                            {
-                                <br />
-                                <button class="btn btn-outline-primary mt-2" @onclick="() => OpenFeeAssetWallet(primaryFeeAsset.Code)">@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeOpenFeeWallet"), GetAssetShortLabel(primaryFeeAsset))</button>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="alert alert-info mt-3">
-                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
-                            @if (RecommendedFeeReserve is { } reserve)
-                            {
-                                <br />
-                                <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRecommended"), FormatAmount(reserve), FormatFeeAssetList())</span>
-                            }
-                        </div>
-                    }
-                }
-                else if (IsNativeAsset)
-                {
-                    <div class="alert alert-info mt-3">
-                        @if (assetDefinition?.NetworkFeeMinimumBalance is { } nativeReserve && nativeReserve > 0m)
-                        {
-                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNative"), GetMainAssetLabel(), FormatAmount(nativeReserve))</span>
-                        }
-                        else
-                        {
-                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNativeGeneral"), GetMainAssetLabel())</span>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
-        <div class="row mb-4">
-            <div class="col-12">
-                <h4>@Loc.T("RecentTransactionsTitle")</h4>
-                @if (transactions.Count == 0)
-                {
-                    <div class="alert alert-secondary">@Loc.T("NoTransactionsMessage")</div>
+                    @GetWalletHeading(assetDefinition)
                 }
                 else
                 {
-                    <ul class="list-group">
-                        @foreach (var tx in transactions)
-                        {
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <div class="fw-semibold address-complete">@tx.TransactionId</div>
-                                    <div class="fw-semibold address-abbr">@AbbreviateAddress(tx.TransactionId)</div>
-                                    <small class="text-muted">@tx.Timestamp.LocalDateTime.ToString("g")</small>
-                                </div>
-                                <span class="badge bg-@(tx.IsIncoming ? "success" : "danger")">
-                                    @(tx.IsIncoming ? "+" : "-")@tx.Amount.ToString("N4") @(overview != null ? overview.Symbol : "")
-                                </span>
-                            </li>
-                        }
-                    </ul>
+                    @(overview != null ? Loc.FormatWalletLabel(overview.Symbol) : Loc.T("WalletWelcomeTitle"))
+                }
+            </h2>
+            <div class="display-4 my-3 text-primary wallet-balance-display text-white">
+                @if (overview is not null)
+                {
+                    <span class="wallet-balance-amount">@overview.Balance.ToString("N4")</span>
+                    @if (!string.IsNullOrEmpty(assetIconDataUri))
+                    {
+                        <img src="@assetIconDataUri" alt="@overview.Symbol" class="wallet-balance-icon" />
+                    }
+                    else
+                    {
+                        <span class="wallet-balance-symbol">@overview.Symbol</span>
+                    }
                 }
             </div>
+            <div class="text-white">@Loc.T("WalletBalancePlaceholder")</div>
+            <div class="mt-2">
+                <span class="fs-5 text-white">≈ @((fiatValue ?? 0).ToString("N2")) @GetFiatDisplayUnit()</span>
+            </div>
+            @if (HasFeeAssets)
+            {
+                if (ShouldWarnFeeReserve)
+                {
+                    <div class="alert alert-warning mt-3">
+                        <strong>@Loc.T("WalletFeeWarningTitle")</strong>
+                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
+                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningBalance"), FormatFeeAssetList(), FormatAmount(FeeReserveBalance))</span>
+                        @if (RecommendedFeeReserve is { } reserve)
+                        {
+                            <br />
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeWarningReserveRecommendation"), FormatFeeAssetList(), FormatAmount(reserve))</span>
+                        }
+                        @if (PrimaryFeeAsset is { } primaryFeeAsset)
+                        {
+                            <br />
+                            <button class="btn btn-outline-primary mt-2" @onclick="() => OpenFeeAssetWallet(primaryFeeAsset.Code)">@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeOpenFeeWallet"), GetAssetShortLabel(primaryFeeAsset))</button>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mt-3">
+                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRequirement"), GetMainAssetLabel(), FormatFeeAssetList())</span>
+                        @if (RecommendedFeeReserve is { } reserve)
+                        {
+                            <br />
+                            <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoRecommended"), FormatAmount(reserve), FormatFeeAssetList())</span>
+                        }
+                    </div>
+                }
+            }
+            else if (IsNativeAsset)
+            {
+                <div class="alert alert-info mt-3">
+                    @if (assetDefinition?.NetworkFeeMinimumBalance is { } nativeReserve && nativeReserve > 0m)
+                    {
+                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNative"), GetMainAssetLabel(), FormatAmount(nativeReserve))</span>
+                    }
+                    else
+                    {
+                        <span>@string.Format(CultureInfo.CurrentCulture, Loc.T("WalletFeeInfoNativeGeneral"), GetMainAssetLabel())</span>
+                    }
+                </div>
+            }
         </div>
-    }
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4>@Loc.T("RecentTransactionsTitle")</h4>
+            @if (transactions.Count == 0)
+            {
+                <div class="alert alert-secondary">@Loc.T("NoTransactionsMessage")</div>
+            }
+            else
+            {
+                <ul class="list-group">
+                    @foreach (var tx in transactions)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-semibold address-complete">@tx.TransactionId</div>
+                                <div class="fw-semibold address-abbr">@AbbreviateAddress(tx.TransactionId)</div>
+                                <small class="text-muted">@tx.Timestamp.LocalDateTime.ToString("g")</small>
+                            </div>
+                            <span class="badge bg-@(tx.IsIncoming ? "success" : "danger")">
+                                @(tx.IsIncoming ? "+" : "-")@tx.Amount.ToString("N4") @(overview != null ? overview.Symbol : "")
+                            </span>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+}
 
 
-    @if (overview is not null && string.IsNullOrEmpty(error))
-    {
-        <div class="wallet-action-bar fixed-bottom">
-            <div class="container py-3">
-                <div class="row g-3 justify-content-center">
-                    <div class="col-6 col-md-3 d-grid">
-                        <button class="btn btn-success btn-lg" @onclick="ReceivePayment"> <span class="fs-1">▼</span><br /> @Loc.T("ReceivePaymentTitle")</button>
-                    </div>
-                    <div class="col-6 col-md-3 d-grid">
-                        <button class="btn btn-primary btn-lg" @onclick="SendPayment"> <span class="fs-1">▲</span><br /> @Loc.T("SendPaymentButton")</button>
-                    </div>
+@if (overview is not null && string.IsNullOrEmpty(error))
+{
+    <div class="wallet-action-bar fixed-bottom">
+        <div class="container py-3">
+            <div class="row g-3 justify-content-center">
+                <div class="col-6 col-md-3 d-grid">
+                    <button class="btn btn-success btn-lg" @onclick="ReceivePayment"> <span class="fs-1">▼</span><br /> @Loc.T("ReceivePaymentTitle")</button>
+                </div>
+                <div class="col-6 col-md-3 d-grid">
+                    <button class="btn btn-primary btn-lg" @onclick="SendPayment"> <span class="fs-1">▲</span><br /> @Loc.T("SendPaymentButton")</button>
                 </div>
             </div>
         </div>
-    }
+    </div>
+}
 
 
 @code {
@@ -182,7 +182,7 @@
             return address;
         return $"{address.Substring(0, 6)}...{address.Substring(address.Length - 6)}";
     }
-            // Transactions are loaded in LoadWalletAsync
+    // Transactions are loaded in LoadWalletAsync
     private FiatPreferenceStore.FiatCurrencyOption? fiatPreference;
     private bool awaitingInteractive;
     private readonly Dictionary<string, WalletOverview> feeAssetOverviews = new(StringComparer.OrdinalIgnoreCase);
@@ -431,7 +431,7 @@
             return;
         }
 
-    await AppendLogAsync("OnAfterRenderAsync: resuming wallet load after interactive connection established.");
+        await AppendLogAsync("OnAfterRenderAsync: resuming wallet load after interactive connection established.");
         awaitingInteractive = false;
         await LoadWalletAsync();
 
@@ -490,7 +490,7 @@
             return true;
         }
 
-    var rate = await ClickPay.Wallet.Core.MarketData.CoinGeckoExchangeRateUtility.GetRateAsync(httpClient, Logger, assetDefinition, preference.Code, ScheduleFiatRefresh, cancellationToken);
+        var rate = await ClickPay.Wallet.Core.MarketData.CoinGeckoExchangeRateUtility.GetRateAsync(httpClient, Logger, assetDefinition, preference.Code, ScheduleFiatRefresh, cancellationToken);
         cachedFiatRate = rate?.Value;
 
         if (rate is not null)
@@ -509,7 +509,7 @@
         }
 
         // Debugger.Break();
-    await EnsureLogFileClearedAsync();
+        await EnsureLogFileClearedAsync();
         loading = true;
         error = null;
 
@@ -528,7 +528,7 @@
 
             if (!vaultCheck.Result)
             {
-                Navigation.NavigateTo("/onboarding", true);
+                Navigation.NavigateTo("/", true);
                 return;
             }
 
@@ -659,7 +659,7 @@
             return symbol;
         }
 
-    return fiatPreference?.Code ?? FiatPreferenceStore.DefaultCurrencyCode;
+        return fiatPreference?.Code ?? FiatPreferenceStore.DefaultCurrencyCode;
     }
 
     private string GetWalletHeading(CryptoAsset definition)
@@ -838,7 +838,7 @@
         }
 
         Logger?.LogWarning("Wallet timeout message surfaced to UI: {Message}", message);
-    await AppendLogAsync($"Wallet timeout surfaced to UI: {message}");
+        await AppendLogAsync($"Wallet timeout surfaced to UI: {message}");
         error = message;
         loading = false;
         awaitingInteractive = false;
@@ -866,7 +866,7 @@
             return;
         }
 
-    await LogFileLock.WaitAsync();
+        await LogFileLock.WaitAsync();
         try
         {
             if (logFileCleared)
@@ -890,7 +890,7 @@
 
     private async Task AppendLogAsync(string message, Exception? exception = null)
     {
-    await EnsureLogFileClearedAsync();
+        await EnsureLogFileClearedAsync();
 
         var builder = new StringBuilder()
             .Append('[')
@@ -903,7 +903,7 @@
             builder.AppendLine(exception.ToString());
         }
 
-    await LogFileLock.WaitAsync();
+        await LogFileLock.WaitAsync();
         try
         {
             await File.AppendAllTextAsync(LogFilePath, builder.ToString(), Encoding.UTF8);

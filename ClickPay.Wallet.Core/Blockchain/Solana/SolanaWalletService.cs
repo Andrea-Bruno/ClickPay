@@ -400,16 +400,16 @@ namespace ClickPay.Wallet.Core.Blockchain.Solana
         private static ulong ConvertToLamports(decimal amount) => (ulong)Math.Round(amount * LamportsPerSol, MidpointRounding.AwayFromZero);
 
         private static bool IsNativeSol(CryptoAsset asset) =>
-            asset.Network == BlockchainNetwork.Solana && string.IsNullOrWhiteSpace(asset.ContractAddress);
+            asset.Network == BlockchainNetwork.Solana && string.IsNullOrWhiteSpace(asset.EffectiveContractAddress);
 
         private PublicKey EnsureMint(CryptoAsset asset)
         {
-            if (string.IsNullOrWhiteSpace(asset.ContractAddress))
+            if (string.IsNullOrWhiteSpace(asset.EffectiveContractAddress))
             {
                 throw new InvalidOperationException($"L'asset {asset.Code} non specifica un mint address.");
             }
 
-            return new PublicKey(asset.ContractAddress);
+            return new PublicKey(asset.EffectiveContractAddress);
         }
 
         private byte EnsureTokenDecimals(CryptoAsset asset)
@@ -429,7 +429,7 @@ namespace ClickPay.Wallet.Core.Blockchain.Solana
         }
     }
 
-    internal sealed record SolanaWalletAccount(Account Account, string DerivationPath, int AccountIndex);
+    public sealed record SolanaWalletAccount(Account Account, string DerivationPath, int AccountIndex);
 
     public sealed class SolanaWalletOptions
     {
@@ -437,18 +437,29 @@ namespace ClickPay.Wallet.Core.Blockchain.Solana
         public const string MainnetRpcEndpoint = "https://api.mainnet-beta.solana.com";
         public const string DefaultCommitment = "confirmed";
         public const string ProductionCommitment = "finalized";
-        public const string DevnetEurcMint = "6wbfrFjEGwaksktwuDsMJ7d4Zt6wkFFwmwUcvJrQVJ6";
-        public const string MainnetEurcMint = "3K4sQrbB5t1NVzDsGuP5AnINXX2uEst9NsgWPAsbszvC";
 
         public static SolanaWalletOptions Default => new SolanaWalletOptions();
 
         public string RpcEndpoint { get; set; } = DevnetRpcEndpoint;
         public string Commitment { get; set; } = DefaultCommitment;
         public int TransactionHistoryLimit { get; set; } = 20;
-        public string EurcMintAddress { get; set; } = DevnetEurcMint;
-        public byte EurcDecimals { get; set; } = 6;
         public int Purpose { get; set; } = 44;
         public int CoinType { get; set; } = 501;
+
+        /// <summary>
+        /// Endpoint corrente usato da tutta l'applicazione (mainnet/testnet). Può essere impostato all'avvio.
+        /// </summary>
+        public static string CurrentRpcEndpoint
+        {
+            get
+            {
+#if DEBUG
+                return DevnetRpcEndpoint;
+#else
+                return MainnetRpcEndpoint;
+#endif
+            }
+        }
     }
 
     internal sealed record SolanaTokenBalance(string Owner, string Mint, string AssociatedAccount, decimal Amount, byte Decimals)

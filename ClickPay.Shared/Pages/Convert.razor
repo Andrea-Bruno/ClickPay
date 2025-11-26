@@ -1,0 +1,391 @@
+@page "/convert"
+@using ClickPay.Wallet.Core.CryptoAssets
+@using ClickPay.Wallet.Core.Utility
+@using ClickPay.Wallet.Core.Services
+@using ClickPay.Wallet.Core.Wallet
+@using ClickPay.Wallet.Core.Blockchain
+@using System.Linq
+@using System.Diagnostics
+@inject LocalizationService Loc
+@inject ILocalSecureStore SecureStore
+@inject NavigationManager Navigation
+@inject WalletProviderRegistry ProviderRegistry
+
+<PageTitle>@Loc.T("Convert")</PageTitle>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>@errorMessage
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="alert alert-success" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>@successMessage
+                </div>
+            }
+
+            <div class="row g-3">
+                <!-- Left Card: Configuration -->
+                <div class="col-12 col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@Loc.T("From")</h5>
+                            <div class="mb-3">
+                                <label class="form-label">@Loc.T("Amount")</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="number" min="0" step="any" @bind="fromAmount" @oninput="OnFromAmountChanged" placeholder="@Loc.T("Amount")" />
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">@Loc.T("FromAsset")</label>
+                                <select class="form-select" @bind="fromAssetCode" @bind:after="OnAssetChanged">
+                                    @foreach (var asset in visibleAssets)
+                                    {
+                                        <option value="@asset.Code">@asset.Code</option>
+                                    }
+                                </select>
+                            </div>
+                            @if (fromAsset != null)
+                            {
+                                <p class="text-muted small">Available: @fromBalance.ToString("N4") @fromAsset.Code</p>
+                            }
+                            @if (fromAsset != null)
+                            {
+                                <!-- Mostra il controllo percentuale se c'è un asset selezionato, disabilitandolo se il saldo è zero o negativo -->
+                                <div class="mb-3">
+                                    <label class="form-label">@Loc.T("Percentage")</label>
+                                    <div class="d-flex align-items-center">
+                                        <input type="range" class="form-range me-2" min="0" max="100" @bind="percentage" @oninput="OnPercentageChanged" disabled="@(fromBalance <= 0)" />
+                                        <input type="number" class="form-control me-2" style="width: 80px;" min="0" max="100" @bind="percentage" @oninput="OnPercentageChanged" disabled="@(fromBalance <= 0)" />
+                                        <span class="badge bg-secondary">@percentage%</span>
+                                    </div>
+                                    @if (fromBalance <= 0)
+                                    {
+                                        <div class="form-text text-muted">@Loc.T("NoBalanceForPercentage")</div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Card: Receipt -->
+                <div class="col-12 col-md-6">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">@Loc.T("To")</h5>
+                            <div class="mb-3">
+                                <label class="form-label">@Loc.T("Estimated Amount")</label>
+                                <input class="form-control text-muted" readonly value="@toAmountText" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">@Loc.T("ToAsset")</label>
+                                <select class="form-select" @bind="toAssetCode" @bind:after="OnAssetChanged">
+                                    @foreach (var asset in visibleAssets)
+                                    {
+                                        <option value="@asset.Code">@asset.Code</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exchange Rate Alert -->
+            @if (!string.IsNullOrEmpty(exchangeRateDirect))
+            {
+                <div class="alert alert-light mt-3 text-center" role="alert">
+                    <div>@exchangeRateDirect</div>
+                    <div class="text-muted small">@exchangeRateInverse</div>
+                </div>
+            }
+
+            <!-- Action Button or Progress -->
+            <div class="text-center mt-4">
+                @if (isInProgress)
+                {
+                    <div class="progress" style="height: 2rem;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated @progressClass" role="progressbar" style="width: @progressPercent%;" aria-valuenow="@progressPercent" aria-valuemin="0" aria-valuemax="100">@progressText</div>
+                    </div>
+                }
+                else
+                {
+                    <button class="btn btn-primary btn-lg" @onclick="OnConfirmSwap" disabled="@(!canSwap)">
+                        <i class="bi bi-arrow-left-right me-2"></i>@Loc.T("ConfirmSwap")
+                    </button>
+                }
+            </div>
+
+            <!-- Recent Conversions -->
+            @if (recentConversions.Any())
+            {
+                <div class="mt-4">
+                    <h6>@Loc.T("RecentConversions")</h6>
+                    <div class="list-group" style="max-height: 300px; overflow-y: auto;">
+                        @foreach (var conv in recentConversions)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">@conv.Timestamp.ToString("g")</small>
+                                    <div>@conv.Description</div>
+                                </div>
+                                <span class="badge @conv.BadgeClass">@conv.StatusText</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<CryptoAsset> visibleAssets = new();
+    private string? fromAssetCode;
+    private string? toAssetCode;
+    private decimal fromAmount;
+    private int percentage;
+    private decimal fromBalance;
+    private CryptoAsset? fromAsset;
+    private CryptoAsset? toAsset;
+    private string toAmountText = string.Empty;
+    private string exchangeRateDirect = string.Empty;
+    private string exchangeRateInverse = string.Empty;
+    private SwapUtility.SwapQuote? currentQuote;
+    private bool isInProgress;
+    private string progressText = string.Empty;
+    private int progressPercent;
+    private string progressClass = "bg-primary";
+    private string? errorMessage;
+    private string? successMessage;
+    private bool canSwap => currentQuote is not null && fromAmount > 0 && fromAsset != null && toAsset != null;
+    private List<RecentConversion> recentConversions = new();
+    private System.Timers.Timer? statusTimer;
+    private System.Timers.Timer? exchangeRateTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        visibleAssets = WalletAssetHelper.GetVisibleAssets().ToList();
+        if (visibleAssets.Count > 1)
+        {
+            fromAssetCode = visibleAssets[0].Code;
+            toAssetCode = visibleAssets[1].Code;
+        }
+        await LoadBalancesAsync();
+        await UpdateQuoteAsync();
+        
+        // Initialize timer to update exchange rate every minute
+        exchangeRateTimer = new System.Timers.Timer(60000); // 60 seconds
+        exchangeRateTimer.Elapsed += async (s, e) => await OnExchangeRateTimerElapsed();
+        exchangeRateTimer.Start();
+    }
+
+    private async Task LoadBalancesAsync()
+    {
+        if (fromAssetCode == null || toAssetCode == null) return;
+        fromAsset = visibleAssets.FirstOrDefault(a => a.Code == fromAssetCode);
+        toAsset = visibleAssets.FirstOrDefault(a => a.Code == toAssetCode);
+        if (fromAsset == null) return;
+
+        try
+        {
+            var overview = await MultiChainWalletUtility.GetOverviewAsync(
+                ct => WalletKeyUtility.GetVaultAsync(SecureStore, ct),
+                ProviderRegistry,
+                null,
+                fromAsset.Code,
+                null,
+                CancellationToken.None);
+            fromBalance = overview?.Balance ?? 0;
+        }
+        catch
+        {
+            fromBalance = 0;
+        }
+    }
+
+    private void Log(string message)
+    {
+        Console.WriteLine($"[Convert.razor] {DateTime.Now:HH:mm:ss} - {message}");
+    }
+
+    private async Task UpdateQuoteAsync()
+    {
+        Log($"UpdateQuoteAsync: fromAsset={fromAsset?.Code}, toAsset={toAsset?.Code}, fromAmount={fromAmount}");
+        if (fromAsset == null || toAsset == null) 
+        {
+            Log("UpdateQuoteAsync: fromAsset or toAsset is null");
+            toAmountText = string.Empty;
+            exchangeRateDirect = string.Empty;
+            exchangeRateInverse = string.Empty;
+            return;
+        }
+
+        decimal quoteAmount = fromAmount > 0 ? fromAmount : 1;
+        var request = new SwapUtility.SwapRequest { From = fromAsset, To = toAsset, Amount = quoteAmount };
+        try
+        {
+            currentQuote = await SwapUtility.GetSwapQuoteAsync(request);
+            Log($"Quote received: rate={currentQuote?.ExchangeRate}");
+            if (fromAmount > 0)
+                toAmountText = (fromAmount * (currentQuote?.ExchangeRate ?? 0)).ToString("N4");
+            else
+                toAmountText = string.Empty;
+            exchangeRateDirect = $"1 {fromAsset.Code} = {(currentQuote?.ExchangeRate ?? 0):N4} {toAsset.Code}";
+            exchangeRateInverse = $"1 {toAsset.Code} = {(currentQuote != null && currentQuote.ExchangeRate != 0 ? (1 / currentQuote.ExchangeRate) : 0):N6} {fromAsset.Code}";
+            Log($"exchangeRateDirect={exchangeRateDirect}, exchangeRateInverse={exchangeRateInverse}");
+            errorMessage = null;
+        }
+        catch (NotSupportedException)
+        {
+            currentQuote = null;
+            toAmountText = string.Empty;
+            exchangeRateDirect = string.Empty;
+            exchangeRateInverse = string.Empty;
+            errorMessage = Loc.T("SwapNotSupported");
+        }
+        catch (Exception ex)
+        {
+            Log($"Quote error: {ex.Message}");
+            currentQuote = null;
+            toAmountText = string.Empty;
+            exchangeRateDirect = string.Empty;
+            exchangeRateInverse = string.Empty;
+            errorMessage = string.Format(Loc.T("ExchangeRateError"), ex.Message);
+        }
+    }
+
+    private void OnFromAmountChanged(ChangeEventArgs e)
+    {
+        if (decimal.TryParse(e.Value?.ToString(), out var amt))
+        {
+            fromAmount = amt;
+            percentage = fromBalance > 0 ? (int)(amt / fromBalance * 100) : 0;
+            InvokeAsync(UpdateQuoteAsync);
+        }
+    }
+
+    private void OnPercentageChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out var pct))
+        {
+            percentage = pct;
+            fromAmount = fromBalance * pct / 100;
+            InvokeAsync(UpdateQuoteAsync);
+        }
+    }
+
+    private async Task OnAssetChanged()
+    {
+        await LoadBalancesAsync();
+        await UpdateQuoteAsync();
+    }
+
+    private async Task OnConfirmSwap()
+    {
+        if (!canSwap || fromAsset == null || toAsset == null || currentQuote == null) return;
+
+        errorMessage = null;
+        successMessage = null;
+        isInProgress = true;
+        progressPercent = 10;
+        progressText = Loc.T("Validating");
+        progressClass = "bg-warning";
+
+        StateHasChanged();
+
+        var request = new SwapUtility.SwapRequest { From = fromAsset, To = toAsset, Amount = fromAmount };
+        var validation = await SwapUtility.ValidateSwapConditionsAsync(request, currentQuote, SecureStore);
+        if (!validation.IsValid)
+        {
+            errorMessage = validation.ErrorMessage;
+            isInProgress = false;
+            return;
+        }
+
+        progressPercent = 30;
+        progressText = Loc.T("Executing");
+        progressClass = "bg-info";
+        StateHasChanged();
+
+        var result = await SwapUtility.ExecuteSwapAsync(request, currentQuote, SecureStore);
+        if (result.Esito == SwapUtility.EsitoOperazione.Successful)
+        {
+            successMessage = Loc.T("SwapSuccessful");
+            recentConversions.Insert(0, new RecentConversion
+            {
+                Timestamp = DateTime.Now,
+                Description = $"{fromAmount} {fromAsset?.Code ?? "?"} ? {toAmountText} {toAsset?.Code ?? "?"}",
+                StatusText = Loc.T("Completed"),
+                BadgeClass = "bg-success"
+            });
+            // Start monitoring status
+            StartStatusMonitoring(result.TransactionHash);
+        }
+        else
+        {
+            errorMessage = result.Descrizione;
+            recentConversions.Insert(0, new RecentConversion
+            {
+                Timestamp = DateTime.Now,
+                Description = $"{fromAmount} {fromAsset?.Code ?? "?"} ? {toAmountText} {toAsset?.Code ?? "?"}",
+                StatusText = Loc.T("Failed"),
+                BadgeClass = "bg-danger"
+            });
+        }
+
+        isInProgress = false;
+    }
+
+    private void StartStatusMonitoring(string? txHash)
+    {
+        if (string.IsNullOrEmpty(txHash)) return;
+
+        statusTimer = new System.Timers.Timer(10000); // Check every 5s
+        statusTimer.Elapsed += async (s, e) =>
+        {
+            var status = await SwapUtility.GetSwapStatusAsync(txHash);
+            await InvokeAsync(() =>
+            {
+                var conv = recentConversions.FirstOrDefault();
+                if (conv != null && conv.Timestamp.AddMinutes(5) < DateTime.Now)
+                {
+                    conv.BadgeClass = "bg-warning";
+                    conv.StatusText = Loc.T("Pending");
+                }
+            });
+        };
+        statusTimer.Start();
+    }
+
+    private async Task OnExchangeRateTimerElapsed()
+    {
+        await InvokeAsync(async () =>
+        {
+            await UpdateQuoteAsync();
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        statusTimer?.Stop();
+        statusTimer?.Dispose();
+        exchangeRateTimer?.Stop();
+        exchangeRateTimer?.Dispose();
+    }
+
+    private class RecentConversion
+    {
+        public DateTime Timestamp { get; set; }
+        public string? Description { get; set; }
+        public string? StatusText { get; set; }
+        public string? BadgeClass { get; set; }
+    }
+}

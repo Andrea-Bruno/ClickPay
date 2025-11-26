@@ -1,4 +1,4 @@
-/* Responsive: margini minimi solo su mobile verticale */
+/* Responsive: minimum margins only on vertical mobile */
 @media (max-width: 600px) and (orientation: portrait) {
     .main-content, .container, .page-content {
         padding-left: 8px !important;

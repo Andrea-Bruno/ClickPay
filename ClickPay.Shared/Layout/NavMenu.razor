@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components
 @using ClickPay.Wallet.Core.CryptoAssets
 @using ClickPay.Wallet.Core.Wallet
+@using ClickPay.Shared.Services
 @inject LocalizationService Loc
 @inject NavigationManager Navigation
 @inject ILocalSecureStore SecureStore
@@ -18,27 +19,18 @@
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 3 5 6v4.8c0 4.1 2.7 8.2 7 9.6 4.3-1.4 7-5.5 7-9.6V6l-7-3z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
-                    <path d="m9.6 12.2 1.9 1.9 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Disclaimer
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
             <NavLink class="nav-link" href="pay">
-                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="3.5" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
-                    <rect x="14" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
-                    <rect x="3.5" y="14" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
-                    <rect x="11.5" y="11.5" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
-                    <rect x="17" y="17" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+                <svg class="nav-icon" viewBox="002424" aria-hidden="true">
+                <rect x="3.5" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                <rect x="14" y="3.5" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                <rect x="3.5" y="14" width="6.5" height="6.5" fill="none" stroke="currentColor" stroke-width="1.5" rx="1" />
+                <rect x="11.5" y="11.5" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
+                <rect x="17" y="17" width="3.2" height="3.2" fill="currentColor" rx="0.5" />
                 </svg>
-                Pay
+                @Loc.T("NavMenu_Pay")
             </NavLink>
         </div>
+        
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="request-payment">
                 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -59,6 +51,17 @@
             </div>
         }
         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="convert">
+                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16.65 15.65a5 5 0 1 1 0-7.07" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <polyline points="15 14 16.65 15.65 18.3 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M7.35 8.35a5 5 0 1 1 0 7.07" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                    <polyline points="9 10 7.35 8.35 5.7 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                @Loc.T("NavMenu_Convert")
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
             <NavLink class="nav-link" href="setup">
                 <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
                     <rect x="3.5" y="5" width="17" height="14" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.4" />
@@ -69,28 +72,24 @@
                     <line x1="16" y1="8" x2="16" y2="16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
                     <circle cx="16" cy="14.5" r="1.4" fill="currentColor" />
                 </svg>
-                Setup
+                @Loc.T("NavMenu_Setup")
             </NavLink>
         </div>
-#if DEBUG
-        <div class="nav-item px-3">
-            <a href="#" class="nav-link text-danger @(_resetting ? "disabled" : string.Empty)" @onclick="ResetWalletAsync" @onclick:preventDefault="true">
-                <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 5a7 7 0 1 1-7 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <polyline points="12 1 12 5 8 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                @(_resetting ? "Resetting wallet…" : "Reset wallet (debug)")
-            </a>
-        </div>
-#endif
     </nav>
 </div>
 
 @code {
+    private bool _hasWallet;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hasWallet = await WalletKeyUtility.HasVaultAsync(SecureStore);
+        Loc.LanguageChanged += OnLanguageChanged;
+    }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Loc.LanguageChanged += OnLanguageChanged;
     }
 
     private string GetMenuLabel(CryptoAsset asset)
@@ -163,6 +162,8 @@
 #if DEBUG
     private bool _resetting;
 
+    private string resetText => _resetting ? Loc.T("NavMenu_ResettingWallet") : Loc.T("NavMenu_ResetWalletDebug");
+
     private async Task ResetWalletAsync()
     {
         if (_resetting)
@@ -175,7 +176,8 @@
         try
         {
             await WalletKeyUtility.RemoveVaultAsync(SecureStore);
-            Navigation.NavigateTo("/onboarding", forceLoad: true);
+            await SecureStore.DeleteAsync("DisclaimerAccepted");
+            Navigation.NavigateTo("/", forceLoad: true);
         }
         catch (Exception ex)
         {

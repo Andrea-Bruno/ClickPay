@@ -56,11 +56,9 @@ namespace ClickPay
 #if DEBUG
                 options.RpcEndpoint = SolanaWalletOptions.DevnetRpcEndpoint;
                 options.Commitment = SolanaWalletOptions.DefaultCommitment;
-                options.EurcMintAddress = SolanaWalletOptions.DevnetEurcMint;
 #else
                 options.RpcEndpoint = SolanaWalletOptions.MainnetRpcEndpoint;
                 options.Commitment = SolanaWalletOptions.ProductionCommitment;
-                options.EurcMintAddress = SolanaWalletOptions.MainnetEurcMint;
 #endif
                 if (int.TryParse(builder.Configuration["Solana:TransactionHistoryLimit"], out var historyLimit) && historyLimit > 0)
                 {
@@ -78,13 +76,7 @@ namespace ClickPay
 #endif
             });
             builder.Services.AddSingleton<HttpClient>();
-            builder.Services.AddSingleton<IExchangeRateService>(sp =>
-            {
-                var http = sp.GetRequiredService<HttpClient>();
-                var opts = sp.GetRequiredService<IOptions<MarketDataCacheOptions>>();
-                var logger = sp.GetService<ILogger<CoinGeckoExchangeRateService>>();
-                return new CoinGeckoExchangeRateService(http, opts, logger);
-            });
+
             builder.Services.AddScoped<ILocalSecureStore, SecureStorageLocalSecureStore>();
 #if ANDROID
             builder.Services.AddScoped<IBiometricLockService, AndroidBiometricLockService>();

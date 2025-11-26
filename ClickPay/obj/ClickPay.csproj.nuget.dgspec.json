@@ -67,9 +67,17 @@
               "target": "Package",
               "version": "[9.0.0, 10.0.0)"
             },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
+            },
             "QRCoder": {
               "target": "Package",
-              "version": "[1.6.0, )"
+              "version": "[1.7.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.9.3, )"
             }
           },
           "imports": [
@@ -163,6 +171,14 @@
               "target": "Package",
               "version": "[5.0.0, )"
             },
+            "PdfSharpCore": {
+              "target": "Package",
+              "version": "[1.3.67, )"
+            },
+            "QRCoder": {
+              "target": "Package",
+              "version": "[1.7.0, )"
+            },
             "Solnet.Programs": {
               "target": "Package",
               "version": "[6.1.0, )"
@@ -174,6 +190,10 @@
             "Solnet.Wallet": {
               "target": "Package",
               "version": "[6.1.0, )"
+            },
+            "Svg.Skia": {
+              "target": "Package",
+              "version": "[3.2.1, )"
             }
           },
           "imports": [
