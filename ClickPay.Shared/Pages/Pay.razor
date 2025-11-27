@@ -1,4 +1,3 @@
-
 @page "/pay"
 @using ClickPay.Wallet.Core.Services
 @using ClickPay.Wallet.Core.CryptoAssets
@@ -163,18 +162,6 @@
 
 	private static bool IsSupportedAsset(CryptoAsset asset)
 	{
-		if (asset.Network == BlockchainNetwork.Bitcoin)
-		{
-			return string.Equals(asset.Code, "BTC", StringComparison.OrdinalIgnoreCase);
-		}
-
-		if (asset.Network == BlockchainNetwork.Solana)
-		{
-			return string.Equals(asset.Code, "SOL", StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(asset.Code, "EURC", StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(asset.Code, "XAUT", StringComparison.OrdinalIgnoreCase);
-		}
-
-		return false;
+		return WalletAssetHelper.IsSupportedForQrPayment(asset);
 	}
 }

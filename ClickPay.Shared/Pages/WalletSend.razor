@@ -210,7 +210,7 @@
     private string GetFiatAmountLabel()
     {
         var unit = GetFiatDisplayUnit();
-        return string.Format(CultureInfo.CurrentCulture, "Valore in {0}", unit);
+        return Loc.T("ValueIn") + " " + unit;
     }
 
     private string GetFiatDisplayUnit()
@@ -227,18 +227,18 @@
     {
         if (!SupportsFiatConversion)
         {
-            return "La conversione in fiat non è disponibile per questo asset.";
+            return Loc.T("FiatConversionNotAvailable");
         }
 
         if (!HasFiatRate)
         {
-            return "Tasso di cambio in caricamento...";
+            return Loc.T("FiatRateLoading");
         }
 
         var assetLabel = assetDefinition?.Symbol ?? assetDefinition?.Code ?? assetCode;
         var unit = GetFiatDisplayUnit();
         var rate = cachedFiatRate!.Value;
-        return string.Format(CultureInfo.CurrentCulture, "~ 1 {0} ≈ {1} {2}", assetLabel, rate.ToString("N2", CultureInfo.CurrentCulture), unit);
+        return "~ 1" + " " + assetLabel + " " + "≈" + " " + rate.ToString("N2", CultureInfo.CurrentCulture) + " " + unit;
     }
 
     private void OnCryptoAmountInput(ChangeEventArgs args)

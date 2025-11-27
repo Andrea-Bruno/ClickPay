@@ -1,6 +1,7 @@
 @using ClickPay.Wallet.Core.MarketData
 @using ClickPay.Wallet.Core.Wallet
 @using ClickPay.Wallet.Core.Blockchain
+@using ClickPay.Wallet.Core.Utility
 @inject WalletProviderRegistry ProviderRegistry
 @inject ILocalSecureStore SecureStore
 @page "/wallet/{type}/receive"
@@ -140,7 +141,7 @@ else if (info is not null)
     private string GetFiatAmountLabel()
     {
         var unit = GetFiatDisplayUnit();
-        return string.Format(CultureInfo.CurrentCulture, "Valore in {0}", unit);
+        return Loc.T("ValueIn") + " " + unit;
     }
 
     private string GetFiatDisplayUnit()
@@ -157,18 +158,18 @@ else if (info is not null)
     {
         if (!SupportsFiatConversion)
         {
-            return "La conversione in fiat non è disponibile per questo asset.";
+            return Loc.T("FiatConversionNotAvailable");
         }
 
         if (!HasFiatRate)
         {
-            return "Tasso di cambio in caricamento...";
+            return Loc.T("FiatRateLoading");
         }
 
         var assetLabel = assetDefinition?.Symbol ?? assetDefinition?.Code ?? info?.Symbol ?? assetCode;
         var unit = GetFiatDisplayUnit();
         var rate = cachedFiatRate!.Value;
-        return string.Format(CultureInfo.CurrentCulture, "~ 1 {0} ≈ {1} {2}", assetLabel, rate.ToString("N2", CultureInfo.CurrentCulture), unit);
+        return "~ 1" + " " + assetLabel + " " + "?" + " " + rate.ToString("N2", CultureInfo.CurrentCulture) + " " + unit;
     }
 
     protected override async Task OnInitializedAsync()
@@ -295,12 +296,7 @@ else if (info is not null)
             ? mintValue
             : mintFromDefinition;
 
-        paymentUri = assetDefinition.Network switch
-        {
-            BlockchainNetwork.Bitcoin => BuildBitcoinPaymentUri(info.Address, amount),
-            BlockchainNetwork.Solana => BuildSolanaPaymentUri(info.Address, amount, mint),
-            _ => info.Address
-        };
+        paymentUri = PaymentUriBuilder.BuildPaymentUri(assetDefinition, info.Address, amount, mint);
 
         var payload = string.IsNullOrWhiteSpace(paymentUri) ? info.Address : paymentUri;
         qrCodeMarkup = string.IsNullOrWhiteSpace(payload) ? default : GenerateQrMarkup(payload);
@@ -466,7 +462,6 @@ else if (info is not null)
                 return;
             }
 
-            // Usa direttamente CoinGeckoExchangeRateUtility come in Wallet.razor
             var rate = await CoinGeckoExchangeRateUtility.GetRateAsync(new HttpClient(), null, asset, preferred.Code, ScheduleFiatRefresh, cancellationToken).ConfigureAwait(false);
             cachedFiatRate = rate is { Value: >0m } valid ? valid : null;
         }
@@ -578,30 +573,6 @@ else if (info is not null)
         disposed = true;
         rateCts?.Cancel();
         rateCts?.Dispose();
-    }
-
-    private static string BuildBitcoinPaymentUri(string address, decimal amount) =>
-        amount > 0m ? $"bitcoin:{address}?amount={amount.ToString("0.########", System.Globalization.CultureInfo.InvariantCulture)}" : $"bitcoin:{address}";
-
-    private static string BuildSolanaPaymentUri(string address, decimal amount, string? mint)
-    {
-        var queryParts = new List<string>();
-        if (amount > 0m)
-        {
-            queryParts.Add($"amount={amount.ToString("0.########", System.Globalization.CultureInfo.InvariantCulture)}");
-        }
-
-        if (!string.IsNullOrWhiteSpace(mint))
-        {
-            queryParts.Add($"token={Uri.EscapeDataString(mint)}");
-        }
-
-        if (queryParts.Count == 0)
-        {
-            return $"solana:{address}";
-        }
-
-        return $"solana:{address}?{string.Join('&', queryParts)}";
     }
 
     private static string GenerateQrMarkup(string payload)

@@ -540,4 +540,37 @@
   <data name="SwapError_InvalidAmount" xml:space="preserve">
     <value>El importe debe ser positivo.</value>
   </data>
+  <data name="NavMenu_Disclaimer" xml:space="preserve">
+    <value>Haftungsausschluss</value>
+  </data>
+  <data name="NavMenu_Pay" xml:space="preserve">
+    <value>Pay</value>
+  </data>
+  <data name="NavMenu_Convert" xml:space="preserve">
+    <value>Konvertieren</value>
+  </data>
+  <data name="NavMenu_Setup" xml:space="preserve">
+    <value>Aufstellen</value>
+  </data>
+  <data name="NavMenu_ResetWalletDebug" xml:space="preserve">
+    <value>Wallet zurücksetzen (Debug)</value>
+  </data>
+  <data name="NavMenu_ResettingWallet" xml:space="preserve">
+    <value>Wallet wird zurückgesetzt…</value>
+  </data>
+  <data name="ConfirmSwap" xml:space="preserve">
+    <value>Bestätigen Sie den Tausch</value>
+  </data>
+  <data name="SwapNotSupported" xml:space="preserve">
+    <value>Die Konvertierung zwischen diesen beiden Kryptowährungen wird nicht unterstützt.</value>
+  </data>
+  <data name="ExchangeRateError" xml:space="preserve">
+    <value>Fehler bei der Berechnung des Wechselkurses: {0}</value>
+  </data>
+  <data name="NoBalanceForPercentage" xml:space="preserve">
+    <value>Kein Saldo zur Auswahl des Prozentsatzes verfügbar.</value>
+  </data>
+  <data name="ValueIn" xml:space="preserve">
+    <value>Wert in</value>
+  </data>
 </root>

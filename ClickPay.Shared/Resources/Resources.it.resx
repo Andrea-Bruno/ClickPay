@@ -540,4 +540,37 @@
   <data name="ConversionSuccess" xml:space="preserve">
     <value>Conversione riuscita!</value>
   </data>
+  <data name="NavMenu_Disclaimer" xml:space="preserve">
+    <value>Disclaimer</value>
+  </data>
+  <data name="NavMenu_Pay" xml:space="preserve">
+    <value>Paga</value>
+  </data>
+  <data name="NavMenu_Convert" xml:space="preserve">
+    <value>Convertire</value>
+  </data>
+  <data name="NavMenu_Setup" xml:space="preserve">
+    <value>Impostare</value>
+  </data>
+  <data name="NavMenu_ResetWalletDebug" xml:space="preserve">
+    <value>Reimposta portafoglio (debug)</value>
+  </data>
+  <data name="NavMenu_ResettingWallet" xml:space="preserve">
+    <value>Reimpostazione del portafoglio…</value>
+  </data>
+  <data name="ConfirmSwap" xml:space="preserve">
+    <value>Conferma lo scambio</value>
+  </data>
+  <data name="SwapNotSupported" xml:space="preserve">
+    <value>La conversione tra queste due criptovalute non è supportata.</value>
+  </data>
+  <data name="ExchangeRateError" xml:space="preserve">
+    <value>Errore nel calcolo del tasso di cambio: {0}</value>
+  </data>
+  <data name="NoBalanceForPercentage" xml:space="preserve">
+    <value>Nessun saldo disponibile per selezionare la percentuale.</value>
+  </data>
+  <data name="ValueIn" xml:space="preserve">
+    <value>Valore dentro</value>
+  </data>
 </root>

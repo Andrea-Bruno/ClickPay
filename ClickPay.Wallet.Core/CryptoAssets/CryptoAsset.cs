@@ -91,6 +91,9 @@ public sealed class CryptoAsset
     [JsonPropertyName("visibilityLocked")]
     public bool VisibilityLocked { get; init; }
 
+    [JsonPropertyName("qrPaymentSupported")]
+    public bool QrPaymentSupported { get; init; } = false;
+
     [JsonIgnore]
     public string MenuLabel => string.IsNullOrWhiteSpace(MenuCustomLabel)
         ? Code

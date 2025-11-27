@@ -570,4 +570,7 @@
   <data name="NoBalanceForPercentage" xml:space="preserve">
     <value>No balance available to select percentage.</value>
   </data>
+  <data name="ValueIn" xml:space="preserve">
+    <value>Value in</value>
+  </data>
 </root>

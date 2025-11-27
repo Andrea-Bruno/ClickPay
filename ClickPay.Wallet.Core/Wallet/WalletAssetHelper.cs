@@ -197,4 +197,9 @@ public static class WalletAssetHelper
 
         await CryptoAssetRegistry.SetHiddenAsync(assetCode, hidden, cancellationToken).ConfigureAwait(false);
     }
+
+    public static bool IsSupportedForQrPayment(CryptoAsset asset)
+    {
+        return asset is not null && asset.QrPaymentSupported;
+    }
 }
