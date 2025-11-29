@@ -31,18 +31,34 @@ namespace ClickPay.Wallet.Core.Blockchain.Ethereum
         public async Task<WalletOverview> GetOverviewAsync(CryptoAsset asset, WalletVault vault, CancellationToken cancellationToken)
         {
             var account = DeriveAccount(vault);
-            decimal balance;
+            decimal balance = 0m;
 
-            if (IsNative(asset))
+            try
             {
-                balance = await _walletService.GetNativeBalanceAsync(account, cancellationToken).ConfigureAwait(false);
+                if (IsNative(asset))
+                {
+                    balance = await _walletService.GetNativeBalanceAsync(account, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    balance = await _walletService.GetTokenBalanceAsync(account, asset, cancellationToken).ConfigureAwait(false);
+                }
             }
-            else
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or TimeoutException)
             {
-                balance = await _walletService.GetTokenBalanceAsync(account, asset, cancellationToken).ConfigureAwait(false);
+                // Network error: return balance 0 and empty transactions
+                // Log or handle as needed
             }
 
-            var transactions = await _walletService.GetRecentTransactionsAsync(account, asset, _options.TransactionHistoryLimit, cancellationToken).ConfigureAwait(false);
+            IReadOnlyList<WalletTransaction> transactions = Array.Empty<WalletTransaction>();
+            try
+            {
+                transactions = await _walletService.GetRecentTransactionsAsync(account, asset, _options.TransactionHistoryLimit, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or TimeoutException)
+            {
+                // Network error: return empty transactions
+            }
 
             return new WalletOverview(
                 asset.Code,

@@ -31,19 +31,34 @@ namespace ClickPay.Wallet.Core.Blockchain.Solana
         public async Task<WalletOverview> GetOverviewAsync(CryptoAsset asset, WalletVault vault, CancellationToken cancellationToken)
         {
             var account = DeriveAccount(vault);
-            decimal balance;
+            decimal balance = 0m;
 
-            if (IsNative(asset))
+            try
             {
-                balance = await _walletService.GetNativeSolBalanceAsync(account, cancellationToken).ConfigureAwait(false);
+                if (IsNative(asset))
+                {
+                    balance = await _walletService.GetNativeSolBalanceAsync(account, cancellationToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    var tokenBalance = await _walletService.GetTokenBalanceAsync(account, asset, cancellationToken).ConfigureAwait(false);
+                    balance = tokenBalance.Amount;
+                }
             }
-            else
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or TimeoutException)
             {
-                var tokenBalance = await _walletService.GetTokenBalanceAsync(account, asset, cancellationToken).ConfigureAwait(false);
-                balance = tokenBalance.Amount;
+                // Network error: return balance 0 and empty transactions
             }
 
-            var transactions = await _walletService.GetRecentTransactionsAsync(account, asset, _options.TransactionHistoryLimit, cancellationToken).ConfigureAwait(false);
+            IReadOnlyList<WalletTransaction> transactions = Array.Empty<WalletTransaction>();
+            try
+            {
+                transactions = await _walletService.GetRecentTransactionsAsync(account, asset, _options.TransactionHistoryLimit, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or TimeoutException)
+            {
+                // Network error: return empty transactions
+            }
 
             return new WalletOverview(
                 asset.Code,

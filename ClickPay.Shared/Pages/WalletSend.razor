@@ -335,7 +335,6 @@
                 return;
             }
 
-            // Usa direttamente CoinGeckoExchangeRateUtility come in Wallet.razor
             var rate = await CoinGeckoExchangeRateUtility.GetRateAsync(new HttpClient(), null, asset, preferred.Code, ScheduleFiatRefresh);
             cachedFiatRate = rate is { Value: >0m } valid ? valid : null;
         }

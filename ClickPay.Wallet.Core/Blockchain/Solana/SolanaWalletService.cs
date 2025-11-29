@@ -19,6 +19,25 @@ using SolanaMnemonicWallet = Solnet.Wallet.Wallet;
 
 namespace ClickPay.Wallet.Core.Blockchain.Solana
 {
+    /// <summary>
+    /// Service for managing wallet operations on the Solana blockchain.
+    /// 
+    /// IMPORTANT: This architecture must remain NEUTRAL with respect to specific cryptocurrencies.
+    /// All references to asset properties (such as contract addresses, decimals, etc.) must be
+    /// defined exclusively in the JSON configuration files (e.g., EURC.json, SOL.json) and not hardcoded in the code.
+    /// 
+    /// The service receives a <see cref="CryptoAsset"/> object that contains all necessary information
+    /// (contract address, decimals, etc.) loaded dynamically from JSON files. Do not add constants,
+    /// properties, or logic specific to a single cryptocurrency in this file, as it would violate
+    /// the neutrality principle and make the code non-extensible.
+    /// 
+    /// Examples of what NOT to do:
+    /// - Add properties like "EurcDecimals" or "DevnetEurcMint" in SolanaWalletOptions.
+    /// - Hardcode contract addresses or decimals in the code.
+    /// - Create methods or logic specific to a single asset.
+    /// 
+    /// Instead, always use the properties of the CryptoAsset object passed as a parameter.
+    /// </summary>
     internal sealed class SolanaWalletService
     {
         private const decimal LamportsPerSol = 1_000_000_000m;

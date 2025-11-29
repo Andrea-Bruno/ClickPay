@@ -2,3 +2,4 @@ Comments in the code must be in English.
 Texts must be added to the neutral dictionary in resources.resx.
 Crypto specific attributes must be in the json configuration file and not in the code which must be neutral.
 The core project contains all the software logic, which can be used via shared classes in the utility directory that have public, neutral methods (they do not refer to particular crypto, or specific cases).
+After making changes, always run a build to see if there are any errors.

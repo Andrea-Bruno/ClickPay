@@ -573,4 +573,10 @@
   <data name="ValueIn" xml:space="preserve">
     <value>Wert in</value>
   </data>
+  <data name="CopyModalTitle" xml:space="preserve">
+    <value>Text kopieren</value>
+  </data>
+  <data name="CopyModalDescription" xml:space="preserve">
+    <value>Wählen Sie den folgenden Text aus und kopieren Sie ihn:</value>
+  </data>
 </root>

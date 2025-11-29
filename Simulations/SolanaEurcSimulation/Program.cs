@@ -8,6 +8,22 @@ using Microsoft.Extensions.Options;
 using Solnet.Programs;
 using Solnet.Wallet;
 
+/// <summary>
+/// IMPORTANT: This simulation code must remain NEUTRAL with respect to specific cryptocurrencies.
+/// All references to asset properties (such as contract addresses, decimals, etc.) must be
+/// defined exclusively in the JSON configuration files (e.g., EURC.json, SOL.json) and not hardcoded in the code.
+/// 
+/// The code receives a <see cref="CryptoAsset"/> object that contains all necessary information
+/// (contract address, decimals, etc.) loaded dynamically from JSON files. Do not add constants,
+/// properties, or logic specific to a single cryptocurrency in this file, as it would violate
+/// the neutrality principle and make the code non-extensible.
+/// 
+/// Examples of what NOT to do:
+/// - Hardcode contract addresses or decimals in the code.
+/// - Create logic specific to a single asset.
+/// 
+/// Instead, always use the properties of the CryptoAsset object loaded from JSON.
+/// </summary>
 var useDevnet = false;
 string? overrideRpc = null;
 var skipSend = false;
@@ -61,11 +77,10 @@ Console.WriteLine($"Loaded asset: {eurcAsset.Name} ({eurcAsset.Code}) on {eurcAs
 Console.WriteLine($"Visibility locked: {eurcAsset.VisibilityLocked}");
 Console.WriteLine($"Resolved chain key: {WalletChains.ResolveChainKey(eurcAsset.Network.ToString())}");
 
-var fallbackDecimals = Math.Max(1, (int)SolanaWalletOptions.Default.EurcDecimals);
-var decimals = eurcAsset.Decimals > 0 ? eurcAsset.Decimals : fallbackDecimals;
+var decimals = eurcAsset.Decimals > 0 ? eurcAsset.Decimals : 6;
 
 var mintAddress = useDevnet
-    ? SolanaWalletOptions.DevnetEurcMint
+    ? (eurcAsset.DevnetContractAddress ?? eurcAsset.ContractAddress)
     : eurcAsset.ContractAddress ?? string.Empty;
 
 if (string.IsNullOrWhiteSpace(mintAddress))
@@ -92,9 +107,7 @@ if (!TryValidateRpcEndpoint(rpcEndpoint, out var rpcError))
 var solanaOptions = Options.Create(new SolanaWalletOptions
 {
     RpcEndpoint = rpcEndpoint,
-    Commitment = commitment,
-    EurcMintAddress = mintAddress,
-    EurcDecimals = (byte)Math.Clamp(decimals, 0, byte.MaxValue)
+    Commitment = commitment
 });
 
 using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(15) };

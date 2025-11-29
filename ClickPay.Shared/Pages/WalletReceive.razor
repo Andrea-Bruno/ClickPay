@@ -110,6 +110,28 @@ else if (info is not null)
     </div>
 }
 
+<!-- Modal per copia manuale -->
+@if (showCopyModal)
+{
+    <div class="modal fade show d-block" tabindex="-1" aria-labelledby="copyModalLabel" aria-hidden="false" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="copyModalLabel">@Loc.T("CopyModalTitle")</h5>
+                    <button type="button" class="btn-close" @onclick="CloseCopyModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@Loc.T("CopyModalDescription")</p>
+                    <textarea class="form-control" readonly>@copyModalText</textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseCopyModal">@Loc.T("Close")</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
     [Parameter] public string? type { get; set; }
     private string assetCode = string.Empty;
@@ -130,6 +152,8 @@ else if (info is not null)
     private FiatPreferenceStore.FiatCurrencyOption? fiatPreference;
     private CachedExchangeRate? cachedFiatRate;
     private CancellationTokenSource? rateCts;
+    private string copyModalText = string.Empty;
+    private bool showCopyModal = false;
 
     private bool SupportsFiatConversion => assetDefinition is { CoingeckoId.Length: > 0 };
     private bool HasFiatRate => cachedFiatRate is { Value: > 0m };
@@ -169,7 +193,7 @@ else if (info is not null)
         var assetLabel = assetDefinition?.Symbol ?? assetDefinition?.Code ?? info?.Symbol ?? assetCode;
         var unit = GetFiatDisplayUnit();
         var rate = cachedFiatRate!.Value;
-        return "~ 1" + " " + assetLabel + " " + "?" + " " + rate.ToString("N2", CultureInfo.CurrentCulture) + " " + unit;
+        return "1" + " " + assetLabel + " " + "=" + " ~" + rate.ToString("N2", CultureInfo.CurrentCulture) + " " + unit;
     }
 
     protected override async Task OnInitializedAsync()
@@ -419,7 +443,22 @@ else if (info is not null)
             return;
         }
 
-        await JS.InvokeVoidAsync("navigator.clipboard.writeText", paymentUri);
+        try
+        {
+            var shareSupported = await JS.InvokeAsync<bool>("eval", "!!navigator.share");
+            if (shareSupported)
+            {
+                await JS.InvokeVoidAsync("navigator.share", new { title = "Payment Request", text = paymentUri });
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("navigator.clipboard.writeText", paymentUri);
+            }
+        }
+        catch (JSException)
+        {
+            // Removed alert
+        }
     }
 
     private async Task CopyAddress()
@@ -429,7 +468,17 @@ else if (info is not null)
             return;
         }
 
-        await JS.InvokeVoidAsync("navigator.clipboard.writeText", info.Address);
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", info.Address);
+        }
+        catch (JSException)
+        {
+            // Mostra modal per copia manuale
+            copyModalText = info.Address;
+            showCopyModal = true;
+            StateHasChanged();
+        }
     }
 
     private async Task CopyPaymentUri()
@@ -439,7 +488,17 @@ else if (info is not null)
             return;
         }
 
-        await JS.InvokeVoidAsync("navigator.clipboard.writeText", paymentUri);
+        try
+        {
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", paymentUri);
+        }
+        catch (JSException)
+        {
+            // Mostra modal per copia manuale
+            copyModalText = paymentUri;
+            showCopyModal = true;
+            StateHasChanged();
+        }
     }
 
     private async Task LoadFiatContextAsync(CancellationToken cancellationToken)
@@ -583,4 +642,9 @@ else if (info is not null)
         return svgQr.GetGraphic(8, "#000000", "#ffffff", drawQuietZones: false);
     }
 
+    private void CloseCopyModal()
+    {
+        showCopyModal = false;
+        StateHasChanged();
+    }
 }

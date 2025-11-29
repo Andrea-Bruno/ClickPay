@@ -57,10 +57,10 @@ C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\stati
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.build.endpoints.json
+C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\ClickPay.1C08E8D6.Up2Date
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\ClickPay.Shared.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\refint\ClickPay.Shared.dll
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\ClickPay.Shared.pdb
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\ClickPay.Shared.genruntimeconfig.cache
 C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\ref\ClickPay.Shared.dll
-C:\Users\andre\OneDrive\Sorgenti\ClickPay\ClickPay.Shared\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt

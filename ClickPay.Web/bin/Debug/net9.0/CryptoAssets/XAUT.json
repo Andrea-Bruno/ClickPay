@@ -1,20 +1,17 @@
 {
   "name": "Tether Gold",
-  "code": "XAUT\u2080",
+  "code": "XAUT₀",
   "blockchain": "solana",
   "contractAddress": "3y2QeZQ2y1k4EYBLETymFcpnSUsctNk6heAQ7VZ8qVtU",
   "decimals": 6,
   "chainId": 101,
   "menuCustomLabel": "Gold",
   "coingeckoId": "tether-gold",
-  "symbol": "\uD83D\uDF1A",
+  "symbol": "🜚",
   "hidden": false,
   "visibilityLocked": false,
   "routeSegment": "xaut",
-  "aliases": [
-    "xaut",
-    "gold"
-  ],
+  "aliases": ["xaut", "gold"],
   "sortOrder": 40,
   "networkFeeMinimumBalance": 0.001
 }
