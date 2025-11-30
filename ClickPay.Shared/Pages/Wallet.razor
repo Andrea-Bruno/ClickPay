@@ -664,9 +664,7 @@ else if (overview is not null)
 
     private string GetWalletHeading(CryptoAsset definition)
     {
-        var baseLabel = definition.MenuLabel;
-
-        return Loc.FormatWalletLabel(baseLabel);
+        return GetAssetDisplayName(definition);
     }
 
     private bool HasFeeAssets => feeAssetDefinitions.Count > 0;
@@ -780,17 +778,27 @@ else if (overview is not null)
 
     private static string GetAssetShortLabel(CryptoAsset asset)
     {
+        string baseLabel;
         if (!string.IsNullOrWhiteSpace(asset.Code))
         {
-            return asset.Code;
+            baseLabel = asset.Code;
         }
-
-        if (!string.IsNullOrWhiteSpace(asset.Name))
+        else if (!string.IsNullOrWhiteSpace(asset.Name))
         {
-            return asset.Name;
+            baseLabel = asset.Name;
+        }
+        else
+        {
+            return "asset";
         }
 
-        return "asset";
+        // For tokens, add blockchain info
+        if (asset.Network != BlockchainNetwork.Unknown)
+        {
+            return $"{baseLabel} ({asset.Network.ToString().ToLower()})";
+        }
+
+        return baseLabel;
     }
 
     private string FormatFeeAssetList()
@@ -801,6 +809,20 @@ else if (overview is not null)
         }
 
         return string.Join(", ", feeAssetDefinitions.Select(GetAssetShortLabel));
+    }
+
+    private string GetAssetDisplayName(CryptoAsset asset)
+    {
+        if (string.IsNullOrWhiteSpace(asset.EffectiveContractAddress))
+        {
+            // Native asset
+            return asset.Code;
+        }
+        else
+        {
+            // Token
+            return $"{asset.Code} {Loc.T("OnBlockchain")} {asset.Network.ToString().ToLower()}";
+        }
     }
 
     private static string FormatAmount(decimal value) => value.ToString("N4", CultureInfo.CurrentCulture);

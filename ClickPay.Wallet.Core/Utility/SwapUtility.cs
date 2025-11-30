@@ -1,4 +1,4 @@
-using System;
+ using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -46,15 +46,15 @@ namespace ClickPay.Wallet.Core.Utility
         // Models
         public class SwapRequest
         {
-            public CryptoAsset From { get; set; }
-            public CryptoAsset To { get; set; }
+            public required CryptoAsset From { get; set; }
+            public required CryptoAsset To { get; set; }
             public decimal Amount { get; set; }
             public string? UserAddress { get; set; } // Optional, for validation
         }
 
         public class SwapQuote
         {
-            public string QuoteId { get; set; }
+            public required string QuoteId { get; set; }
             public decimal ExchangeRate { get; set; }
             public decimal MinReceive { get; set; }
             public decimal EstimatedFees { get; set; }
@@ -73,21 +73,21 @@ namespace ClickPay.Wallet.Core.Utility
 
         public class SwapResult
         {
-            public EsitoOperazione Esito { get; set; }
-            public string Descrizione { get; set; }
+            public OperationResult Result { get; set; }
+            public string Description { get; set; }
             public SwapStatus Status { get; set; }
             public string? TransactionHash { get; set; }
 
-            public SwapResult(EsitoOperazione esito, string descrizione, SwapStatus status = SwapStatus.Failed, string? transactionHash = null)
+            public SwapResult(OperationResult result, string description, SwapStatus status = SwapStatus.Failed, string? transactionHash = null)
             {
-                Esito = esito;
-                Descrizione = descrizione;
+                Result = result;
+                Description = description;
                 Status = status;
                 TransactionHash = transactionHash;
             }
         }
 
-        public enum EsitoOperazione
+        public enum OperationResult
         {
             Successful,
             InvalidAsset,
@@ -171,7 +171,7 @@ namespace ClickPay.Wallet.Core.Utility
             var validation = await ValidateSwapConditionsAsync(request, quote, secureStore, ct);
             if (!validation.IsValid)
             {
-                return new SwapResult(EsitoOperazione.Unknown, validation.ErrorMessage ?? "Validation failed", SwapStatus.Failed);
+                return new SwapResult(OperationResult.Unknown, validation.ErrorMessage ?? "Validation failed", SwapStatus.Failed);
             }
 
             foreach (var provider in Providers)
@@ -182,7 +182,7 @@ namespace ClickPay.Wallet.Core.Utility
                     return await provider.ExecuteSwapAsync(request, quote.RouteData ?? string.Empty, ct);
                 }
             }
-            return new SwapResult(EsitoOperazione.NotSupported, "No provider supports this swap pair", SwapStatus.Failed);
+            return new SwapResult(OperationResult.NotSupported, "No provider supports this swap pair", SwapStatus.Failed);
         }
 
         public static async Task<SwapStatus> GetSwapStatusAsync(string transactionId, CancellationToken ct = default)
@@ -220,13 +220,15 @@ namespace ClickPay.Wallet.Core.Utility
         {
             var vault = await WalletKeyUtility.GetVaultAsync(secureStore, ct);
             if (vault == null)
-                return new SwapResult(EsitoOperazione.InvalidAddress, "Invalid vault", SwapStatus.Failed);
+                return new SwapResult(OperationResult.InvalidAddress, "Invalid vault", SwapStatus.Failed);
 
             var solWallet = new SolanaMnemonicWallet(vault.Mnemonic.Trim(), WordList.English, vault.Passphrase ?? string.Empty);
             var account = solWallet.GetAccount(vault.AccountIndex);
             var userAddress = account.PublicKey;
 
             // Use route data from quote
+            if (string.IsNullOrWhiteSpace(quote.RouteData))
+                return new SwapResult(OperationResult.Unknown, "No route data", SwapStatus.Failed);
             using var routeDoc = JsonDocument.Parse(quote.RouteData);
             var route = routeDoc.RootElement;
 
@@ -239,16 +241,16 @@ namespace ClickPay.Wallet.Core.Utility
             };
             var swapResp = await JupiterHttpClient.PostAsJsonAsync("v6/swap", swapReq, ct);
             if (!swapResp.IsSuccessStatusCode)
-                return new SwapResult(EsitoOperazione.NetworkError, "Swap API error", SwapStatus.Failed);
+                return new SwapResult(OperationResult.NetworkError, "Swap API error", SwapStatus.Failed);
 
             var swapJson = await swapResp.Content.ReadAsStringAsync(ct);
             using var swapDoc = JsonDocument.Parse(swapJson);
             if (!swapDoc.RootElement.TryGetProperty("swapTransaction", out var txElem))
-                return new SwapResult(EsitoOperazione.Unknown, "Invalid swap response", SwapStatus.Failed);
+                return new SwapResult(OperationResult.Unknown, "Invalid swap response", SwapStatus.Failed);
 
             var txBase64 = txElem.GetString();
             if (string.IsNullOrWhiteSpace(txBase64))
-                return new SwapResult(EsitoOperazione.Unknown, "No transaction", SwapStatus.Failed);
+                return new SwapResult(OperationResult.Unknown, "No transaction", SwapStatus.Failed);
 
             byte[] txBytes = Convert.FromBase64String(txBase64);
             var tx = Transaction.Deserialize(txBytes);
@@ -256,21 +258,23 @@ namespace ClickPay.Wallet.Core.Utility
 
             var sendResult = await SolanaRpcClient.SendTransactionAsync(Convert.ToBase64String(tx.Serialize()), skipPreflight: false, Commitment.Confirmed);
             if (!sendResult.WasSuccessful || string.IsNullOrWhiteSpace(sendResult.Result))
-                return new SwapResult(EsitoOperazione.NetworkError, "Send failed", SwapStatus.Failed);
+                return new SwapResult(OperationResult.NetworkError, "Send failed", SwapStatus.Failed);
 
-            return new SwapResult(EsitoOperazione.Successful, "Swap successful", SwapStatus.Completed, sendResult.Result);
+            return new SwapResult(OperationResult.Successful, "Swap successful", SwapStatus.Completed, sendResult.Result);
         }
 
         private static async Task<SwapResult> ExecuteMayanSwapAsync(SwapRequest request, SwapQuote quote, ILocalSecureStore secureStore, CancellationToken ct)
         {
             var vault = await WalletKeyUtility.GetVaultAsync(secureStore, ct);
             if (vault == null)
-                return new SwapResult(EsitoOperazione.InvalidAddress, "Invalid vault", SwapStatus.Failed);
+                return new SwapResult(OperationResult.InvalidAddress, "Invalid vault", SwapStatus.Failed);
 
             var solWallet = new SolanaMnemonicWallet(vault.Mnemonic.Trim(), WordList.English, vault.Passphrase ?? string.Empty);
             var account = solWallet.GetAccount(vault.AccountIndex);
             var userAddress = account.PublicKey;
 
+            if (string.IsNullOrWhiteSpace(quote.RouteData))
+                return new SwapResult(OperationResult.Unknown, "No route data", SwapStatus.Failed);
             using var routeDoc = JsonDocument.Parse(quote.RouteData);
             var route = routeDoc.RootElement;
 
@@ -281,16 +285,16 @@ namespace ClickPay.Wallet.Core.Utility
             };
             var swapResp = await MayanHttpClient.PostAsJsonAsync("swap", swapReq, ct);
             if (!swapResp.IsSuccessStatusCode)
-                return new SwapResult(EsitoOperazione.NetworkError, "Swap API error", SwapStatus.Failed);
+                return new SwapResult(OperationResult.NetworkError, "Swap API error", SwapStatus.Failed);
 
             var swapJson = await swapResp.Content.ReadAsStringAsync(ct);
             using var swapDoc = JsonDocument.Parse(swapJson);
             if (!swapDoc.RootElement.TryGetProperty("transaction", out var txElem))
-                return new SwapResult(EsitoOperazione.Unknown, "Invalid swap response", SwapStatus.Failed);
+                return new SwapResult(OperationResult.Unknown, "Invalid swap response", SwapStatus.Failed);
 
             var txBase64 = txElem.GetString();
             if (string.IsNullOrWhiteSpace(txBase64))
-                return new SwapResult(EsitoOperazione.Unknown, "No transaction", SwapStatus.Failed);
+                return new SwapResult(OperationResult.Unknown, "No transaction", SwapStatus.Failed);
 
             byte[] txBytes = Convert.FromBase64String(txBase64);
             var tx = Transaction.Deserialize(txBytes);
@@ -298,9 +302,9 @@ namespace ClickPay.Wallet.Core.Utility
 
             var sendResult = await SolanaRpcClient.SendTransactionAsync(Convert.ToBase64String(tx.Serialize()), skipPreflight: false, Commitment.Confirmed);
             if (!sendResult.WasSuccessful || string.IsNullOrWhiteSpace(sendResult.Result))
-                return new SwapResult(EsitoOperazione.NetworkError, "Send failed", SwapStatus.Failed);
+                return new SwapResult(OperationResult.NetworkError, "Send failed", SwapStatus.Failed);
 
-            return new SwapResult(EsitoOperazione.Successful, "Swap successful", SwapStatus.Completed, sendResult.Result);
+            return new SwapResult(OperationResult.Successful, "Swap successful", SwapStatus.Completed, sendResult.Result);
         }
 
         // Legacy method for backward compatibility (deprecated)
@@ -312,7 +316,7 @@ namespace ClickPay.Wallet.Core.Utility
             CancellationToken ct = default)
         {
             if (from == null || to == null || amount <= 0)
-                return new SwapResult(EsitoOperazione.InvalidAsset, "Invalid swap request", SwapStatus.Failed);
+                return new SwapResult(OperationResult.InvalidAsset, "Invalid swap request", SwapStatus.Failed);
 
             var request = new SwapRequest { From = from, To = to, Amount = amount };
             try
@@ -322,7 +326,7 @@ namespace ClickPay.Wallet.Core.Utility
             }
             catch (Exception ex)
             {
-                return new SwapResult(EsitoOperazione.Unknown, ex.Message, SwapStatus.Failed);
+                return new SwapResult(OperationResult.Unknown, ex.Message, SwapStatus.Failed);
             }
         }
     }

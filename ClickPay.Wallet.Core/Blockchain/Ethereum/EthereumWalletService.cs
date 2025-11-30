@@ -218,7 +218,7 @@ namespace ClickPay.Wallet.Core.Blockchain.Ethereum
             }
             catch (RpcClientUnknownException ex)
             {
-                throw new InvalidOperationException($"Errore RPC Ethereum: {ex.Message}", ex);
+                throw new InvalidOperationException($"Ethereum RPC error: {ex.Message}", ex);
             }
         }
     }

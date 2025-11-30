@@ -85,6 +85,7 @@
     {
         _hasWallet = await WalletKeyUtility.HasVaultAsync(SecureStore);
         Loc.LanguageChanged += OnLanguageChanged;
+        CryptoAssetRegistry.AssetsChanged += OnAssetsChanged;
     }
 
     protected override void OnInitialized()
@@ -94,14 +95,48 @@
 
     private string GetMenuLabel(CryptoAsset asset)
     {
-        var baseLabel = string.Equals(asset.Code, "XAUT", StringComparison.OrdinalIgnoreCase)
-            ? Loc.T("GoldWalletMenuLabel")
-            : asset.MenuLabel;
+        if (string.Equals(asset.Code, "XAUT", StringComparison.OrdinalIgnoreCase))
+        {
+            return Loc.FormatWalletLabel(Loc.T("GoldWalletMenuLabel"));
+        }
 
-        return Loc.FormatWalletLabel(baseLabel);
+        if (!string.IsNullOrWhiteSpace(asset.EffectiveContractAddress))
+        {
+            // Token - don't add "Wallet" suffix
+            return GetAssetDisplayName(asset);
+        }
+        else
+        {
+            // Native asset - add "Wallet" suffix
+            return Loc.FormatWalletLabel(asset.MenuLabel ?? asset.Code);
+        }
+    }
+
+    private string GetAssetDisplayName(CryptoAsset asset)
+    {
+        if (string.IsNullOrWhiteSpace(asset.EffectiveContractAddress))
+        {
+            // Native asset
+            var label = asset.MenuLabel ?? asset.Code;
+            if (Loc.IsResourceKey(label))
+            {
+                label = Loc.T(label);
+            }
+            return label;
+        }
+        else
+        {
+            // Token
+            return $"{asset.Code} {Loc.T("OnBlockchain")} {asset.Network.ToString().ToLower()}";
+        }
     }
 
     private void OnLanguageChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void OnAssetsChanged()
     {
         _ = InvokeAsync(StateHasChanged);
     }
@@ -157,6 +192,7 @@
     public void Dispose()
     {
         Loc.LanguageChanged -= OnLanguageChanged;
+        CryptoAssetRegistry.AssetsChanged -= OnAssetsChanged;
     }
 
 #if DEBUG

@@ -14,6 +14,7 @@
 @using ClickPay.Wallet.Core.Utility
 @using ClickPay.Wallet.Core.Preferences
 @using ClickPay.Wallet.Core.CryptoAssets
+@implements IDisposable
 
 <PageTitle>@Loc.T("SetupTitle")</PageTitle>
 
@@ -58,8 +59,8 @@
                         foreach (var asset in assetVisibility)
                         {
                             <div class="form-check form-switch mb-3">
-                                <input class="form-check-input" type="checkbox" id="hide-@asset.Code" checked="@asset.Hidden" disabled="@asset.IsSaving" @onchange="(args) => OnAssetHiddenChangedAsync(asset, args)" />
-                                <label class="form-check-label" for="hide-@asset.Code">@string.Format(CultureInfo.CurrentCulture, Loc.T("SetupAssetHideLabel"), asset.Code)</label>
+                                <input class="form-check-input" type="checkbox" id="hide-@asset.Code-@asset.Network" checked="@asset.Hidden" disabled="@asset.IsSaving" @onchange="(args) => OnAssetHiddenChangedAsync(asset, args)" />
+                                <label class="form-check-label" for="hide-@asset.Code-@asset.Network">@string.Format(CultureInfo.CurrentCulture, Loc.T("SetupAssetHideLabel"), GetAssetDisplayName(asset))</label>
                                 @if (asset.IsSaving)
                                 {
                                     <div class="form-text">@Loc.T("CommonSavingInProgress")</div>
@@ -189,6 +190,7 @@
             .Select(asset => new AssetVisibilityModel
             {
                 Code = asset.Code,
+                Network = asset.Network,
                 Hidden = asset.Hidden
             })
             .ToList();
@@ -236,6 +238,8 @@
             isBiometricSupported = false;
             biometricEnabled = false;
         }
+
+        CryptoAssetRegistry.AssetsChanged += OnAssetsChanged;
     }
 
     private async Task SavePreferences()
@@ -265,6 +269,11 @@
         StateHasChanged();
     }
 
+    private void OnAssetsChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
     private async Task OnAssetHiddenChangedAsync(AssetVisibilityModel model, ChangeEventArgs args)
     {
         if (model.IsSaving)
@@ -279,7 +288,7 @@
             _ => false
         };
 
-        if (newHidden == model.Hidden && WalletAssetHelper.TryGetDefinition(model.Code, out var definition) && definition.Hidden == model.Hidden)
+        if (newHidden == model.Hidden && WalletAssetHelper.TryGetDefinition($"{model.Code}-{model.Network}", out var definition) && definition.Hidden == model.Hidden)
         {
             return;
         }
@@ -291,8 +300,8 @@
 
         try
         {
-            await WalletAssetHelper.SetHiddenAsync(model.Code, newHidden);
-            if (WalletAssetHelper.TryGetDefinition(model.Code, out var refreshed))
+            await WalletAssetHelper.SetHiddenAsync($"{model.Code}-{model.Network}", newHidden);
+            if (WalletAssetHelper.TryGetDefinition($"{model.Code}-{model.Network}", out var refreshed))
             {
                 model.Hidden = refreshed.Hidden;
             }
@@ -416,11 +425,31 @@
         }
     }
 
+    private string GetAssetDisplayName(AssetVisibilityModel asset)
+    {
+        if (asset.Network == BlockchainNetwork.Unknown)
+        {
+            // Native asset
+            return asset.Code;
+        }
+        else
+        {
+            // Token
+            return $"{asset.Code} {Loc.T("OnBlockchain")} {asset.Network.ToString().ToLower()}";
+        }
+    }
+
     private sealed class AssetVisibilityModel
     {
         public required string Code { get; init; }
+        public required BlockchainNetwork Network { get; init; }
         public bool Hidden { get; set; }
         public bool IsSaving { get; set; }
         public string? ErrorMessage { get; set; }
+    }
+
+    public void Dispose()
+    {
+        CryptoAssetRegistry.AssetsChanged -= OnAssetsChanged;
     }
 }

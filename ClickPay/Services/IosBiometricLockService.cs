@@ -110,7 +110,7 @@ public sealed class IosBiometricLockService : IBiometricLockService
 
     private async Task<BiometricUnlockResult> AuthenticateAsync(CancellationToken cancellationToken)
     {
-        var request = new AuthenticationRequestConfiguration("Sblocca ClickPay", "Conferma la tua identità per continuare.")
+        var request = new AuthenticationRequestConfiguration("Unlock ClickPay", "Confirm your identity to continue.")
         {
             AllowAlternativeAuthentication = false,
             CancelTitle = "Annulla",

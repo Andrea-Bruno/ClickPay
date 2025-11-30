@@ -10,7 +10,6 @@ using ClickPay.Wallet.Core.Blockchain;
 using ClickPay.Wallet.Core.CryptoAssets;
 using ClickPay.Wallet.Core.Wallet;
 using Microsoft.Extensions.Logging;
-using ClickPay.Wallet.Core.Utility;
 using ClickPay.Wallet.Core.Services;
 
 namespace ClickPay.Wallet.Core.Wallet
@@ -154,7 +153,7 @@ namespace ClickPay.Wallet.Core.Wallet
             }
             catch (Exception ex)
             {
-                logger?.LogWarning(ex, "Aggiornamento cache overview fallito per {Asset}.", context.Asset.Code);
+                logger?.LogWarning(ex, "Cache overview update failed for {Asset}.", context.Asset.Code);
             }
         }
 
@@ -168,7 +167,7 @@ namespace ClickPay.Wallet.Core.Wallet
             }
             catch (Exception ex)
             {
-                logger?.LogWarning(ex, "Aggiornamento cache transazioni fallito per {Asset}.", context.Asset.Code);
+                logger?.LogWarning(ex, "Cache transactions update failed for {Asset}.", context.Asset.Code);
             }
         }
 

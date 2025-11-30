@@ -43,16 +43,16 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">@Loc.T("FromAsset")</label>
-                                <select class="form-select" @bind="fromAssetCode" @bind:after="OnAssetChanged">
+                                <select class="form-select" @bind="fromAssetKey" @bind:after="OnAssetChanged">
                                     @foreach (var asset in visibleAssets)
                                     {
-                                        <option value="@asset.Code">@asset.Code</option>
+                                        <option value="@GetAssetKey(asset)">@GetAssetDisplayName(asset)</option>
                                     }
                                 </select>
                             </div>
                             @if (fromAsset != null)
                             {
-                                <p class="text-muted small">Available: @fromBalance.ToString("N4") @fromAsset.Code</p>
+                                <p class="text-muted small">Available: @fromBalance.ToString("N4") @GetAssetDisplayName(fromAsset)</p>
                             }
                             @if (fromAsset != null)
                             {
@@ -85,10 +85,10 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">@Loc.T("ToAsset")</label>
-                                <select class="form-select" @bind="toAssetCode" @bind:after="OnAssetChanged">
+                                <select class="form-select" @bind="toAssetKey" @bind:after="OnAssetChanged">
                                     @foreach (var asset in visibleAssets)
                                     {
-                                        <option value="@asset.Code">@asset.Code</option>
+                                        <option value="@GetAssetKey(asset)">@GetAssetDisplayName(asset)</option>
                                     }
                                 </select>
                             </div>
@@ -147,8 +147,8 @@
 
 @code {
     private List<CryptoAsset> visibleAssets = new();
-    private string? fromAssetCode;
-    private string? toAssetCode;
+    private string? fromAssetKey;
+    private string? toAssetKey;
     private decimal fromAmount;
     private int percentage;
     private decimal fromBalance;
@@ -169,13 +169,29 @@
     private System.Timers.Timer? statusTimer;
     private System.Timers.Timer? exchangeRateTimer;
 
+    private string GetAssetKey(CryptoAsset asset) => $"{asset.Code}-{asset.Network}";
+
+    private string GetAssetDisplayName(CryptoAsset asset)
+    {
+        if (string.IsNullOrWhiteSpace(asset.EffectiveContractAddress))
+        {
+            // Native asset
+            return asset.Code;
+        }
+        else
+        {
+            // Token
+            return $"{asset.Code} {Loc.T("OnBlockchain")} {asset.Network.ToString().ToLower()}";
+        }
+    }
+
     protected override async Task OnInitializedAsync()
     {
         visibleAssets = WalletAssetHelper.GetVisibleAssets().ToList();
         if (visibleAssets.Count > 1)
         {
-            fromAssetCode = visibleAssets[0].Code;
-            toAssetCode = visibleAssets[1].Code;
+            fromAssetKey = GetAssetKey(visibleAssets[0]);
+            toAssetKey = GetAssetKey(visibleAssets[1]);
         }
         await LoadBalancesAsync();
         await UpdateQuoteAsync();
@@ -186,11 +202,21 @@
         exchangeRateTimer.Start();
     }
 
+    private CryptoAsset? GetAssetFromKey(string? key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return null;
+        var parts = key.Split('-');
+        if (parts.Length != 2) return null;
+        var code = parts[0];
+        if (!Enum.TryParse<BlockchainNetwork>(parts[1], true, out var network)) return null;
+        return visibleAssets.FirstOrDefault(a => a.Code == code && a.Network == network);
+    }
+
     private async Task LoadBalancesAsync()
     {
-        if (fromAssetCode == null || toAssetCode == null) return;
-        fromAsset = visibleAssets.FirstOrDefault(a => a.Code == fromAssetCode);
-        toAsset = visibleAssets.FirstOrDefault(a => a.Code == toAssetCode);
+        if (fromAssetKey == null || toAssetKey == null) return;
+        fromAsset = GetAssetFromKey(fromAssetKey);
+        toAsset = GetAssetFromKey(toAssetKey);
         if (fromAsset == null) return;
 
         try
@@ -315,7 +341,7 @@
         StateHasChanged();
 
         var result = await SwapUtility.ExecuteSwapAsync(request, currentQuote, SecureStore);
-        if (result.Esito == SwapUtility.EsitoOperazione.Successful)
+        if (result.Result == SwapUtility.OperationResult.Successful)
         {
             successMessage = Loc.T("SwapSuccessful");
             recentConversions.Insert(0, new RecentConversion
@@ -330,7 +356,7 @@
         }
         else
         {
-            errorMessage = result.Descrizione;
+            errorMessage = result.Description;
             recentConversions.Insert(0, new RecentConversion
             {
                 Timestamp = DateTime.Now,

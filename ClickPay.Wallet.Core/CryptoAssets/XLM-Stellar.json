@@ -1,0 +1,17 @@
+{
+  "code": "XLM",
+  "symbol": "★",
+  "name": "Stellar Lumens",
+  "blockchain": "Stellar",
+  "decimals": 7,
+  "sortOrder": 30,
+  "hidden": false,
+  "visibilityLocked": false,
+  "qrPaymentSupported": true,
+  "routeSegment": "xlm",
+  "aliases": ["stellar", "lumens"],
+  "description": "Native cryptocurrency of the Stellar network",
+  "website": "https://www.stellar.org",
+  "whitepaper": "https://www.stellar.org/papers/stellar-consensus-protocol.pdf",
+  "features": ["fast-transactions", "low-fees", "multi-asset-support", "decentralized-exchange"]
+}

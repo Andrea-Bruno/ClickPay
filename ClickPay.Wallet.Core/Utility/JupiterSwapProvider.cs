@@ -54,7 +54,7 @@ namespace ClickPay.Wallet.Core.Utility
         public Task<SwapUtility.SwapResult> ExecuteSwapAsync(SwapUtility.SwapRequest request, string routeData, CancellationToken ct = default)
         {
             // Execution handled in SwapUtility for now
-            return Task.FromResult(new SwapUtility.SwapResult(SwapUtility.EsitoOperazione.NotSupported, "Not implemented in provider", SwapUtility.SwapStatus.Failed));
+            return Task.FromResult(new SwapUtility.SwapResult(SwapUtility.OperationResult.NotSupported, "Not implemented in provider", SwapUtility.SwapStatus.Failed));
         }
     }
 }

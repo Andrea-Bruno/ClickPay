@@ -67,7 +67,7 @@ namespace ClickPay.Web.Services
             }
             catch (JSDisconnectedException)
             {
-                // Circuit già terminato: ignoriamo l'errore perché il modulo non è più raggiungibile.
+                // Circuit already terminated: we ignore the error because the module is no longer reachable.
             }
         }
 

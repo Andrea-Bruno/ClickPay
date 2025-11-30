@@ -194,6 +194,10 @@
             "Svg.Skia": {
               "target": "Package",
               "version": "[3.2.1, )"
+            },
+            "stellar-dotnet-sdk": {
+              "target": "Package",
+              "version": "[14.0.1, )"
             }
           },
           "imports": [

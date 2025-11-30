@@ -1,0 +1,18 @@
+{
+  "code": "EURC",
+  "symbol": "€",
+  "name": "EURC on Stellar",
+  "blockchain": "Stellar",
+  "contractAddress": "EURC:GDHU6WRG4IEQXM5NZ4BMPKOXHW76MZM4Y2IEMFDVXBSDP6SJY4ITNPP2",
+  "decimals": 7,
+  "sortOrder": 35,
+  "hidden": false,
+  "visibilityLocked": false,
+  "qrPaymentSupported": true,
+  "routeSegment": "eurc-stellar",
+  "aliases": ["eurc-stellar", "euroc-stellar"],
+  "description": "Euro Coin stablecoin on Stellar network",
+  "website": "https://www.circle.com",
+  "features": ["stablecoin", "fast-transactions", "low-fees"],
+  "feeAssetCodes": ["XLM"]
+}

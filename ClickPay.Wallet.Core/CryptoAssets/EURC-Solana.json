@@ -1,7 +1,7 @@
 {
   "name": "Euro Coin",
   "code": "EURC",
-  "blockchain": "solana",
+  "blockchain": "Solana",
   "contractAddress": "8XSigVnK9VwYq9FmkYdNvKcJsteVEh9UpAJZKkdYwGKu",
   "devnetContractAddress": "6wbfrFjEGwaksktwuDsMJ7d4Zt6wkFFwmwUcvJrQVJ6",
   "decimals": 6,
@@ -10,8 +10,9 @@
   "symbol": "€",
   "hidden": false,
   "visibilityLocked": false,
-  "routeSegment": "eurc",
-  "aliases": ["eurc", "euro"],
+  "routeSegment": "eurc-solana",
+  "aliases": ["eurc-solana", "euro-solana"],
   "sortOrder": 30,
   "networkFeeMinimumBalance": 0.001
 }
+

@@ -4,6 +4,7 @@ using ClickPay.Wallet.Core.Blockchain;
 using Bitcoin = ClickPay.Wallet.Core.Blockchain.Bitcoin;
 using EthereumChain = ClickPay.Wallet.Core.Blockchain.Ethereum;
 using SolanaChain = ClickPay.Wallet.Core.Blockchain.Solana;
+using StellarChain = ClickPay.Wallet.Core.Blockchain.Stellar;
 using ClickPay.Wallet.Core.Services;
 using ClickPay.Wallet.Core.Utility;
 using ClickPay.Wallet.Core.Wallet;
@@ -53,9 +54,17 @@ namespace ClickPay.Wallet.Core.DependencyInjection
                 return new EthereumChain.EthereumWalletService(options);
             });
 
+            services.AddScoped(provider =>
+            {
+                var options = provider.GetRequiredService<IOptions<StellarChain.StellarWalletOptions>>();
+                var httpClient = provider.GetRequiredService<HttpClient>();
+                return new StellarChain.StellarWalletService(options, httpClient);
+            });
+
             services.AddScoped<IWalletProvider, Bitcoin.BitcoinWalletProvider>();
             services.AddScoped<IWalletProvider, SolanaChain.SolanaWalletProvider>();
             services.AddScoped<IWalletProvider, EthereumChain.EthereumWalletProvider>();
+            services.AddScoped<IWalletProvider, StellarChain.StellarWalletProvider>();
 
             services.AddScoped<WalletProviderRegistry>();
 
@@ -65,3 +74,4 @@ namespace ClickPay.Wallet.Core.DependencyInjection
         }
     }
 }
+

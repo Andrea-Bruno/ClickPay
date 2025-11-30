@@ -65,7 +65,7 @@ namespace API
         /// </summary>
         /// <param name="shopId">The unique identifier of the shop (obtained by the hash of QR code) for which to retrieve the next payment information.</param>
         /// <returns>An instance of  containing the currency code and amount of the next payment if available; otherwise null</returns>
-        public async Task<JsonDocument> GetNextPayment(String shopId)
+        public async Task<JsonDocument?> GetNextPayment(String shopId)
         {
             using var httpClient = _clientFactory.CreateClient();
             var requestData = new {
@@ -74,7 +74,7 @@ namespace API
             var jsonContent = new StringContent(JsonSerializer.Serialize(requestData), Encoding.UTF8, "application/json");
             using var response = await httpClient.PostAsync(_apiEntryPoint + "/getnextpayment", jsonContent).ConfigureAwait(false);
             var responseData = await response.Content.ReadAsStringAsync();
-            if (string.IsNullOrWhiteSpace(responseData)) return default;
+            if (string.IsNullOrWhiteSpace(responseData)) return null;
             return JsonDocument.Parse(responseData);
         }
 

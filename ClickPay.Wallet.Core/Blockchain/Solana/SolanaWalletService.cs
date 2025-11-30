@@ -206,7 +206,7 @@ namespace ClickPay.Wallet.Core.Blockchain.Solana
             var response = await SendRpcAsync(sendRequest, cancellationToken).ConfigureAwait(false);
             if (!response.Success)
             {
-                throw new InvalidOperationException($"Invio della transazione Solana fallito: {response.ErrorMessage}");
+                throw new InvalidOperationException($"Sending Solana transaction failed: {response.ErrorMessage}");
             }
 
             var txId = response.Json.RootElement.GetProperty("result").GetString() ?? string.Empty;

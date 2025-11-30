@@ -16,6 +16,8 @@ public static class CryptoAssetRegistry
     private static readonly object SyncRoot = new();
     private static CryptoAssetCatalog? _catalog;
 
+    public static event Action? AssetsChanged;
+
     private static CryptoAssetCatalog Catalog
     {
         get
@@ -39,7 +41,11 @@ public static class CryptoAssetRegistry
 
     public static bool TryGet(string code, out CryptoAsset asset) => Catalog.TryGetAsset(code, out asset);
 
+    public static bool TryGet(string code, BlockchainNetwork network, out CryptoAsset asset) => Catalog.TryGetAsset(code, network, out asset);
+
     public static CryptoAsset GetRequired(string code) => Catalog.GetRequiredAsset(code);
+
+    public static CryptoAsset GetRequired(string code, BlockchainNetwork network) => Catalog.GetRequiredAsset(code, network);
 
     public static string DefaultDirectoryPath => CryptoAssetCatalog.GetDefaultDirectoryPath();
 
@@ -48,6 +54,22 @@ public static class CryptoAssetRegistry
         try
         {
             path = Catalog.TryGetAssetFilePath(code, out var resolved) && !string.IsNullOrWhiteSpace(resolved)
+                ? resolved
+                : string.Empty;
+            return !string.IsNullOrWhiteSpace(path);
+        }
+        catch
+        {
+            path = string.Empty;
+            return false;
+        }
+    }
+
+    public static bool TryGetAssetFilePath(string code, BlockchainNetwork network, out string path)
+    {
+        try
+        {
+            path = Catalog.TryGetAssetFilePath(code, network, out var resolved) && !string.IsNullOrWhiteSpace(resolved)
                 ? resolved
                 : string.Empty;
             return !string.IsNullOrWhiteSpace(path);
@@ -69,6 +91,7 @@ public static class CryptoAssetRegistry
         }
 
         CryptoAssetIconResolver.ClearCache();
+        AssetsChanged?.Invoke();
     }
 
     public static async Task SetHiddenAsync(string code, bool hidden, CancellationToken cancellationToken = default)

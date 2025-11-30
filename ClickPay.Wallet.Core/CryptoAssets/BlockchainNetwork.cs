@@ -8,5 +8,7 @@ public enum BlockchainNetwork
     Ethereum,
     Polygon,
     Lightning,
+    Stellar,
     Other
 }
+

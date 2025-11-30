@@ -1,24 +1,19 @@
 using System;
 using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Resources;
 using ClickPay.Shared.Resources;
-
 
 namespace ClickPay.Shared.Services
 {
     public class LocalizationService
     {
-    private readonly System.Resources.ResourceManager _resourceManager = ClickPay.Shared.Resources.Resources.ResourceManager;
         private string _currentLanguage;
-
-
         public event Action? LanguageChanged;
-
 
         public LocalizationService()
         {
             _currentLanguage = NormalizeLanguageCode(CultureInfo.CurrentUICulture.Name);
+            CultureInfo.CurrentUICulture = new CultureInfo(_currentLanguage);
         }
 
         public string CurrentLanguage
@@ -35,35 +30,15 @@ namespace ClickPay.Shared.Services
                     return;
                 }
                 _currentLanguage = normalized;
+                CultureInfo.CurrentUICulture = new CultureInfo(_currentLanguage);
                 LanguageChanged?.Invoke();
             }
-        }
-
-        // Versione asincrona per chi vuole solo async
-        public Task<string> GetCurrentLanguageAsync()
-        {
-            return Task.FromResult(_currentLanguage);
-        }
-
-        public Task SetCurrentLanguageAsync(string value)
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                var normalized = NormalizeLanguageCode(value);
-                if (_currentLanguage != normalized)
-                {
-                    _currentLanguage = normalized;
-                    LanguageChanged?.Invoke();
-                }
-            }
-            return Task.CompletedTask;
         }
 
         public string T(string key)
         {
             var culture = new CultureInfo(_currentLanguage);
-            var value = _resourceManager.GetString(key, culture);
-            return value ?? key;
+            return global::ClickPay.Shared.Resources.Resources.ResourceManager.GetString(key, culture) ?? key;
         }
 
         public string FormatWalletLabel(string assetLabel)
@@ -72,29 +47,35 @@ namespace ClickPay.Shared.Services
             return string.Format(CultureInfo.CurrentCulture, format, assetLabel);
         }
 
-		private string NormalizeLanguageCode(string language)
-		{
-			if (string.IsNullOrWhiteSpace(language))
-			{
-				return "en";
-			}
+        public bool IsResourceKey(string key)
+        {
+            return global::ClickPay.Shared.Resources.Resources.ResourceManager.GetString(key, CultureInfo.CurrentUICulture) != null;
+        }
 
-			var normalized = language.Trim().ToLowerInvariant();
-			var dashIndex = normalized.IndexOf('-');
-			if (dashIndex >= 0)
-			{
-				normalized = normalized[..dashIndex];
-			}
+        private string NormalizeLanguageCode(string language)
+        {
+            if (string.IsNullOrWhiteSpace(language))
+            {
+                return "en";
+            }
 
-			// Supporta solo le lingue per cui esiste una .resx satellite
-			return normalized switch
-			{
-				"it" => "it",
-				"fr" => "fr",
-				"es" => "es",
-				"de" => "de",
-				_ => "en"
-			};
-		}
+            var normalized = language.Trim().ToLowerInvariant();
+            var dashIndex = normalized.IndexOf('-');
+            if (dashIndex >=0)
+            {
+                normalized = normalized[..dashIndex];
+            }
+
+            // Support only languages for which a .resx satellite exists
+            return normalized switch
+            {
+                "it" => "it",
+                "fr" => "fr",
+                "es" => "es",
+                "de" => "de",
+                _ => "en"
+            };
+        }
     }
 }
+

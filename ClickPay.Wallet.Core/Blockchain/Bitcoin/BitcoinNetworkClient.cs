@@ -75,7 +75,7 @@ namespace ClickPay.Wallet.Core.Blockchain.Bitcoin
             if (!response.IsSuccessStatusCode)
             {
                 var body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                throw new InvalidOperationException($"Broadcast della transazione BTC fallito: {response.StatusCode} - {body}");
+                throw new InvalidOperationException($"BTC transaction broadcast failed: {response.StatusCode} - {body}");
             }
 
             var txId = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);

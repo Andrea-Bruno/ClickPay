@@ -69,7 +69,7 @@ namespace ClickPay.Wallet.Core.Utility
             // In questa versione, secureStore non è passato: va gestito a livello superiore
             // Qui si assume che la chiave utente sia in request.UserAddress (da migliorare in futuro)
             if (string.IsNullOrWhiteSpace(request.UserAddress))
-                return Task.FromResult(new SwapUtility.SwapResult(SwapUtility.EsitoOperazione.InvalidAddress, "User address required", SwapUtility.SwapStatus.Failed));
+                return Task.FromResult(new SwapUtility.SwapResult(SwapUtility.OperationResult.InvalidAddress, "User address required", SwapUtility.SwapStatus.Failed));
 
             using var routeDoc = JsonDocument.Parse(routeData);
             var route = routeDoc.RootElement;
@@ -85,20 +85,20 @@ namespace ClickPay.Wallet.Core.Utility
             {
                 var swapResp = await MayanHttpClient.PostAsJsonAsync("swap", swapReq, ct2);
                 if (!swapResp.IsSuccessStatusCode)
-                    return new SwapUtility.SwapResult(SwapUtility.EsitoOperazione.NetworkError, "Swap API error", SwapUtility.SwapStatus.Failed);
+                    return new SwapUtility.SwapResult(SwapUtility.OperationResult.NetworkError, "Swap API error", SwapUtility.SwapStatus.Failed);
 
                 var swapJson = await swapResp.Content.ReadAsStringAsync(ct2);
                 using var swapDoc = JsonDocument.Parse(swapJson);
                 if (!swapDoc.RootElement.TryGetProperty("transaction", out var txElem))
-                    return new SwapUtility.SwapResult(SwapUtility.EsitoOperazione.Unknown, "Invalid swap response", SwapUtility.SwapStatus.Failed);
+                    return new SwapUtility.SwapResult(SwapUtility.OperationResult.Unknown, "Invalid swap response", SwapUtility.SwapStatus.Failed);
 
                 var txBase64 = txElem.GetString();
                 if (string.IsNullOrWhiteSpace(txBase64))
-                    return new SwapUtility.SwapResult(SwapUtility.EsitoOperazione.Unknown, "No transaction", SwapUtility.SwapStatus.Failed);
+                    return new SwapUtility.SwapResult(SwapUtility.OperationResult.Unknown, "No transaction", SwapUtility.SwapStatus.Failed);
 
                 // Integrazione reale: qui si dovrebbe firmare e inviare la transazione
-                // Per ora restituisce successo "simulato"
-                return new SwapUtility.SwapResult(SwapUtility.EsitoOperazione.Successful, "Swap simulated (firma e invio da implementare)", SwapUtility.SwapStatus.Completed, txBase64);
+                // For now returns simulated success
+                return new SwapUtility.SwapResult(SwapUtility.OperationResult.Successful, "Swap simulated (firma e invio da implementare)", SwapUtility.SwapStatus.Completed, txBase64);
             }
         }
     }

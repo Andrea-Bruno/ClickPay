@@ -13,7 +13,6 @@
 @using Microsoft.JSInterop
 @using ClickPay.Shared.Preferences
 @using ClickPay.Shared.Pages
-@using ClickPay.Wallet.Core.Utility
 @using ClickPay.Wallet.Core.CryptoAssets
 @inject IJSRuntime JS
 @inject LocalizationService Loc
@@ -69,7 +68,7 @@ else if (info is not null)
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label" for="receiveAmount">@Loc.T("Amount") (@assetDefinition?.Code)</label>
+                            <label class="form-label" for="receiveAmount">@Loc.T("Amount") (@(assetDefinition != null ? GetAssetDisplayName(assetDefinition) : ""))</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
                                 <input id="receiveAmount" class="form-control" type="text" value="@cryptoAmountText" @oninput="OnCryptoAmountInput" @onblur="OnCryptoAmountBlur" placeholder="@GetCryptoPlaceholder()" inputmode="decimal" autocomplete="off" />
@@ -620,6 +619,18 @@ else if (info is not null)
         return decimals >= 0
             ? decimal.Round(constrained, decimals, MidpointRounding.ToZero)
             : constrained;
+    }
+
+    private string GetAssetDisplayName(CryptoAsset asset)
+    {
+        if (asset.Network == BlockchainNetwork.Unknown)
+        {
+            return asset.Code;
+        }
+        else
+        {
+            return $"{asset.Code} {Loc.T("OnBlockchain")} {asset.Network.ToString().ToLower()}";
+        }
     }
 
     public void Dispose()

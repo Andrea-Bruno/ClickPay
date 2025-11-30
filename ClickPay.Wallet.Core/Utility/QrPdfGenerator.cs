@@ -45,9 +45,9 @@ namespace ClickPay.Wallet.Core.Utility
  var qrUrl = $"{baseUrl}?{hex}";
 
  // Dimensions in points (1 cm ?28.35 pt)
- const double cmToPt =28.35;
- double widthPt =5.5 * cmToPt;
- double heightPt =5.5 * cmToPt;
+            const double cmToPt = 28.35;
+            double widthPt = 5.5 * cmToPt;
+            double heightPt = 5.5 * cmToPt;
 
  using var document = new PdfDocument();
  var page = document.AddPage();
@@ -57,14 +57,14 @@ namespace ClickPay.Wallet.Core.Utility
  using var gfx = XGraphics.FromPdfPage(page);
 
  // Title at the top, centered, bold
- var titleFont = new XFont("Arial",14, XFontStyle.Bold);
+            var titleFont = new XFont("Arial", 14, XFontStyle.Bold);
  var title = appName ?? "App";
  var titleSize = gfx.MeasureString(title, titleFont);
  gfx.DrawString(
  title,
  titleFont,
  XBrushes.Black,
- new XRect(0,10, widthPt, titleSize.Height),
+                new XRect(0, 10, widthPt, titleSize.Height),
  XStringFormats.TopCenter);
 
  // Generate QR code as SVG
@@ -77,25 +77,30 @@ namespace ClickPay.Wallet.Core.Utility
  using var svgStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(svg));
  var skSvg = new SKSvg();
  skSvg.Load(svgStream);
- int qrPixelSize =512; // High resolution for quality
- using var bitmap = new SKBitmap(qrPixelSize, qrPixelSize);
- using (var canvas = new SKCanvas(bitmap))
+            if (skSvg.Picture == null)
  {
- canvas.Clear(SKColors.White);
- float scale = Math.Min(qrPixelSize / skSvg.Picture.CullRect.Width, qrPixelSize / skSvg.Picture.CullRect.Height);
- canvas.Scale(scale);
- canvas.DrawPicture(skSvg.Picture);
+                throw new InvalidOperationException("Failed to load SVG picture for QR code");
  }
+
+            int qrPixelSize = 512; // High resolution for quality
+            using var bitmap = new SKBitmap(qrPixelSize, qrPixelSize);
+            using (var canvas = new SKCanvas(bitmap))
+            {
+                canvas.Clear(SKColors.White);
+                float scale = Math.Min(qrPixelSize / skSvg.Picture!.CullRect.Width, qrPixelSize / skSvg.Picture!.CullRect.Height);
+                canvas.Scale(scale);
+                canvas.DrawPicture(skSvg.Picture);
+            }
  using var image = SKImage.FromBitmap(bitmap);
  using var pngStream = new MemoryStream();
- image.Encode(SKEncodedImageFormat.Png,100).SaveTo(pngStream);
- pngStream.Position =0;
+            image.Encode(SKEncodedImageFormat.Png, 100).SaveTo(pngStream);
+            pngStream.Position = 0;
  var qrImage = XImage.FromStream(() => pngStream);
 
  // Calculate QR position (centered below the title)
- double qrSize = widthPt *0.7; //70% of width
- double qrX = (widthPt - qrSize) /2;
- double qrY = titleSize.Height +20;
+            double qrSize = widthPt * 0.7; //70% of width
+            double qrX = (widthPt - qrSize) / 2;
+            double qrY = titleSize.Height + 20;
 
  gfx.DrawImage(qrImage, qrX, qrY, qrSize, qrSize);
 
@@ -106,3 +111,4 @@ namespace ClickPay.Wallet.Core.Utility
  }
  }
 }
+

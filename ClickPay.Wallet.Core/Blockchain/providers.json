@@ -32,6 +32,14 @@
         "base",
         "linea"
       ]
+    },
+    {
+      "library": "stellar-dotnet-sdk",
+      "package": "stellar-dotnet-sdk",
+      "handler": "ClickPay.Wallet.Core.Blockchain.Stellar.StellarWalletService",
+      "blockchains": [
+        "stellar"
+      ]
     }
   ]
 }

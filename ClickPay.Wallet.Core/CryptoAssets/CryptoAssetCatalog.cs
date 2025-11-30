@@ -35,7 +35,30 @@ public sealed class CryptoAssetCatalog
             return false;
         }
 
-        if (_assetFiles.TryGetValue(NormalizeCode(code), out var storedPath) && !string.IsNullOrWhiteSpace(storedPath))
+        var normalizedCode = NormalizeCode(code);
+        var key = _assetFiles.Keys.FirstOrDefault(k => k.StartsWith($"{normalizedCode}-", StringComparison.OrdinalIgnoreCase));
+
+        if (key != null && _assetFiles.TryGetValue(key, out var storedPath) && !string.IsNullOrWhiteSpace(storedPath))
+        {
+            path = storedPath;
+            return true;
+        }
+
+        path = string.Empty;
+        return false;
+    }
+
+    public bool TryGetAssetFilePath(string code, BlockchainNetwork network, out string path)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            path = string.Empty;
+            return false;
+        }
+
+        var key = $"{NormalizeCode(code)}-{network}";
+
+        if (_assetFiles.TryGetValue(key, out var storedPath) && !string.IsNullOrWhiteSpace(storedPath))
         {
             path = storedPath;
             return true;
@@ -52,7 +75,35 @@ public sealed class CryptoAssetCatalog
             throw new ArgumentException("Asset code must be provided.", nameof(code));
         }
 
-        var key = NormalizeCode(code);
+        var normalizedCode = NormalizeCode(code);
+
+        string? key;
+        if (normalizedCode.Contains('-') && _assetFiles.ContainsKey(normalizedCode))
+        {
+            key = normalizedCode;
+        }
+        else
+        {
+            key = _assetFiles.Keys.FirstOrDefault(k => k.StartsWith($"{normalizedCode}-", StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (key == null || !_assetFiles.TryGetValue(key, out var path))
+        {
+            throw new KeyNotFoundException($"Crypto asset '{normalizedCode}' does not have an associated configuration file.");
+        }
+
+        return path;
+    }
+
+    public string GetRequiredAssetFilePath(string code, BlockchainNetwork network)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            throw new ArgumentException("Asset code must be provided.", nameof(code));
+        }
+
+        var key = $"{NormalizeCode(code)}-{network}";
+
         if (!_assetFiles.TryGetValue(key, out var path))
         {
             throw new KeyNotFoundException($"Crypto asset '{key}' does not have an associated configuration file.");
@@ -69,7 +120,37 @@ public sealed class CryptoAssetCatalog
             return false;
         }
 
-        var key = NormalizeCode(code);
+        var normalizedCode = NormalizeCode(code);
+
+        string? key;
+        if (normalizedCode.Contains('-') && _assets.ContainsKey(normalizedCode))
+        {
+            key = normalizedCode;
+        }
+        else
+        {
+            key = _assets.Keys.FirstOrDefault(k => k.StartsWith($"{normalizedCode}-", StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (key != null && _assets.TryGetValue(key, out var found))
+        {
+            asset = found;
+            return true;
+        }
+
+        asset = default!;
+        return false;
+    }
+
+    public bool TryGetAsset(string code, BlockchainNetwork network, out CryptoAsset asset)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            asset = default!;
+            return false;
+        }
+
+        var key = $"{NormalizeCode(code)}-{network}";
 
         if (_assets.TryGetValue(key, out var found))
         {
@@ -88,7 +169,34 @@ public sealed class CryptoAssetCatalog
             throw new ArgumentException("Asset code must be provided.", nameof(code));
         }
 
-        var key = NormalizeCode(code);
+        var normalizedCode = NormalizeCode(code);
+
+        string? key;
+        if (normalizedCode.Contains('-') && _assets.ContainsKey(normalizedCode))
+        {
+            key = normalizedCode;
+        }
+        else
+        {
+            key = _assets.Keys.FirstOrDefault(k => k.StartsWith($"{normalizedCode}-", StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (key == null || !_assets.TryGetValue(key, out var asset))
+        {
+            throw new KeyNotFoundException($"Crypto asset '{normalizedCode}' was not found in the catalog.");
+        }
+
+        return asset;
+    }
+
+    public CryptoAsset GetRequiredAsset(string code, BlockchainNetwork network)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            throw new ArgumentException("Asset code must be provided.", nameof(code));
+        }
+
+        var key = $"{NormalizeCode(code)}-{network}";
 
         if (!_assets.TryGetValue(key, out var asset))
         {
@@ -137,15 +245,22 @@ public sealed class CryptoAssetCatalog
                 throw new InvalidDataException($"Crypto asset definition in '{file}' does not declare a code. Suggested code: '{inferredSymbol}'.");
             }
 
-            var normalized = Normalize(asset);
-            var code = normalized.Code;
-
-            if (!assets.TryAdd(code, normalized))
+            if (!string.IsNullOrWhiteSpace(asset.Symbol) && asset.Symbol.Trim().Length > 2)
             {
-                throw new InvalidOperationException($"Duplicate crypto asset code '{code}' found while loading '{file}'. Codes must be unique.");
+                throw new InvalidDataException($"Symbol for asset {asset.Code} must be a single Unicode character or emoji, but got '{asset.Symbol.Trim()}'");
             }
 
-            assetFiles[code] = file;
+            var normalized = Normalize(asset);
+            var code = normalized.Code;
+            var network = normalized.Network.ToString();
+            var key = $"{code}-{network}";
+
+            if (!assets.TryAdd(key, normalized))
+            {
+                throw new InvalidOperationException($"Duplicate crypto asset key '{key}' found while loading '{file}'. Keys must be unique.");
+            }
+
+            assetFiles[key] = file;
         }
 
         return new CryptoAssetCatalog(assets, assetFiles);

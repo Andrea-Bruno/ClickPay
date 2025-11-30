@@ -160,20 +160,20 @@ namespace ClickPay.Wallet.Core.Utility
                 },
                 ["it"] = new Dictionary<WalletErrorCode, string>
                 {
-                    [WalletErrorCode.MnemonicMissing] = "La passphrase del wallet è obbligatoria.",
-                    [WalletErrorCode.AccountIndexOutOfRange] = "L'indice dell'account è fuori intervallo.",
-                    [WalletErrorCode.AddressIndexOutOfRange] = "L'indice dell'indirizzo è fuori intervallo.",
-                    [WalletErrorCode.DestinationMissing] = "L'indirizzo di destinazione è obbligatorio.",
-                    [WalletErrorCode.AmountInvalid] = "L'importo deve essere maggiore di zero.",
-                    [WalletErrorCode.InvalidAddress] = "L'indirizzo di destinazione non è valido per questa rete.",
-                    [WalletErrorCode.VaultUnavailable] = "Nessun wallet è stato configurato su questo dispositivo.",
-                    [WalletErrorCode.AssetNotSupported] = "L'asset selezionato non è ancora supportato.",
-                    [WalletErrorCode.NetworkUnavailable] = "La rete blockchain non è al momento disponibile.",
-                    [WalletErrorCode.Timeout] = "L'operazione è scaduta. Riprova.",
-                    [WalletErrorCode.RpcError] = "Il nodo blockchain ha restituito un errore.",
-                    [WalletErrorCode.SecureStorageUnavailable] = "Lo storage sicuro non è disponibile in questo ambiente.",
-                    [WalletErrorCode.OperationFailed] = "Impossibile completare l'operazione sul wallet.",
-                    [WalletErrorCode.UnsupportedFeature] = "Questa funzionalità non è supportata per l'asset selezionato."
+                    [WalletErrorCode.MnemonicMissing] = "Wallet passphrase is required.",
+                    [WalletErrorCode.AccountIndexOutOfRange] = "Account index is out of range.",
+                    [WalletErrorCode.AddressIndexOutOfRange] = "Address index is out of range.",
+                    [WalletErrorCode.DestinationMissing] = "Destination address is required.",
+                    [WalletErrorCode.AmountInvalid] = "Amount must be greater than zero.",
+                    [WalletErrorCode.InvalidAddress] = "Destination address is not valid for this network.",
+                    [WalletErrorCode.VaultUnavailable] = "No wallet has been configured on this device.",
+                    [WalletErrorCode.AssetNotSupported] = "The selected asset is not yet supported.",
+                    [WalletErrorCode.NetworkUnavailable] = "The blockchain network is currently unavailable.",
+                    [WalletErrorCode.Timeout] = "The operation timed out. Please try again.",
+                    [WalletErrorCode.RpcError] = "The blockchain node returned an error.",
+                    [WalletErrorCode.SecureStorageUnavailable] = "Secure storage is not available in this environment.",
+                    [WalletErrorCode.OperationFailed] = "Unable to complete the wallet operation.",
+                    [WalletErrorCode.UnsupportedFeature] = "This feature is not supported for the selected asset."
                 },
                 ["fr"] = new Dictionary<WalletErrorCode, string>
                 {

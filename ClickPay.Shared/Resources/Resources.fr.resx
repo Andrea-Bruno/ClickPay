@@ -70,7 +70,10 @@
     <value>EURC balance:</value>
   </data>
   <data name="WalletLabelFormat" xml:space="preserve">
-    <value>{0} wallet</value>
+    <value>{0}</value>
+  </data>
+  <data name="OnBlockchain" xml:space="preserve">
+    <value>sur</value>
   </data>
   <data name="GoldWalletMenuLabel" xml:space="preserve">
     <value>Gold</value>
@@ -578,5 +581,23 @@
   </data>
   <data name="CopyModalDescription" xml:space="preserve">
     <value>Sélectionnez et copiez le texte ci-dessous :</value>
+  </data>
+  <data name="BlockchainNodeError" xml:space="preserve">
+    <value>Le nœud blockchain a renvoyé une erreur.</value>
+  </data>
+  <data name="EthereumRpcError" xml:space="preserve">
+    <value>Erreur RPC Ethereum : {0}</value>
+  </data>
+  <data name="SolanaTransactionSendFailed" xml:space="preserve">
+    <value>Échec de l'envoi de la transaction Solana : {0}</value>
+  </data>
+  <data name="BitcoinTransactionBroadcastFailed" xml:space="preserve">
+    <value>Échec de la diffusion de la transaction BTC : {0} - {1}</value>
+  </data>
+  <data name="BiometricUnlockTitle" xml:space="preserve">
+    <value>Débloquez ClickPay</value>
+  </data>
+  <data name="BiometricUnlockPrompt" xml:space="preserve">
+    <value>Confirmez votre identité pour continuer.</value>
   </data>
 </root>
